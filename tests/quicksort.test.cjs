@@ -384,7 +384,7 @@ test("all report UI colors are grayscale; Java syntax colors remain distinct", (
   assert.match(css, /\.animation-bar\.pivot\{background:#363636/);
   assert.match(css, /\.trace-tab\.active\{border-color:#494949/);
   assert.match(css, /\.animation-timeline input\{[^}]*accent-color:#202020/);
-  assert.match(html, /styles\.css\?v=20261015-boundaries-v9/);
+  assert.match(html, /styles\.css\?v=20261015-conclusion-v10/);
 });
 
 
@@ -412,4 +412,24 @@ test("low/high names are consistent across Java, article and live engine frames"
   assert.ok(!Object.hasOwn(partition, "lo"));
   assert.ok(!Object.hasOwn(partition, "hi"));
   assert.deepEqual(result.result, [1, 2, 3, 4, 5, 6, 7, 8]);
+});
+
+
+test("conclusion draws attention to the supported result without extra graphics", () => {
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const html = fs.readFileSync(path.join(__dirname, "../index.html"), "utf8");
+  const css = fs.readFileSync(path.join(__dirname, "../styles.css"), "utf8");
+  const conclusion = html.match(/<div class="conclusion"[\s\S]*?<\/div>/)?.[0];
+  assert.ok(conclusion, "missing conclusion container");
+  assert.match(conclusion, /<h3 id="conclusion-heading">Kết luận<\/h3>/);
+  assert.match(conclusion, /\\\(14\{,\}29\\%\\\)/);
+  assert.match(conclusion, /hoán vị ngẫu nhiên/);
+  assert.match(conclusion, /\\Theta\(n\^2\)/);
+  assert.match(css, /\.conclusion\{[^}]*border-top:2px solid #222222/);
+  assert.match(css, /\.conclusion h3\{font:650 22px/);
+  assert.match(css, /\.conclusion-lead\{[^}]*font:500 18px/);
+  assert.ok(!/background:/.test(css.match(/\.conclusion\{[^}]*\}/)?.[0] || ""),
+    "conclusion should remain editorial, not a filled card");
+  assert.doesNotMatch(html, /highệu|highện|lowại/, "Vietnamese text corrupted by variable renaming");
 });
