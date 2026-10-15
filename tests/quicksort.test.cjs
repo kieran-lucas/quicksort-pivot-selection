@@ -350,8 +350,8 @@ test("report uses concise academic prose, keeps derivations and sources", () => 
     "median sampling cost must render as proper MathJax");
   assert.equal((html.match(/class="math-display"/g) || []).length, 12);
   assert.equal((html.match(/class="language-java"/g) || []).length, 3);
-  assert.ok(html.includes("23Quicksort.pdf"), "retain academic source");
-  assert.ok(html.includes("QuickPivotSelection.java"), "retain reference implementation");
+  assert.ok(html.includes("Algorithms, 4th Edition") && html.includes("bài giảng 2.3"), "retain bibliographic source");
+  assert.ok(html.includes("class=\"language-java\""), "retain inline Java implementation");
   assert.ok(html.includes("f_3(x)=6x(1-x)"), "retain sampled-pivot density");
   assert.ok(html.includes("\\dfrac{12}{7}"), "retain asymptotic coefficient");
   assert.ok(html.includes("\\Theta(n^2)"), "retain worst case");
@@ -384,7 +384,7 @@ test("all report UI colors are grayscale; Java syntax colors remain distinct", (
   assert.match(css, /\.animation-bar\.pivot\{background:#363636/);
   assert.match(css, /\.trace-tab\.active\{border-color:#494949/);
   assert.match(css, /\.animation-timeline input\{[^}]*accent-color:#202020/);
-  assert.match(html, /styles\.css\?v=20261015-conclusion-regular-v12/);
+  assert.match(html, /styles\.css\?v=20261015-inline-arrows-v13/);
 });
 
 
@@ -443,11 +443,36 @@ test("page title reflects the classroom exploration of pivot selection", () => {
   const read = file => fs.readFileSync(path.join(__dirname, "..", file), "utf8");
   const html = read("index.html");
   const readme = read("README.md");
-  assert.match(html, /<title>Tìm hiểu cách chọn pivot trong QuickSort<\/title>/);
-  assert.match(html, /<h1>Tìm hiểu cách chọn pivot trong QuickSort<\/h1>/);
+  assert.match(html, /<title>Tìm hiểu kỹ thuật chọn pivot Median-of-Three trong QuickSort<\/title>/);
+  assert.match(html, /<h1>Tìm hiểu kỹ thuật chọn pivot Median-of-Three trong QuickSort<\/h1>/);
   assert.match(html, /<p class="course">Cấu trúc dữ liệu và giải thuật<\/p>/);
-  assert.match(html, /So sánh pivot đầu mảng và Median-of-Three qua cài đặt Java/);
-  assert.match(readme, /^# Tìm hiểu cách chọn pivot trong QuickSort/m);
+  assert.match(html, /Đối chiếu với cách chọn pivot đầu mảng qua mã Java/);
+  assert.match(readme, /^# Tìm hiểu kỹ thuật chọn pivot Median-of-Three trong QuickSort/m);
   assert.ok(html.includes('id="problem"') && html.includes('id="median"'),
     "retain both the selection problem and Median-of-Three method");
+});
+
+
+test("report omits outbound links, preserves plain-text bibliography and aligns summary arrows", () => {
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const html = fs.readFileSync(path.join(__dirname, "../index.html"), "utf8");
+  const css = fs.readFileSync(path.join(__dirname, "../styles.css"), "utf8");
+  const readme = fs.readFileSync(path.join(__dirname, "../README.md"), "utf8");
+  assert.doesNotMatch(html, /<a(?:\s|>)/i, "no navigational links in rendered report");
+  assert.doesNotMatch(html, /Mã Java đầy đủ|QuickPivotSelection\.java/);
+  const refs = html.match(/<div class="sources">[\s\S]*?<\/div>/)?.[0];
+  assert.ok(refs, "bibliography must remain");
+  assert.match(refs, /Sedgewick và K\. Wayne/);
+  assert.match(refs, /Algorithms, 4th Edition/);
+  assert.match(refs, /bài giảng 2\.3/);
+  assert.doesNotMatch(refs, /https?:\/\/|<a\b/);
+  assert.doesNotMatch(readme, /https?:\/\/|\]\(https?:\/\//);
+  assert.equal((html.match(/<details\b/g) || []).length, 4);
+  assert.equal((html.match(/<\/summary>/g) || []).length, 4);
+  assert.match(css, /list-style:none;padding:12px 0 12px 22px/);
+  assert.match(css, /summary::-webkit-details-marker[^{}]*\{display:none\}/);
+  assert.match(css, /summary::before[^{}]*left:2px;top:50%/);
+  assert.match(css, /\[open\]>summary::before[^{}]*rotate\(90deg\)/);
+  assert.doesNotMatch(css, /list-style-position:outside/);
 });
