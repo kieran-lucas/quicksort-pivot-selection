@@ -84,7 +84,7 @@
       </div>
       <figcaption>Ba ứng viên là \(8,\,4,\,1\). Vì \(1\lt4\lt8\), chọn \(\mathrm{pivot}=4\). Phân hoạch đầu tiên tạo hai phía có kích thước \(3\) và \(4\).</figcaption>
     </figure>
-    <p>Trên chính mảng này, pivot đầu mảng cần \(39\) phép so sánh khóa, còn Median-of-Three cần \(27\) phép (kể cả tìm trung vị). Số hoán đổi tương ứng là \(3\) và \(7\). Các thống kê cho thấy phương án có ít phép so sánh hơn không nhất thiết có ít hoán đổi hơn.</p>
+    <p>Trong ví dụ này, Median-of-Three giảm số phép so sánh từ \(39\) xuống \(27\), nhưng số hoán đổi tăng từ \(3\) lên \(7\). Vì vậy, cần phân biệt chi phí so sánh với thời gian chạy thực tế.</p>
     <p>Median-of-Three lấy <em>trung vị</em> (median), không phải trung bình cộng (mean). Nó không bảo đảm tìm được trung vị của toàn bộ mảng hoặc loại trừ trường hợp xấu nhất.</p>
   </section>
 
@@ -148,7 +148,7 @@
       <div class="control-row">
         <label for="preset">Dữ liệu mẫu</label>
         <select id="preset">
-          <option value="mixed" selected>Hỗn hợp (8 phần tử)</option>
+          <option value="mixed" selected>Hỗn hợp</option>
           <option value="ascending">Tăng dần</option>
           <option value="descending">Giảm dần</option>
           <option value="nearly">Gần có thứ tự</option>
@@ -307,12 +307,12 @@
     </table>
     <p>Hệ số của số phép so sánh giảm:</p>
     <div class="math-display">\(\displaystyle 1-\dfrac{12}{7}\cdot\dfrac{1}{2}=\dfrac{1}{7}\approx 14{,}29\%. \)</div>
-    <p>Tìm trung vị ba mẫu cần 2–3 phép so sánh mỗi lần, với tối đa \(O(n)\) lần gọi; phần chi phí bổ sung là \(O(n)\), không thay đổi hệ số trước \(n\ln n\). Tuy nhiên, số hoán đổi có thể tăng nhẹ (theo slide \(28\)), và thời gian thực tế còn phụ thuộc dữ liệu, bộ nhớ cùng chi phí cài đặt.</p>
+    <p>Tìm trung vị ba mẫu cần \(2\)–\(3\) phép so sánh mỗi lần, với tối đa \(O(n)\) lần gọi; phần chi phí bổ sung là \(O(n)\), không thay đổi hệ số trước \(n\ln n\). Tuy nhiên, số hoán đổi có thể tăng nhẹ (theo slide \(28\)), và thời gian thực tế còn phụ thuộc dữ liệu, bộ nhớ cùng chi phí cài đặt.</p>
     <p><strong>Giới hạn:</strong> Median-of-Three vẫn có thể tạo phân hoạch lệch, vì thế không loại bỏ worst-case \(\Theta(n^2)\). Với nhiều khóa bằng nhau, kỹ thuật <em>three-way partitioning</em> thường thích hợp hơn; với mảng con nhỏ, có thể chuyển sang Insertion Sort.</p>
     <p class="conclusion"><strong>Kết luận.</strong> Median-of-Three là một phương án cân bằng giữa <em>chi phí chọn pivot thấp</em> và <em>chất lượng phân hoạch tốt hơn theo kỳ vọng</em>; không phải một bảo đảm tăng tốc cho mọi đầu vào.</p>
     <div class="sources">
       <h3>Nguồn tham khảo</h3>
-      <p>Robert Sedgewick &amp; Kevin Wayne, <em>Algorithms, Fourth Edition</em>, bài giảng <a href="https://algs4.cs.princeton.edu/lectures/23Quicksort.pdf" target="_blank" rel="noopener noreferrer">\(2.3\) Quicksort</a>, tr. \(13\), \(15\), \(23\)–\(24\), \(27\)–\(28\), \(42\)–\(47\). Mã nguyên mẫu và giải thích thêm: <a href="https://algs4.cs.princeton.edu/23quicksort/" target="_blank" rel="noopener noreferrer">Algorithms 4e — Quicksort</a>.</p>
+      <p>Robert Sedgewick &amp; Kevin Wayne, <em>Algorithms, Fourth Edition</em>, bài giảng <a href="https://algs4.cs.princeton.edu/lectures/23Quicksort.pdf" target="_blank" rel="noopener noreferrer">\(2.3\) Quicksort</a>, tr. \(13\), \(15\), \(23\)–\(24\), \(27\)–\(28\), \(42\)–\(47\). Mã nguyên mẫu và giải thích thêm: <a href="https://algs4.cs.princeton.edu/23quicksort/" target="_blank" rel="noopener noreferrer">Algorithms — Quicksort</a>.</p>
       <p>Hệ số lý thuyết và ghi chú về hoán đổi lấy từ bài giảng. Phần diễn giải qua phân bố \(f_1,f_3\) và hàm \(h(x)\) là phép suy luận toán học bổ sung để làm rõ kết quả.</p>
     </div>
   </section>
