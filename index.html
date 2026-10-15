@@ -44,9 +44,7 @@
       <figcaption>Chọn \(\mathrm{pivot}=1\) → hai mảng con có kích thước <strong>0 và 6</strong>.</figcaption>
     </figure>
     <p>Ở mỗi cấp đệ quy, một phía gần như không giảm. Khi đó:</p>
-    <div class="math-display">\[
-      T(n)=T(n-1)+\Theta(n)=\Theta(n^2).
-    \]</div>
+    <div class="math-display">\(\displaystyle T(n)=T(n-1)+\Theta(n)=\Theta(n^2). \)</div>
     <p>Trong khi đó, phân hoạch cân bằng dẫn tới \(\Theta(n\log n)\). Như vậy, mục tiêu là <strong>giảm khả năng chọn pivot gây phân hoạch lệch</strong>.</p>
     <p class="aside-note">Trong bản QuickSort gốc của Princeton, <code>StdRandom.shuffle(a)</code> được dùng trước khi sắp xếp để tạo tính ngẫu nhiên. Phân tích ở đây tách riêng ảnh hưởng của <em>cách chọn pivot</em>, nên ví dụ và mô phỏng không tự shuffle.</p>
   </section>
@@ -55,9 +53,7 @@
     <div class="section-label">02 — Phương pháp</div>
     <h2 id="median-heading">Median-of-Three hoạt động thế nào?</h2>
     <p>Thay vì chọn ngay <code>a[lo]</code>, lấy ba ứng viên tại vị trí <code>lo</code>, <code>mid</code> và <code>hi</code>, trong đó:</p>
-    <div class="math-display">\[
-      \mathrm{mid}=\mathrm{lo}+\left\lfloor\dfrac{\mathrm{hi}-\mathrm{lo}}{2}\right\rfloor.
-    \]</div>
+    <div class="math-display">\(\displaystyle \mathrm{mid}=\mathrm{lo}+\left\lfloor\dfrac{\mathrm{hi}-\mathrm{lo}}{2}\right\rfloor. \)</div>
     <p>Chọn <strong>trung vị theo giá trị</strong> trong ba ứng viên, rồi chuyển nó về <code>lo</code> để dùng thủ tục phân hoạch ban đầu.</p>
     <figure class="simple-figure">
       <div class="candidate-array" aria-label="Mảng 8 1 6 4 9 2 7, ứng viên là 8, 4, 7">
@@ -243,52 +239,36 @@
     <div class="section-label">05 — Phân tích và kết luận</div>
     <h2 id="analysis-heading">Lợi ích có bù được chi phí chọn pivot?</h2>
     <p>Xét mô hình các khóa <strong>phân biệt</strong>, mọi hoán vị đầu vào có xác suất như nhau. Khi \(n\) lớn, vị trí tương đối \(X\) của pivot được chọn ngẫu nhiên có mật độ \(f_1(x)=1\). Nếu lấy trung vị của ba mẫu ngẫu nhiên, mật độ trở thành \(f_3(x)=6x(1-x)\), tập trung nhiều hơn gần \(x=\dfrac{1}{2}\).</p>
-    <div class="math-display">\[
-      f_1(x)=1,\qquad f_3(x)=6x(1-x),\qquad 0\lt x\lt 1.
-    \]</div>
+    <div class="math-display">\(\displaystyle f_1(x)=1,\qquad f_3(x)=6x(1-x),\qquad 0\lt x\lt 1. \)</div>
     <p>Với một hoán vị ngẫu nhiên, ba vị trí cố định đầu/giữa/cuối cũng tương ứng với ba mẫu ngẫu nhiên; điều này không đúng với đầu vào tùy ý.</p>
     <div class="math-derivation">
       <p>Đặt hàm đo độ cân bằng của hai nhánh:</p>
-      <div class="math-display">\[
-        h(x)=-x\ln x-(1-x)\ln(1-x).
-      \]</div>
+      <div class="math-display">\(\displaystyle h(x)=-x\ln x-(1-x)\ln(1-x). \)</div>
       <p>Với chi phí phân hoạch tiệm cận \(n\), số phép so sánh kỳ vọng có dạng \(\mathbb E[C_n]\sim cn\ln n\), trong đó:</p>
-      <div class="math-display">\[
-        c=\dfrac{1}{\mathbb E[h(X)]}.
-      \]</div>
+      <div class="math-display">\(\displaystyle c=\dfrac{1}{\mathbb E[h(X)]}. \)</div>
       <p>Thay hai phân bố pivot vào công thức:</p>
-      <div class="math-display">\[
-        \begin{aligned}
+      <div class="math-display">\(\displaystyle \begin{aligned}
         \text{Một mẫu:}\quad& \mathbb E[h(X)]=\dfrac{1}{2}
           &&\Longrightarrow c=2,\\[3pt]
         \text{Ba mẫu:}\quad& \mathbb E[h(X)]=\dfrac{7}{12}
           &&\Longrightarrow c=\dfrac{12}{7}.
-        \end{aligned}
-      \]</div>
+        \end{aligned} \)</div>
     </div>
     <details class="detail proof">
       <summary>Chi tiết phép tính kỳ vọng</summary>
       <p>Với mật độ xác suất \(f(x)\), ta tính:</p>
-      <div class="math-display">\[
-        \mathbb E[h(X)]=\int_0^1 f(x)\,h(x)\,\mathrm dx.
-      \]</div>
+      <div class="math-display">\(\displaystyle \mathbb E[h(X)]=\int_0^1 f(x)\,h(x)\,\mathrm dx. \)</div>
       <p>Đối với một mẫu:</p>
-      <div class="math-display">\[
-        \mathbb E[h(X)]=\int_0^1 h(x)\,\mathrm dx=\dfrac{1}{2}.
-      \]</div>
+      <div class="math-display">\(\displaystyle \mathbb E[h(X)]=\int_0^1 h(x)\,\mathrm dx=\dfrac{1}{2}. \)</div>
       <p>Đối với trung vị ba mẫu, dùng tính đối xứng:</p>
-      <div class="math-display">\[
-        \begin{aligned}
+      <div class="math-display">\(\displaystyle \begin{aligned}
         \mathbb E[h(X)]
           &=-12\int_0^1 x^2(1-x)\ln x\,\mathrm dx\\
           &=-12\left(-\dfrac{1}{9}+\dfrac{1}{16}\right)\\
           &=\dfrac{7}{12}.
-        \end{aligned}
-      \]</div>
+        \end{aligned} \)</div>
       <p>Ở đây sử dụng hệ thức:</p>
-      <div class="math-display">\[
-        \int_0^1 x^k\ln x\,\mathrm dx=-\dfrac{1}{(k+1)^2},\qquad k>-1.
-      \]</div>
+      <div class="math-display">\(\displaystyle \int_0^1 x^k\ln x\,\mathrm dx=-\dfrac{1}{(k+1)^2},\qquad k>-1. \)</div>
       <p>Vì vậy \(c_1=2\) và \(c_3=\dfrac{12}{7}\).</p>
     </details>
     <table class="metric-table theory-table">
@@ -300,9 +280,7 @@
       </tbody>
     </table>
     <p>Hệ số của số phép so sánh giảm:</p>
-    <div class="math-display">\[
-      1-\dfrac{12}{7}\cdot\dfrac{1}{2}=\dfrac{1}{7}\approx 14{,}29\%.
-    \]</div>
+    <div class="math-display">\(\displaystyle 1-\dfrac{12}{7}\cdot\dfrac{1}{2}=\dfrac{1}{7}\approx 14{,}29\%. \)</div>
     <p>Tìm trung vị ba mẫu cần 2–3 phép so sánh mỗi lần, với tối đa \(O(n)\) lần gọi; phần chi phí bổ sung là \(O(n)\), không thay đổi hệ số trước \(n\ln n\). Tuy nhiên, số hoán đổi có thể tăng nhẹ (theo slide 28), và thời gian thực tế còn phụ thuộc dữ liệu, bộ nhớ cùng chi phí cài đặt.</p>
     <p><strong>Giới hạn:</strong> Median-of-Three vẫn có thể tạo phân hoạch lệch, vì thế không loại bỏ worst-case \(\Theta(n^2)\). Với nhiều khóa bằng nhau, kỹ thuật <em>three-way partitioning</em> thường thích hợp hơn; với mảng con nhỏ, có thể chuyển sang Insertion Sort.</p>
     <p class="conclusion"><strong>Kết luận.</strong> Median-of-Three là một phương án cân bằng giữa <em>chi phí chọn pivot thấp</em> và <em>chất lượng phân hoạch tốt hơn theo kỳ vọng</em>; không phải một bảo đảm tăng tốc cho mọi đầu vào.</p>
