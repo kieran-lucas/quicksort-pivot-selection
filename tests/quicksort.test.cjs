@@ -446,7 +446,7 @@ test("page title reflects the classroom exploration of pivot selection", () => {
   assert.match(html, /<title>Tìm hiểu kỹ thuật chọn pivot Median-of-Three trong QuickSort<\/title>/);
   assert.match(html, /<h1>Tìm hiểu kỹ thuật chọn pivot Median-of-Three trong QuickSort<\/h1>/);
   assert.match(html, /<p class="course">Cấu trúc dữ liệu và giải thuật<\/p>/);
-  assert.match(html, /Đối chiếu với cách chọn pivot đầu mảng qua mã Java/);
+  assert.match(html, /Khảo sát ảnh hưởng của Median-of-Three đến độ cân bằng phân hoạch và số phép so sánh/);
   assert.match(readme, /^# Tìm hiểu kỹ thuật chọn pivot Median-of-Three trong QuickSort/m);
   assert.ok(html.includes('id="problem"') && html.includes('id="median"'),
     "retain both the selection problem and Median-of-Three method");
@@ -475,4 +475,17 @@ test("report omits outbound links, preserves plain-text bibliography and aligns 
   assert.match(css, /summary::before\{[^}]*left:2px;top:50%/);
   assert.match(css, /\[open\]>summary::before\{[^}]*rotate\(90deg\)/);
   assert.doesNotMatch(css, /list-style-position:outside/);
+});
+
+
+test("input action clearly applies data without implying animation playback", () => {
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const html = fs.readFileSync(path.join(__dirname, "../index.html"), "utf8");
+  const app = fs.readFileSync(path.join(__dirname, "../app.js"), "utf8");
+  assert.match(html, /<button id="run" class="run" type="button">Áp dụng<\/button>/);
+  assert.doesNotMatch(html, /<button id="run"[^>]*>Chạy<\/button>/);
+  assert.match(app, /\$\("run"\)\.addEventListener\("click", run\)/);
+  assert.match(app, /if \(event\.key === "Enter"\) run\(\)/);
+  assert.match(html, /id="anim-play"/, "animation Play/Pause remains separate");
 });
