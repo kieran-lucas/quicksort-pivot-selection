@@ -384,5 +384,32 @@ test("all report UI colors are grayscale; Java syntax colors remain distinct", (
   assert.match(css, /\.animation-bar\.pivot\{background:#363636/);
   assert.match(css, /\.trace-tab\.active\{border-color:#494949/);
   assert.match(css, /\.animation-timeline input\{[^}]*accent-color:#202020/);
-  assert.match(html, /styles\.css\?v=20261015-monochrome-ui-v8/);
+  assert.match(html, /styles\.css\?v=20261015-boundaries-v9/);
+});
+
+
+test("low/high names are consistent across Java, article and live engine frames", () => {
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const read = name => fs.readFileSync(path.join(__dirname, "..", name), "utf8");
+  for (const file of ["src/QuickPivotSelection.java", "engine.js", "animation.js", "app.js", "index.html"]) {
+    assert.doesNotMatch(read(file), /\blo\b|\bhi\b/, "legacy boundary name in " + file);
+  }
+  const html = read("index.html");
+  assert.match(html, /<code>a\[low\]<\/code> hoặc <code>a\[high\]<\/code>/);
+  assert.match(html, /\\mathrm\{low\}/);
+  assert.match(html, /\\mathrm\{high\}/);
+  assert.match(html, /private static int partition\(int\[\] a, int low, int high\)/);
+  assert.match(html, /private static void sort\(int\[\] a, int low, int high,/);
+  assert.match(html, /src="engine\.js\?v=20261015-boundaries-v9"/);
+  assert.match(html, /src="animation\.js\?v=20261015-boundaries-v9"/);
+  assert.match(html, /src="app\.js\?v=20261015-boundaries-v9"/);
+  const engine = require("../engine.js");
+  const result = engine.run([8, 7, 3, 4, 6, 5, 2, 1], "median");
+  const partition = result.frames.find(frame => frame.type === "fixed");
+  assert.equal(partition.low, 0);
+  assert.equal(partition.high, 7);
+  assert.ok(!Object.hasOwn(partition, "lo"));
+  assert.ok(!Object.hasOwn(partition, "hi"));
+  assert.deepEqual(result.result, [1, 2, 3, 4, 5, 6, 7, 8]);
 });
