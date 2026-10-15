@@ -599,7 +599,7 @@ test("explanations connect examples, Java routines and probability formulas to t
   assert.match(code, /Chọn pivot trong <code>sort\(\)<\/code>/);
   assert.match(analysis, /Mô phỏng chỉ cho biết kết quả trên một mảng cụ thể/);
   assert.match(analysis, /Gọi \\?\(X\\?\) là tỉ lệ phần tử nhỏ hơn pivot/);
-  assert.match(analysis, /Để chuyển sự khác biệt về cách chia mảng thành số phép so sánh kỳ vọng/);
+  assert.match(analysis, /Từ quan hệ truy hồi của QuickSort, ta sử dụng hàm/);
   assert.match(analysis, /Với \\?\(C_n\\?\) là tổng số phép so sánh/);
   assert.match(analysis, /So sánh hai hệ số/);
   assert.match(analysis, /mức giảm lý thuyết/);
