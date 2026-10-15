@@ -22,15 +22,21 @@ p{margin:0 0 17px}
 p:last-child{margin-bottom:0}
 strong{font-weight:650;color:#202020}
 code{font:500 .84em/1.6 var(--mono);background:#f4f4f4;border-radius:2px;padding:2px 4px;overflow-wrap:anywhere}
+/* Code identifiers inside headings use the same monospace as source, not a giant badge. */
+h2 code.heading-code{font-family:var(--mono);font-size:.68em;font-weight:500;line-height:1.2;letter-spacing:0;vertical-align:.09em;background:none;padding:0;border:0;white-space:nowrap}
+h3 code{font-family:var(--mono);font-weight:500;letter-spacing:0}
+
 .simple-figure{padding:20px 0 17px;margin:23px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
 .simple-figure figcaption{font-size:12.5px;line-height:1.7;color:#656565;margin-top:14px}
 .split-example{display:flex;gap:6px;align-items:stretch;width:min(100%,650px);min-height:49px}
-.split-example span{display:flex;justify-content:center;align-items:center;padding:8px 10px;border:1px solid #dadada;font:500 13px var(--mono)}
+.split-example span{display:flex;justify-content:center;align-items:center;padding:8px 10px;border:1px solid #dadada;font-size:13px;line-height:1.5}
 .split-example .empty{flex:0 0 14%;color:#888;background:#fafafa}
 .split-example .pivot-block{flex:0 0 11%;border:2px solid #555;font-weight:650}
 .split-example .members{flex:1;color:#444;word-spacing:6px}
 .candidate-array{display:flex;align-items:stretch;gap:7px;flex-wrap:wrap}
-.candidate-array>span{position:relative;display:flex;align-items:center;justify-content:center;width:55px;height:50px;border:1px solid #ddd;font:600 17px var(--mono);color:#444}
+.candidate-array>span{position:relative;display:flex;align-items:center;justify-content:center;width:55px;height:50px;border:1px solid #ddd;font-size:17px;line-height:1;color:#444}
+.candidate-array mjx-container[jax="CHTML"]{font-size:120%!important;margin:0!important}
+.candidate-array mjx-container[jax="CHTML"] mjx-math{font-family:inherit}
 .candidate-array .candidate{border:1.5px solid #888}
 .candidate-array .chosen{border:2px solid #222}
 .candidate-array small{position:absolute;bottom:-18px;font:400 10px var(--sans);color:#777}
