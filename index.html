@@ -170,13 +170,21 @@
   <section id="analysis" aria-labelledby="analysis-heading">
     <div class="section-label">05 — Phân tích và kết luận</div>
     <h2 id="analysis-heading">Lợi ích có bù được chi phí chọn pivot?</h2>
-    <p>Xét mô hình các khóa <strong>phân biệt</strong>, mọi hoán vị đầu vào có xác suất như nhau. Trong giới hạn khi <code>n</code> lớn, tỉ lệ vị trí của một pivot chọn ngẫu nhiên có mật độ <code>f₁(x) = 1</code>. Nếu lấy trung vị của ba mẫu ngẫu nhiên phân biệt, mật độ trở thành <code>f₃(x) = 6x(1−x)</code>: các vị trí gần giữa mảng được ưu tiên hơn.</p>
+    <p>Xét mô hình các khóa <strong>phân biệt</strong>, mọi hoán vị đầu vào có xác suất như nhau. Trong giới hạn khi <code>n</code> lớn, tỉ lệ vị trí của một pivot chọn ngẫu nhiên có mật độ <code>f₁(x) = 1</code>. Nếu lấy trung vị của ba mẫu ngẫu nhiên phân biệt, mật độ trở thành <code>f₃(x) = 6x(1−x)</code>: các vị trí gần giữa mảng được ưu tiên hơn. Với một hoán vị ngẫu nhiên, ba vị trí cố định đầu/giữa/cuối cũng tương ứng với ba mẫu ngẫu nhiên; điều này không đúng với đầu vào tùy ý.</p>
     <div class="math-derivation">
       <p>Đặt <code>h(x) = −x ln x − (1−x) ln(1−x)</code>.</p>
       <p>Với chi phí mỗi phép phân hoạch tiệm cận <code>n</code>, hệ số dẫn đầu của <code>E[Cₙ] ~ c n ln n</code> là <code>c = 1/E[h(X)]</code>.</p>
       <p>Một mẫu: <code>E[h(X)] = 1/2 ⇒ c = 2</code>.</p>
       <p>Ba mẫu: <code>E[h(X)] = 7/12 ⇒ c = 12/7</code>.</p>
     </div>
+    <details class="detail proof">
+      <summary>Chi tiết phép tính kỳ vọng</summary>
+      <p>Hệ số trên xuất phát từ truy hồi kỳ vọng của hai nhánh sau phân hoạch. Với mật độ <code>f(x)</code>, ta tính <code>E[h(X)] = ∫₀¹ f(x)h(x)dx</code>.</p>
+      <p>Với <code>f₁(x)=1</code>: <code>E[h(X)]=1/2</code>.</p>
+      <p>Với <code>f₃(x)=6x(1−x)</code> và tính đối xứng:
+      <code>E[h(X)] = −12∫₀¹ x²(1−x)ln(x)dx = 7/12</code>.</p>
+      <p>Do <code>∫₀¹ xᵏ ln(x)dx = −1/(k+1)²</code>, tích phân phía trên bằng <code>−7/144</code>. Từ đó thu được <code>c₁=2</code>, <code>c₃=12/7</code>.</p>
+    </details>
     <table class="metric-table theory-table">
       <thead><tr><th>Chỉ tiêu (bậc dẫn đầu)</th><th>Một mẫu</th><th>Median-of-Three</th></tr></thead>
       <tbody>
