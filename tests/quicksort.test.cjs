@@ -472,7 +472,7 @@ test("report omits outbound links, preserves plain-text bibliography and aligns 
   assert.equal((html.match(/<\/summary>/g) || []).length, 4);
   assert.match(css, /list-style:none;padding:12px 0 12px 22px/);
   assert.match(css, /summary::-webkit-details-marker[^{}]*\{display:none\}/);
-  assert.match(css, /summary::before[^{}]*left:2px;top:50%/);
+  assert.match(css, /summary::before\{[^}]*left:2px;top:50%/);
   assert.match(css, /\[open\]>summary::before[^{}]*rotate\(90deg\)/);
   assert.doesNotMatch(css, /list-style-position:outside/);
 });
