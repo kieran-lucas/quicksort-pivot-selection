@@ -58,9 +58,9 @@
     <p>Chọn <strong>trung vị theo giá trị</strong> trong ba ứng viên, rồi chuyển nó về <code>lo</code> để dùng thủ tục phân hoạch ban đầu.</p>
     <figure class="simple-figure">
       <div class="candidate-array" aria-label="Mảng 8 1 6 4 9 2 7, ứng viên là 8, 4, 7">
-        <span class="candidate"><b>\(8\)</b><small>đầu</small></span><span>\(1\)</span><span>\(6\)</span>
-        <span class="candidate"><b>\(4\)</b><small>giữa</small></span><span>\(9\)</span><span>\(2\)</span>
-        <span class="candidate chosen"><b>\(7\)</b><small>cuối</small></span>
+        <span class="candidate"><b>\(\displaystyle 8\)</b><small>đầu</small></span><span>\(\displaystyle 1\)</span><span>\(\displaystyle 6\)</span>
+        <span class="candidate"><b>\(\displaystyle 4\)</b><small>giữa</small></span><span>\(\displaystyle 9\)</span><span>\(\displaystyle 2\)</span>
+        <span class="candidate chosen"><b>\(\displaystyle 7\)</b><small>cuối</small></span>
       </div>
       <figcaption>Ba ứng viên: \(8,\,4,\,7\). Vì \(4<7<8\), ta chọn \(\mathrm{pivot}=7\).</figcaption>
     </figure>
@@ -70,7 +70,7 @@
 
   <section id="code" aria-labelledby="code-heading">
     <div class="section-label">\(03\) — Cài đặt Java</div>
-    <h2 id="code-heading">Giữ nguyên <code>partition()</code></h2>
+    <h2 id="code-heading">Giữ nguyên <code class="heading-code">partition()</code></h2>
     <p>Trong bài giảng <em>Algorithms, Fourth Edition</em>, Sedgewick và Wayne dùng phân hoạch hai con trỏ: <code>i</code> quét từ trái, <code>j</code> từ phải; các con trỏ dừng khi gặp phần tử bằng pivot. Median-of-Three chỉ bổ sung bước lựa chọn <strong>trước</strong> khi gọi cùng một hàm <code>partition()</code>.</p>
 
     <div class="code-heading"><h3>\(1.\) Phân hoạch hai con trỏ (mã gốc chuyển sang <code>int[]</code>)</h3><button class="copy" type="button" data-copy="partition-code">Sao chép</button></div>
