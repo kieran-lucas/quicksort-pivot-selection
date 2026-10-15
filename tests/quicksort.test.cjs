@@ -322,14 +322,14 @@ test("problem-to-solution narrative covers four eight-key patterns and both extr
   assert.match(problem, /Pivot đầu \\\(8\\\)[\s\S]*?\\\(7:0\\\)/);
   assert.match(problem, /Pivot cuối \\\(1\\\)[\s\S]*?\\\(0:7\\\)/);
   assert.match(problem, /Median-of-Three \\\(4\\\)[\s\S]*?\\\(3:4\\\)/);
-  assert.match(problem, /mô phỏng bên dưới so sánh pivot đầu và Median-of-Three/);
-  assert.match(problem, /hoán vị ngẫu nhiên/);
+  assert.match(problem, /Trường hợp pivot cuối chỉ dùng để minh họa/);
+  assert.match(problem, /thứ tự đầu vào/);
   assert.match(problem, /StdRandom\.shuffle\(a\)/);
   assert.match(problem, /T\(n\)=T\(n-1\)/);
-  assert.match(medianSection, /Lấy các giá trị tại ba vị trí/);
-  assert.match(medianSection, /không phải trung vị của toàn mảng/);
+  assert.match(medianSection, /Median-of-Three xét ba phần tử ở đầu, giữa và cuối/);
+  assert.match(medianSection, /không bảo đảm tìm được trung vị của cả mảng/);
   assert.match(html, /phân hoạch ba chiều/);
-  assert.match(lab, /Hai phiên bản dùng cùng một mảng/);
+  assert.match(lab, /Cho hai chiến lược chạy trên cùng một mảng/);
   assert.match(css, /\.pattern-list li\{display:grid/);
   assert.match(css, /@media\(max-width:700px\)\{[\s\S]*?\.pattern-list li\{grid-template-columns:minmax\(0,1fr\)/);
 });
@@ -425,7 +425,7 @@ test("conclusion draws attention to the supported result without extra graphics"
   assert.match(conclusion, /<h3 id="conclusion-heading">Kết luận<\/h3>/);
   assert.match(conclusion, /\\\(14\{,\}29\\%\\\)/);
   assert.doesNotMatch(conclusion, /<strong>\\\(14/, "result must remain plain inline math");
-  assert.match(conclusion, /giá trị không trùng nhau và thứ tự ban đầu ngẫu nhiên/);
+  assert.match(conclusion, /đầu vào ngẫu nhiên gồm các giá trị khác nhau/);
   assert.match(conclusion, /\\Theta\(n\^2\)/);
   assert.match(css, /\.conclusion\{[^}]*border-top:1px solid var\(--line\)/);
   assert.match(css, /\.conclusion h3\{font:650 17px/);
@@ -505,7 +505,7 @@ test("section indices share the prose font and inline fraction uses dfrac", () =
   assert.doesNotMatch(html, /\\\((?:01|02|03|04|05)\\\) —/);
   assert.match(html, /\\dfrac\{1\}\{2\}/);
   assert.doesNotMatch(html, /\\tfrac/);
-  assert.match(html, /mọi hoán vị đầu vào có xác suất như nhau/);
+  assert.match(html, /mọi thứ tự xuất hiện đều có xác suất như nhau/);
   assert.match(html, /Nhiều giá trị trùng/);
   assert.match(html, /So sánh giá trị/);
 });
@@ -579,4 +579,30 @@ test("selected pivot swaps only when positions differ", () => {
       assert.deepEqual(run(input, method).result, expected);
     }
   }
+});
+
+
+test("explanations connect examples, Java routines and probability formulas to their purpose", () => {
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const html = fs.readFileSync(path.join(__dirname, "../index.html"), "utf8");
+  const problem = html.split('<section id="problem"')[1].split('<section id="median"')[0];
+  const median = html.split('<section id="median"')[1].split('<section id="code"')[0];
+  const code = html.split('<section id="code"')[1].split('<section id="lab"')[0];
+  const analysis = html.split('<section id="analysis"')[1];
+  assert.match(problem, /một phía sẽ rỗng còn phía kia chứa gần như toàn bộ mảng/);
+  assert.match(problem, /n-1,n-2,\\ldots/);
+  assert.match(median, /không phải trung bình cộng/);
+  assert.match(median, /vị trí được chọn có thể là <code>low<\/code> hoặc <code>high<\/code>/);
+  assert.match(code, /Cùng cách phân hoạch, khác cách chọn pivot/);
+  assert.match(code, /Hàm <code>partition\(\)<\/code> luôn dùng <code>a\[low\]<\/code>/);
+  assert.match(code, /Chọn pivot trong <code>sort\(\)<\/code>/);
+  assert.match(analysis, /Mô phỏng chỉ cho biết kết quả trên một mảng cụ thể/);
+  assert.match(analysis, /Gọi \\?\(X\\?\) là tỉ lệ phần tử nhỏ hơn pivot/);
+  assert.match(analysis, /Để chuyển sự khác biệt về cách chia mảng thành số phép so sánh kỳ vọng/);
+  assert.match(analysis, /Với \\?\(C_n\\?\) là tổng số phép so sánh/);
+  assert.match(analysis, /So sánh hai hệ số/);
+  assert.match(analysis, /mức giảm lý thuyết/);
+  assert.match(analysis, /Phân tích trên giả sử các giá trị khác nhau/);
+  assert.match(html, /Độ sâu phân hoạch là số cấp phân hoạch nhiều nhất/);
 });
