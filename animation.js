@@ -104,7 +104,7 @@
       frame.comparisons + " so sánh · " + frame.swaps + " hoán đổi");
     math.rich($("anim-step-" + mode),
       "Bước " + (Math.min(state.tick, state.frames[mode].length - 1) + 1) +
-      " trên " + state.frames[mode].length + (done ? " · Xong" : ""));
+      " · Tổng " + state.frames[mode].length + " bước" + (done ? " · Xong" : ""));
   }
 
   function render(animate = true) {
@@ -115,7 +115,7 @@
     $("anim-progress").max = String(state.max);
     $("anim-progress").value = String(state.tick);
     $("anim-progress").setAttribute("aria-valuetext", "Bước đồng bộ " + (state.tick + 1) + "/" + (state.max + 1));
-    math.rich($("anim-counter"), "Nhịp " + (state.tick + 1) + " trên " + (state.max + 1));
+    math.rich($("anim-counter"), "Nhịp " + (state.tick + 1) + " · Tổng " + (state.max + 1));
     $("anim-prev").disabled = state.tick === 0;
     $("anim-next").disabled = state.tick === state.max;
     const done = state.tick === state.max;
