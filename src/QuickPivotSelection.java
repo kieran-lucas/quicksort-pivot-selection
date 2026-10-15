@@ -7,7 +7,8 @@ import java.util.Random;
  *
  * The change for MEDIAN_OF_THREE is deliberately minimal:
  * find median(a[lo], a[mid], a[hi]), then exchange it with a[lo]
- * before calling the SAME partition routine.
+ * before calling the SAME partition routine. For subarrays of
+ * length two we do not sample three overlapping positions.
  */
 public final class QuickPivotSelection {
 
@@ -32,7 +33,7 @@ public final class QuickPivotSelection {
 
     private static void sort(int[] a, int lo, int hi, Strategy strategy) {
         if (hi <= lo) return;
-        if (strategy == Strategy.MEDIAN_OF_THREE) {
+        if (strategy == Strategy.MEDIAN_OF_THREE && hi - lo >= 2) {
             int mid = lo + (hi - lo) / 2;
             int median = medianOf3(a, lo, mid, hi);
             exch(a, lo, median);
