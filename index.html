@@ -37,7 +37,7 @@
   </header>
 
   <section id="problem" aria-labelledby="problem-heading">
-    <div class="section-label">\(01\) — Đặt vấn đề</div>
+    <div class="section-label">01 — Đặt vấn đề</div>
     <h2 id="problem-heading">Pivot ở hai đầu mảng</h2>
     <p>Trong QuickSort, vị trí của pivot quyết định độ dài hai nhánh đệ quy. Chọn cố định <code>a[low]</code> hoặc <code>a[high]</code> có chi phí thấp, nhưng dễ tạo phân hoạch lệch khi phần tử ở hai đầu là cực trị.</p>
     <h3 class="pattern-heading">Một số dạng dữ liệu bất lợi</h3>
@@ -93,7 +93,7 @@
   </section>
 
   <section id="median" aria-labelledby="median-heading">
-    <div class="section-label">\(02\) — Phương pháp</div>
+    <div class="section-label">02 — Phương pháp</div>
     <h2 id="median-heading">Median-of-Three</h2>
     <p>Lấy ba giá trị tại <code>low</code>, <code>mid</code> và <code>high</code>, rồi chọn trung vị của chúng làm pivot:</p>
     <div class="math-display">\(\displaystyle \mathrm{mid}=\mathrm{low}+\left\lfloor\dfrac{\mathrm{high}-\mathrm{low}}{2}\right\rfloor.\)</div>
@@ -116,7 +116,7 @@
   </section>
 
     <section id="code" aria-labelledby="code-heading">
-    <div class="section-label">\(03\) — Cài đặt Java</div>
+    <div class="section-label">03 — Cài đặt Java</div>
     <h2 id="code-heading">Giữ nguyên <code class="heading-code">partition()</code></h2>
     <p>Cả hai phiên bản dùng phân hoạch hai con trỏ của Sedgewick–Wayne (chuyển sang <code>int[]</code>). Khác biệt nằm ở bước chọn pivot trước khi gọi <code>partition()</code>.</p>
 
@@ -167,7 +167,7 @@
   </section>
 
   <section id="lab" aria-labelledby="lab-heading">
-    <div class="section-label">\(04\) — Mô phỏng</div>
+    <div class="section-label">04 — Mô phỏng</div>
     <h2 id="lab-heading">So sánh trên cùng một mảng</h2>
     <p>Hai phiên bản dùng cùng một mảng và thủ tục phân hoạch. Số phép so sánh bao gồm cả bước chọn trung vị của ba mẫu.</p>
     <div class="lab">
@@ -285,9 +285,9 @@
   </section>
 
   <section id="analysis" aria-labelledby="analysis-heading">
-    <div class="section-label">\(05\) — Phân tích và kết luận</div>
+    <div class="section-label">05 — Phân tích và kết luận</div>
     <h2 id="analysis-heading">Chi phí và hiệu quả kỳ vọng</h2>
-    <p>Giả sử các khóa <strong>phân biệt</strong> và mọi hoán vị đầu vào đồng xác suất. Với \(n\) lớn, vị trí chuẩn hóa \(X\) của pivot đầu có mật độ \(f_1(x)=1\); trung vị ba mẫu có mật độ \(f_3(x)=6x(1-x)\), tập trung hơn quanh \(x=\tfrac12\).</p>
+    <p>Giả sử các khóa <strong>phân biệt</strong> và mọi hoán vị đầu vào đồng xác suất. Với \(n\) lớn, vị trí chuẩn hóa \(X\) của pivot đầu có mật độ \(f_1(x)=1\); trung vị ba mẫu có mật độ \(f_3(x)=6x(1-x)\), tập trung hơn quanh \(x=\dfrac{1}{2}\).</p>
     <div class="math-display">\(\displaystyle f_1(x)=1,\qquad f_3(x)=6x(1-x),\qquad 0\lt x\lt 1. \)</div>
     <p>Ba vị trí đầu, giữa và cuối tương ứng với ba mẫu ngẫu nhiên trong mô hình hoán vị đều, nhưng không phải với mọi đầu vào.</p>
     <div class="math-derivation">
@@ -334,8 +334,8 @@
     <p>Với nhiều khóa bằng nhau, phân hoạch ba chiều phù hợp hơn; với mảng con nhỏ có thể dùng Insertion Sort.</p>
     <div class="conclusion" aria-labelledby="conclusion-heading">
       <h3 id="conclusion-heading">Kết luận</h3>
-      <p class="conclusion-lead">Với các khóa phân biệt và hoán vị ngẫu nhiên, Median-of-Three giảm khoảng \(14{,}29\%\) hệ số dẫn đầu của số phép so sánh kỳ vọng so với cách chọn pivot đầu mảng.</p>
-      <p class="conclusion-note">Chi phí lấy ba mẫu tăng không đáng kể về bậc tiệm cận, nhưng số hoán đổi và thời gian chạy thực tế không nhất thiết giảm. Trường hợp xấu nhất vẫn là \(\Theta(n^2)\).</p>
+      <p class="conclusion-lead">Với mảng có các giá trị không trùng nhau và thứ tự ban đầu ngẫu nhiên, Median-of-Three thường tạo phân hoạch cân bằng hơn. Khi kích thước mảng lớn, hệ số dẫn đầu của số phép so sánh kỳ vọng giảm khoảng \(14{,}29\%\) so với chọn pivot đầu mảng.</p>
+      <p class="conclusion-note">Để chọn pivot, thuật toán phải thực hiện thêm một vài phép so sánh. Số lần hoán đổi và thời gian chạy thực tế không nhất thiết giảm; trường hợp xấu nhất vẫn là \(\Theta(n^2)\).</p>
     </div>
     <div class="sources">
       <h3>Nguồn tham khảo</h3>
