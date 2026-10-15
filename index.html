@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20261015-space-grotesk-v5">
+  <link rel="stylesheet" href="styles.css?v=20261015-java-colors-v1">
   <script>
     window.MathJax = {
       tex: {
@@ -26,6 +26,7 @@
   <script src="engine.js?v=20261015-layout-v4" defer></script>
   <script src="animation.js?v=20261015-layout-v4" defer></script>
   <script src="app.js?v=20261015-layout-v4" defer></script>
+  <script src="java-highlight.js?v=20261015-java-colors-v1" defer></script>
 </head>
 <body>
 <main class="page">
@@ -94,7 +95,7 @@
     <p>Mã dưới đây dựa trên phân hoạch hai con trỏ của Sedgewick–Wayne: <code>i</code> quét từ trái, <code>j</code> từ phải. Hai phiên bản giữ nguyên <code>partition()</code>; Median-of-Three chỉ thay đổi bước chọn pivot.</p>
 
     <div class="code-heading"><h3>Phân hoạch hai con trỏ</h3><button class="copy" type="button" data-copy="partition-code">Sao chép</button></div>
-    <pre class="code" id="partition-code"><code>private static int partition(int[] a, int lo, int hi) {
+    <pre class="code" id="partition-code"><code class="language-java">private static int partition(int[] a, int lo, int hi) {
     int i = lo, j = hi + 1;
     while (true) {
         while (a[++i] &lt; a[lo])
@@ -111,7 +112,7 @@
 }</code></pre>
 
     <div class="code-heading"><h3>Thay đổi cách chọn pivot</h3><button class="copy" type="button" data-copy="selection-code">Sao chép</button></div>
-    <pre class="code" id="selection-code"><code>private static void sort(int[] a, int lo, int hi,
+    <pre class="code" id="selection-code"><code class="language-java">private static void sort(int[] a, int lo, int hi,
                          Strategy strategy) {
     if (hi &lt;= lo) return;
 
@@ -128,7 +129,7 @@
 
     <details class="detail">
       <summary>Xem cách cài đặt <code>medianOf3()</code></summary>
-      <pre class="code"><code>private static int medianOf3(int[] a, int i, int j, int k) {
+      <pre class="code"><code class="language-java">private static int medianOf3(int[] a, int i, int j, int k) {
     if (a[i] &lt; a[j]) {
         if (a[j] &lt; a[k]) return j;
         return a[i] &lt; a[k] ? k : i;
