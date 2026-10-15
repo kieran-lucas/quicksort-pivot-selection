@@ -240,3 +240,20 @@ test("clean academic layout retains all interactive controls and no sidebar", ()
   assert.match(html, /src="app\.js\?v=/);
   assert.match(html, /<label for="anim-progress">Tiến trình chung<\/label>/);
 });
+
+
+test("font pairing matches the reference sorting-algorithms-uet without extra UI", () => {
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const html = fs.readFileSync(path.join(__dirname, "../index.html"), "utf8");
+  const css = fs.readFileSync(path.join(__dirname, "../styles.css"), "utf8");
+  assert.match(html, /family=JetBrains\+Mono:wght@100\.\.800&family=Space\+Grotesk:wght@300\.\.700/);
+  assert.match(css, /--sans:"Space Grotesk",Arial,sans-serif/);
+  assert.match(css, /--mono:"JetBrains Mono",Consolas,monospace/);
+  assert.doesNotMatch(html + css, /family=Inter|--sans:"Inter"/);
+  assert.match(css, /code\{[^}]*font:500 \.89em\/1\.45 var\(--mono\)/);
+  assert.match(css, /h2 code\.heading-code\{[^}]*var\(--mono\)/);
+  assert.match(html, /class="page"/);
+  assert.doesNotMatch(html, /\bclass="sidebar"|\bclass="side-nav"/);
+  assert.match(html, /Rút gọn \(ẩn các lần so sánh\)/);
+});
