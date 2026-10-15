@@ -6,6 +6,7 @@
 (() => {
   "use strict";
   const $ = (id) => document.getElementById(id);
+  const math = window.ReportMath;
   const modes = ["first", "median"];
   const labels = {
     initial: "Ban đầu", enter: "Chọn mảng con", select: "Chọn pivot",
@@ -48,6 +49,7 @@
 
   function prepareBars(mode, input) {
     const wrapper = $("animation-bars-" + mode);
+    math.clear(wrapper);
     wrapper.replaceChildren();
     const cells = state.bars[mode];
     cells.clear();
@@ -68,13 +70,14 @@
       bar.style.height = (20 + normalized * 71) + "%";
       const valueLabel = document.createElement("span");
       valueLabel.className = "animation-value";
-      valueLabel.textContent = String(value);
+      valueLabel.textContent = math.latex(value);
       if (input.length > 14) bar.classList.add("dense");
       bar.appendChild(valueLabel);
       wrapper.appendChild(bar);
       cells.set(identity, bar);
     });
     wrapper.style.setProperty("--item-width", (100 / input.length) + "%");
+    math.typeset(wrapper);
   }
 
   function renderPanel(mode, animate) {
@@ -96,12 +99,15 @@
     const done = frame.type === "done";
     const phase = labels[frame.type] || frame.type;
     $("anim-phase-" + mode).textContent = phase;
-    $("anim-caption-" + mode).textContent = frame.message;
-    $("anim-metrics-" + mode).textContent =
-      frame.comparisons + " so sánh · " + frame.swaps + " hoán đổi";
-    $("anim-step-" + mode).textContent =
-      "Bước " + (Math.min(state.tick, state.frames[mode].length - 1) + 1) +
-      "/" + state.frames[mode].length + (done ? " · Xong" : "");
+    math.rich($("anim-caption-" + mode), frame.message);
+    math.rich($("anim-metrics-" + mode),
+      frame.comparisons + " so sánh · " + frame.swaps + " hoán đổi");
+    const marker = $("anim-step-" + mode);
+    math.clear(marker);
+    marker.textContent = "Bước " +
+      math.latex(String.raw`\dfrac{${Math.min(state.tick, state.frames[mode].length - 1) + 1}}{${state.frames[mode].length}}`) +
+      (done ? " · Xong" : "");
+    math.typeset(marker);
   }
 
   function render(animate = true) {
@@ -112,7 +118,7 @@
     $("anim-progress").max = String(state.max);
     $("anim-progress").value = String(state.tick);
     $("anim-progress").setAttribute("aria-valuetext", "Bước đồng bộ " + (state.tick + 1) + "/" + (state.max + 1));
-    $("anim-counter").textContent = (state.tick + 1) + " / " + (state.max + 1);
+    math.setNumber($("anim-counter"), String.raw`\dfrac{${state.tick + 1}}{${state.max + 1}}`);
     $("anim-prev").disabled = state.tick === 0;
     $("anim-next").disabled = state.tick === state.max;
     const done = state.tick === state.max;
