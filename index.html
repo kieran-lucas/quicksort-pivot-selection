@@ -39,7 +39,7 @@
   <section id="problem" aria-labelledby="problem-heading">
     <div class="section-label">01 — Đặt vấn đề</div>
     <h2 id="problem-heading">Pivot ở hai đầu mảng</h2>
-    <p>Trong QuickSort, giá trị pivot ảnh hưởng trực tiếp đến kích thước hai mảng con. Chọn <code>a[low]</code> hoặc <code>a[high]</code> làm pivot rất đơn giản, nhưng dễ tạo phân hoạch lệch nếu phần tử được chọn là giá trị nhỏ nhất hoặc lớn nhất.</p>
+    <p>QuickSort chia mảng thành hai phần dựa trên pivot, rồi tiếp tục sắp xếp từng phần. Nếu pivot là giá trị nhỏ nhất hoặc lớn nhất, một phía sẽ rỗng còn phía kia chứa gần như toàn bộ mảng. Điều này dễ xảy ra khi luôn chọn <code>a[low]</code> hoặc <code>a[high]</code> làm pivot.</p>
     <h3 class="pattern-heading">Một số dạng dữ liệu bất lợi</h3>
     <ul class="pattern-list" aria-label="Bốn ví dụ về phân hoạch lệch">
       <li>
@@ -63,10 +63,10 @@
         <span class="pattern-note">Dãy chưa có thứ tự, nhưng hai đầu là cực trị.</span>
       </li>
     </ul>
-    <p>Với dãy tăng dần, pivot đầu \(1\) tạo phân hoạch \(0:7\), còn pivot cuối \(8\) tạo \(7:0\). Ngay cả mảng chưa được sắp xếp cũng có thể gặp tình trạng này:</p>
+    <p>Với dãy tăng dần, chọn pivot đầu \(1\) khiến một phía có \(0\) phần tử, phía còn lại có \(7\). Chọn pivot cuối \(8\) cũng cho cách chia lệch như vậy. Điều này còn có thể xảy ra ở một mảng chưa có thứ tự:</p>
     <div class="math-display">\(\displaystyle A=\left[8,\,7,\,3,\,4,\,6,\,5,\,2,\,1\right].\)</div>
     <figure class="simple-figure">
-      <div class="diagram-title">Phân hoạch đầu tiên</div>
+      <div class="diagram-title">Kích thước hai phía sau lần phân hoạch đầu</div>
       <div class="pivot-compare">
         <div class="pivot-compare-row">
           <span>Pivot đầu \(8\)</span>
@@ -84,22 +84,22 @@
           <strong>\(3:4\)</strong>
         </div>
       </div>
-      <figcaption>Số phần tử hai phía pivot (trái : phải). Trường hợp pivot cuối chỉ dùng để minh họa; mô phỏng bên dưới so sánh pivot đầu và Median-of-Three.</figcaption>
+      <figcaption>Tỉ lệ trái : phải không tính pivot. Chọn trung vị của ba giá trị đầu, giữa và cuối cho cách chia \(3:4\), thay vì \(7:0\) hoặc \(0:7\). Trường hợp pivot cuối chỉ dùng để minh họa.</figcaption>
     </figure>
-    <p>Nếu sự mất cân bằng lặp lại ở mọi cấp, chi phí của QuickSort thỏa mãn:</p>
+    <p>Nếu mỗi lần phân hoạch chỉ loại được một phần tử, các lần gọi đệ quy sẽ xét những mảng có kích thước \(n-1,n-2,\ldots\). Khi đó:</p>
     <div class="math-display">\(\displaystyle T(n)=T(n-1)+\Theta(n)=\Theta(n^2).\)</div>
-    <p>Khi các phân hoạch được duy trì gần cân bằng, QuickSort có độ phức tạp \(\Theta(n\log n)\). Vì vậy, cần cải thiện cách chọn pivot mà không tăng đáng kể chi phí.</p>
-    <p class="aside-note">Các ví dụ trên không đại diện cho mọi đầu vào. Với hoán vị ngẫu nhiên, pivot đầu không mặc nhiên xấu. Phiên bản Princeton có bước <code>StdRandom.shuffle(a)</code>; mô phỏng ở đây giữ nguyên thứ tự đầu vào.</p>
+    <p>Ngược lại, khi hai phía liên tục gần cân bằng, chi phí là \(\Theta(n\log n)\). Vì vậy, thay vì tìm trung vị của toàn mảng, có thể chọn pivot từ một số ít phần tử đại diện.</p>
+    <p class="aside-note">Mô phỏng giữ nguyên thứ tự đầu vào để so sánh riêng cách chọn pivot. Bản QuickSort gốc của Princeton có bước <code>StdRandom.shuffle(a)</code> nhằm tránh phụ thuộc vào thứ tự ban đầu; vì vậy, chọn pivot đầu không mặc nhiên kém trên mọi dữ liệu.</p>
   </section>
 
   <section id="median" aria-labelledby="median-heading">
     <div class="section-label">02 — Phương pháp</div>
     <h2 id="median-heading">Median-of-Three</h2>
-    <p>Lấy các giá trị tại ba vị trí <code>low</code>, <code>mid</code> và <code>high</code>, rồi chọn trung vị của chúng làm pivot:</p>
+    <p>Median-of-Three xét ba phần tử ở đầu, giữa và cuối mảng con, rồi chọn giá trị đứng giữa trong ba giá trị đó (không phải trung bình cộng). Chỉ số giữa được tính bằng:</p>
     <div class="math-display">\(\displaystyle \mathrm{mid}=\mathrm{low}+\left\lfloor\dfrac{\mathrm{high}-\mathrm{low}}{2}\right\rfloor.\)</div>
     <p>Hoán đổi để đưa pivot được chọn về đầu mảng (<code>a[low]</code>); hàm <code>partition()</code> không thay đổi.</p>
     <figure class="simple-figure">
-      <div class="diagram-title">Ba vị trí được lấy mẫu</div>
+      <div class="diagram-title">Ba phần tử được lấy mẫu: đầu, giữa, cuối</div>
       <div class="candidate-array" aria-label="Mảng 8, 7, 3, 4, 6, 5, 2, 1">
         <span class="candidate">\(\displaystyle 8\)<small>đầu</small></span>
         <span>\(\displaystyle 7\)</span>
@@ -110,17 +110,17 @@
         <span>\(\displaystyle 2\)</span>
         <span class="candidate">\(\displaystyle 1\)<small>cuối</small></span>
       </div>
-      <figcaption>\(1\lt4\lt8\), do đó chọn pivot \(4\). Kết quả phân hoạch: \(3:4\).</figcaption>
+      <figcaption>Ba giá trị lấy mẫu là \(8,4,1\). Trung vị theo giá trị là \(4\), nên phần tử ở vị trí <code>mid</code> được chọn trong ví dụ này; trên mảng khác, vị trí được chọn có thể là <code>low</code> hoặc <code>high</code>.</figcaption>
     </figure>
-    <p>Tìm trung vị ba mẫu cần \(2\)–\(3\) phép so sánh. Đây không phải trung vị của toàn mảng; Median-of-Three vẫn có thể tạo phân hoạch lệch.</p>
+    <p>Chọn trung vị của ba mẫu cần \(2\)–\(3\) phép so sánh. Vì chỉ xét ba phần tử, phương pháp này không bảo đảm tìm được trung vị của cả mảng hoặc luôn chia mảng cân bằng.</p>
   </section>
 
   <section id="code" aria-labelledby="code-heading">
     <div class="section-label">03 — Cài đặt Java</div>
-    <h2 id="code-heading">Giữ nguyên <code class="heading-code">partition()</code></h2>
-    <p>Cả hai phiên bản dùng phân hoạch hai con trỏ của Sedgewick–Wayne (chuyển sang <code>int[]</code>). Khác biệt nằm ở bước chọn pivot trước khi gọi <code>partition()</code>.</p>
+    <h2 id="code-heading">Cùng cách phân hoạch, khác cách chọn pivot</h2>
+    <p>Hàm <code>partition()</code> luôn dùng <code>a[low]</code> làm pivot và đưa nó về đúng vị trí sau khi phân hoạch. Vì thế, hai chiến lược chỉ khác nhau ở bước chọn phần tử nào sẽ được đưa về <code>a[low]</code> trước khi gọi hàm này. Mã được điều chỉnh từ cách phân hoạch hai con trỏ của Sedgewick–Wayne sang <code>int[]</code>.</p>
 
-    <div class="code-heading"><h3>Phân hoạch hai con trỏ</h3><button class="copy" type="button" data-copy="partition-code">Sao chép</button></div>
+    <div class="code-heading"><h3>Phân hoạch quanh <code>a[low]</code></h3><button class="copy" type="button" data-copy="partition-code">Sao chép</button></div>
     <pre class="code" id="partition-code"><code class="language-java">private static int partition(int[] a, int low, int high) {
     int i = low, j = high + 1;
     while (true) {
@@ -137,7 +137,7 @@
     return j;
 }</code></pre>
 
-    <div class="code-heading"><h3>Thay đổi cách chọn pivot</h3><button class="copy" type="button" data-copy="selection-code">Sao chép</button></div>
+    <div class="code-heading"><h3>Chọn pivot trong <code>sort()</code></h3><button class="copy" type="button" data-copy="selection-code">Sao chép</button></div>
     <pre class="code" id="selection-code"><code class="language-java">private static void sort(int[] a, int low, int high,
                          Strategy strategy) {
     if (high &lt;= low) return;
@@ -171,7 +171,7 @@
   <section id="lab" aria-labelledby="lab-heading">
     <div class="section-label">04 — Mô phỏng</div>
     <h2 id="lab-heading">So sánh trên cùng một mảng</h2>
-    <p>Hai phiên bản dùng cùng một mảng và thủ tục phân hoạch. Số phép so sánh bao gồm cả bước chọn trung vị của ba mẫu.</p>
+    <p>Cho hai chiến lược chạy trên cùng một mảng để đối chiếu số phép so sánh, hoán đổi và độ sâu phân hoạch. Số phép so sánh đã tính cả chi phí chọn trung vị ba mẫu.</p>
     <div class="lab">
       <div class="control-row">
         <label for="preset">Dữ liệu mẫu</label>
@@ -253,7 +253,7 @@
       </div>
 
       <details class="partition-disclosure">
-        <summary>Kích thước hai mảng con</summary>
+        <summary>Kết quả phân hoạch đầu tiên</summary>
         <figure class="partition-compare">
           <div id="split-first" class="split-meter"></div>
           <div id="split-median" class="split-meter"></div>
@@ -261,7 +261,7 @@
       </details>
 
       <details class="trace-disclosure">
-        <summary>Truy vết từng bước</summary>
+        <summary>Xem trạng thái mảng từng bước</summary>
         <div class="trace">
           <div class="trace-header">
           <h3>Trạng thái mảng</h3>
@@ -288,16 +288,16 @@
 
   <section id="analysis" aria-labelledby="analysis-heading">
     <div class="section-label">05 — Phân tích và kết luận</div>
-    <h2 id="analysis-heading">Chi phí và hiệu quả kỳ vọng</h2>
-    <p>Giả sử các giá trị trong mảng không trùng nhau và mọi hoán vị đầu vào có xác suất như nhau. Với \(n\) lớn, vị trí chuẩn hóa \(X\) của pivot đầu có mật độ \(f_1(x)=1\); trung vị ba mẫu có mật độ \(f_3(x)=6x(1-x)\), tập trung hơn quanh \(x=\dfrac{1}{2}\).</p>
+    <h2 id="analysis-heading">Lợi ích khi xét nhiều đầu vào</h2>
+    <p>Kết quả mô phỏng chỉ phản ánh một mảng cụ thể. Để đánh giá số phép so sánh trên nhiều đầu vào, xét các mảng có giá trị không trùng nhau và mọi thứ tự xuất hiện đều có xác suất như nhau. Gọi \(X\) là tỉ lệ phần tử nhỏ hơn pivot: \(X\) gần \(0\) hoặc \(1\) nghĩa là cách chia lệch, còn gần \(\dfrac{1}{2}\) nghĩa là hai phía gần cân bằng. Khi mảng đủ lớn, mật độ của \(X\) đối với pivot đầu và Median-of-Three lần lượt là:</p>
     <div class="math-display">\(\displaystyle f_1(x)=1,\qquad f_3(x)=6x(1-x),\qquad 0\lt x\lt 1. \)</div>
-    <p>Trong mô hình hoán vị ngẫu nhiên, ba vị trí đầu, giữa và cuối cũng cho ba giá trị lấy mẫu ngẫu nhiên; điều này không đúng với mọi mảng đầu vào.</p>
+    <p>Ở mô hình này, ba vị trí đầu, giữa và cuối tương ứng với ba mẫu ngẫu nhiên. Vì \(f_3(x)\) tập trung quanh \(x=\dfrac{1}{2}\), Median-of-Three có xu hướng chọn pivot chia mảng cân bằng hơn.</p>
     <div class="math-derivation">
-      <p>Để biểu diễn mức độ cân bằng của hai nhánh, đặt:</p>
+      <p>Để chuyển sự khác biệt về cách chia mảng thành số phép so sánh kỳ vọng, dùng hàm:</p>
       <div class="math-display">\(\displaystyle h(x)=-x\ln x-(1-x)\ln(1-x). \)</div>
-      <p>Khi chi phí mỗi lần phân hoạch xấp xỉ số phần tử đang xét, \(\mathbb E[C_n]\sim cn\ln n\), trong đó:</p>
+      <p>Hàm \(h(x)\) đạt giá trị lớn nhất khi \(x=\dfrac{1}{2}\). Với \(C_n\) là tổng số phép so sánh để sắp xếp \(n\) phần tử, khi \(n\) lớn ta có \(\mathbb E[C_n]\sim cn\ln n\). Hệ số \(c\) được xác định bởi:</p>
       <div class="math-display">\(\displaystyle c=\dfrac{1}{\mathbb E[h(X)]}. \)</div>
-      <p>Lấy kỳ vọng theo hai phân bố trên:</p>
+      <p>Thay lần lượt \(f_1\) và \(f_3\) vào biểu thức kỳ vọng cho:</p>
       <div class="math-display">\(\displaystyle \begin{aligned}
         \text{Một mẫu:}\quad& \mathbb E[h(X)]=\dfrac{1}{2}
           &&\Longrightarrow c=2,\\[3pt]
@@ -306,37 +306,37 @@
         \end{aligned} \)</div>
     </div>
     <details class="detail proof">
-      <summary>Phép tính kỳ vọng</summary>
-      <p>Với mật độ \(f(x)\):</p>
+      <summary>Chi tiết tính các giá trị kỳ vọng</summary>
+      <p>Từ mật độ \(f(x)\), tính kỳ vọng của \(h(X)\) bằng:</p>
       <div class="math-display">\(\displaystyle \mathbb E[h(X)]=\int_0^1 f(x)\,h(x)\,\mathrm dx. \)</div>
-      <p>Một mẫu:</p>
+      <p>Pivot đầu (\(f_1(x)=1\)):</p>
       <div class="math-display">\(\displaystyle \mathbb E[h(X)]=\int_0^1 h(x)\,\mathrm dx=\dfrac{1}{2}. \)</div>
-      <p>Trung vị ba mẫu, sử dụng tính đối xứng:</p>
+      <p>Median-of-Three (\(f_3(x)=6x(1-x)\)), dùng tính đối xứng:</p>
       <div class="math-display">\(\displaystyle \begin{aligned}
         \mathbb E[h(X)]
           &=-12\int_0^1 x^2(1-x)\ln x\,\mathrm dx\\
           &=-12\left(-\dfrac{1}{9}+\dfrac{1}{16}\right)\\
           &=\dfrac{7}{12}.
         \end{aligned} \)</div>
-      <p>Với hệ thức:</p>
+      <p>Trong phép tính trên, sử dụng:</p>
       <div class="math-display">\(\displaystyle \int_0^1 x^k\ln x\,\mathrm dx=-\dfrac{1}{(k+1)^2},\qquad k>-1. \)</div>
       
     </details>
     <table class="metric-table theory-table">
-      <thead><tr><th>Chỉ tiêu (bậc dẫn đầu)</th><th>Một mẫu</th><th>Median-of-Three</th></tr></thead>
+      <thead><tr><th>Chi phí khi \(n\) lớn</th><th>Pivot đầu</th><th>Median-of-Three</th></tr></thead>
       <tbody>
         <tr><td>So sánh kỳ vọng</td><td>\(2n\ln n\)</td><td>\(\dfrac{12}{7}n\ln n\)</td></tr>
         <tr><td>Hoán đổi kỳ vọng</td><td>\(\dfrac{1}{3} n\ln n\)</td><td>\(\dfrac{12}{35}n\ln n\)</td></tr>
         <tr><td>Trường hợp xấu nhất</td><td>\(\Theta(n^2)\)</td><td>\(\Theta(n^2)\)</td></tr>
       </tbody>
     </table>
-    <p>Mức giảm của hệ số dẫn đầu:</p>
+    <p>So sánh hai hệ số \(2\) và \(\dfrac{12}{7}\), mức giảm lý thuyết là:</p>
     <div class="math-display">\(\displaystyle 1-\dfrac{12}{7}\cdot\dfrac{1}{2}=\dfrac{1}{7}\approx 14{,}29\%. \)</div>
-    <p>Số lần chọn pivot là \(O(n)\), nên chi phí lấy ba mẫu chỉ bổ sung \(O(n)\) phép so sánh và không làm thay đổi hệ số của \(n\ln n\). Số hoán đổi và thời gian chạy thực tế không nhất thiết giảm.</p>
-    <p>Với nhiều giá trị bằng nhau, phân hoạch ba chiều phù hợp hơn; với mảng con nhỏ có thể dùng Insertion Sort.</p>
+    <p>Số lần chọn pivot không vượt quá \(O(n)\), nên việc so sánh thêm \(2\)–\(3\) giá trị mỗi lần chỉ bổ sung \(O(n)\) phép so sánh. Vì vậy, chi phí này không làm thay đổi hệ số dẫn đầu của \(n\ln n\); số hoán đổi và thời gian chạy thực tế vẫn có thể tăng.</p>
+    <p>Phân tích trên giả sử các giá trị khác nhau. Nếu mảng có nhiều giá trị trùng lặp, cần xem xét thêm cách phân hoạch ba chiều thay vì chỉ thay cách chọn pivot.</p>
     <div class="conclusion" aria-labelledby="conclusion-heading">
       <h3 id="conclusion-heading">Kết luận</h3>
-      <p class="conclusion-lead">Với mảng có các giá trị không trùng nhau và thứ tự ban đầu ngẫu nhiên, Median-of-Three thường tạo phân hoạch cân bằng hơn. Khi kích thước mảng lớn, hệ số dẫn đầu của số phép so sánh kỳ vọng giảm khoảng \(14{,}29\%\) so với chọn pivot đầu mảng.</p>
+      <p class="conclusion-lead">Median-of-Three chọn pivot từ ba phần tử thay vì lấy cố định phần tử đầu. Với đầu vào ngẫu nhiên gồm các giá trị khác nhau, cách chọn này thường chia mảng cân bằng hơn và giảm khoảng \(14{,}29\%\) hệ số dẫn đầu của số phép so sánh kỳ vọng khi mảng lớn.</p>
       <p class="conclusion-note">Để chọn pivot, thuật toán phải thực hiện thêm một vài phép so sánh. Số lần hoán đổi và thời gian chạy thực tế không nhất thiết giảm; trường hợp xấu nhất vẫn là \(\Theta(n^2)\).</p>
     </div>
     <div class="sources">
