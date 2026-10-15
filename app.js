@@ -2,6 +2,7 @@
   "use strict";
   const $ = (id) => document.getElementById(id);
   const engine = window.QuickSortEngine;
+  const math = window.ReportMath;
   const presets = Object.freeze({
     ascending: [1, 2, 3, 4, 5, 6, 7],
     descending: [7, 6, 5, 4, 3, 2, 1],
@@ -40,7 +41,7 @@
     for (const mode of ["first", "median"]) {
       const run = view.runs[mode];
       for (const prop of ["comparisons", "swaps", "partitions", "depth"]) {
-        $(mode + "-" + prop).textContent = fmt(run[prop]);
+        math.setNumber($(mode + "-" + prop), run[prop]);
       }
     }
     const diff = view.runs.first.comparisons - view.runs.median.comparisons;
@@ -55,7 +56,7 @@
     } else {
       text = "Ở mảng này, hai phương án có cùng số phép so sánh.";
     }
-    $("outcome").textContent = text + " Chi phí chọn trung vị đã được tính.";
+    math.rich($("outcome"), text + " Chi phí chọn trung vị đã được tính.");
   }
 
   function renderSplit(mode) {
@@ -81,7 +82,8 @@
     track.setAttribute("aria-label", label + ": " + left + " phần tử bên trái, " + right + " phần tử bên phải");
     track.setAttribute("role", "img");
     track.append(l, middle, r);
-    const numbers = element("span", "split-meter-numbers", left + " : " + right);
+    const numbers = element("span", "split-meter-numbers");
+    math.rich(numbers, left + " : " + right);
     root.replaceChildren(labelEl, track, numbers);
   }
 
@@ -107,11 +109,12 @@
       done: "Hoàn tất"
     };
     $("step-kind").textContent = labels[frame.type];
-    $("step-count").textContent = (view.frameIndex + 1) + " / " + frames.length;
-    $("step-caption").textContent = frame.message + " — " +
-      fmt(frame.comparisons) + " so sánh, " + fmt(frame.swaps) + " hoán đổi (tích lũy).";
+    math.setNumber($("step-count"), String.raw`\dfrac{${view.frameIndex + 1}}{${frames.length}}`);
+    math.rich($("step-caption"), frame.message + " — " +
+      fmt(frame.comparisons) + " so sánh, " + fmt(frame.swaps) + " hoán đổi (tích lũy).");
 
     const array = $("trace-array");
+    math.clear(array);
     array.replaceChildren();
     frame.array.forEach((value, index) => {
       const classes = ["element"];
@@ -121,13 +124,14 @@
       if (index === frame.pivot) classes.push("pivot");
       if (index === frame.i || index === frame.j) classes.push("scan");
 
-      const box = element("span", classes.join(" "), String(value));
+      const box = element("span", classes.join(" "), math.latex(value));
       let mark = [];
       if (index === frame.i) mark.push("i");
       if (index === frame.j) mark.push("j");
       if (mark.length) box.appendChild(element("small", "", mark.join(",")));
       array.appendChild(box);
     });
+    math.typeset(array);
 
     const slider = $("step-slider");
     slider.min = "0";
