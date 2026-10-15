@@ -20,6 +20,9 @@
       throw new TypeError("Unknown pivot strategy.");
 
     const a = input.slice();
+    // Stable element identities let the animation show actual exchanges,
+    // including two different elements with the same value.
+    const identities = input.map((_, index) => index);
     const fixed = new Set();
     const frames = [];
     const metrics = { comparisons: 0, swaps: 0, partitions: 0, depth: 0 };
@@ -31,6 +34,7 @@
         i: options.i ?? -1, j: options.j ?? -1,
         samples: options.samples || [],
         array: a.slice(),
+        identities: identities.slice(),
         fixed: Array.from(fixed),
         comparisons: metrics.comparisons,
         swaps: metrics.swaps,
@@ -48,6 +52,9 @@
       const temp = a[x];
       a[x] = a[y];
       a[y] = temp;
+      const oldIdentity = identities[x];
+      identities[x] = identities[y];
+      identities[y] = oldIdentity;
       metrics.swaps++;
       return true;
     }
