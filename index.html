@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=20261015-steptext-v2">
   <script>
     window.MathJax = {
       tex: {
@@ -22,10 +22,10 @@
     };
   </script>
   <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
-  <script src="math-format.js" defer></script>
-  <script src="engine.js" defer></script>
-  <script src="animation.js" defer></script>
-  <script src="app.js" defer></script>
+  <script src="math-format.js?v=20261015-steptext-v2" defer></script>
+  <script src="engine.js?v=20261015-steptext-v2" defer></script>
+  <script src="animation.js?v=20261015-steptext-v2" defer></script>
+  <script src="app.js?v=20261015-steptext-v2" defer></script>
 </head>
 <body>
 <main class="page">
@@ -179,7 +179,7 @@
           <article class="animation-panel" aria-labelledby="anim-title-first">
             <div class="animation-panel-heading">
               <h4 id="anim-title-first">Pivot đầu mảng</h4>
-              <span id="anim-step-first" class="animation-step">Bước \(1\) trên \(1\)</span>
+              <span id="anim-step-first" class="animation-step">Bước \(1\) · Tổng \(1\) bước</span>
             </div>
             <div class="animation-plot" id="animation-bars-first" aria-label="Các phần tử của QuickSort dùng pivot đầu mảng"></div>
             <div class="animation-meta"><strong id="anim-phase-first">Ban đầu</strong><span id="anim-metrics-first">\(0\) so sánh · \(0\) hoán đổi</span></div>
@@ -188,7 +188,7 @@
           <article class="animation-panel" aria-labelledby="anim-title-median">
             <div class="animation-panel-heading">
               <h4 id="anim-title-median">Median-of-Three</h4>
-              <span id="anim-step-median" class="animation-step">Bước \(1\) trên \(1\)</span>
+              <span id="anim-step-median" class="animation-step">Bước \(1\) · Tổng \(1\) bước</span>
             </div>
             <div class="animation-plot" id="animation-bars-median" aria-label="Các phần tử của QuickSort dùng median-of-three"></div>
             <div class="animation-meta"><strong id="anim-phase-median">Ban đầu</strong><span id="anim-metrics-median">\(0\) so sánh · \(0\) hoán đổi</span></div>
@@ -209,7 +209,7 @@
         </div>
         <div class="animation-timeline">
           <input type="range" id="anim-progress" min="0" max="0" value="0" aria-label="Tiến trình animation">
-          <span id="anim-counter">Nhịp \(1\) trên \(1\)</span>
+          <span id="anim-counter">Nhịp \(1\) · Tổng \(1\)</span>
         </div>
         <div class="animation-foot">
           <label><input type="checkbox" id="anim-details"> Hiện cả bước đệ quy và điểm dừng quét</label>
@@ -248,7 +248,7 @@
           </div>
         </div>
         <label class="detail-switch"><input id="show-scans" type="checkbox"> Hiện cả bước đệ quy và điểm dừng quét</label>
-        <div class="step-info"><span id="step-kind">Ban đầu</span><span id="step-count">Bước \(1\) trên \(1\)</span></div>
+        <div class="step-info"><span id="step-kind">Ban đầu</span><span id="step-count">Bước \(1\) · Tổng \(1\) bước</span></div>
         <div id="trace-array" class="trace-array" aria-label="Trạng thái mảng" aria-live="polite"></div>
         <p id="step-caption" class="step-caption"></p>
         <div class="trace-controls">
