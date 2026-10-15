@@ -322,7 +322,7 @@ test("problem-to-solution narrative covers four eight-key patterns and both extr
   assert.match(problem, /Pivot đầu \\\(8\\\)[\s\S]*?\\\(7:0\\\)/);
   assert.match(problem, /Pivot cuối \\\(1\\\)[\s\S]*?\\\(0:7\\\)/);
   assert.match(problem, /Median-of-Three \\\(4\\\)[\s\S]*?\\\(3:4\\\)/);
-  assert.match(problem, /mô phỏng sử dụng pivot đầu và Median-of-Three/);
+  assert.match(problem, /mô phỏng bên dưới so sánh pivot đầu và Median-of-Three/);
   assert.match(problem, /hoán vị ngẫu nhiên/);
   assert.match(problem, /StdRandom\.shuffle\(a\)/);
   assert.match(problem, /T\(n\)=T\(n-1\)/);
