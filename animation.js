@@ -19,13 +19,13 @@
     bars: { first: new Map(), median: new Map() }
   };
 
-  // An event is a snapshot, not a frame-per-millisecond interpolation.
-  // Both algorithms progress by one event per clock tick; if one reaches
-  // the end first, it stays sorted while the other finishes.
+  // Both algorithms share wall-clock ticks, but each has its OWN complete
+  // operation timeline. The shorter run stops at its own last frame.
+  // An operation-step counts a scan comparison or other observable mutation;
+  // control-flow enter/cross events are hidden unless expanded.
   function snapshots(mode) {
     if (!state.runs) return [];
-    const items = state.runs[mode].frames;
-    return state.detailed ? items : items.filter(frame => !frame.detail);
+    return window.QuickSortEngine.presentationFrames(state.runs[mode].frames, state.detailed);
   }
 
   function currentFrame(mode) {
@@ -102,23 +102,20 @@
     math.rich($("anim-caption-" + mode), frame.message);
     math.rich($("anim-metrics-" + mode),
       frame.comparisons + " so sánh · " + frame.swaps + " hoán đổi");
-    const marker = $("anim-step-" + mode);
-    math.clear(marker);
-    marker.textContent = "Bước " +
-      math.latex(String.raw`\dfrac{${Math.min(state.tick, state.frames[mode].length - 1) + 1}}{${state.frames[mode].length}}`) +
-      (done ? " · Xong" : "");
-    math.typeset(marker);
+    math.rich($("anim-step-" + mode),
+      "Bước " + (Math.min(state.tick, state.frames[mode].length - 1) + 1) +
+      " trên " + state.frames[mode].length + (done ? " · Xong" : ""));
   }
 
   function render(animate = true) {
     if (!state.runs) return;
-    const duration = Math.min(340, 270 / state.speed);
+    const duration = Math.min(300, 150 / state.speed);
     $("animation").style.setProperty("--animation-duration", duration + "ms");
     modes.forEach(mode => renderPanel(mode, animate));
     $("anim-progress").max = String(state.max);
     $("anim-progress").value = String(state.tick);
     $("anim-progress").setAttribute("aria-valuetext", "Bước đồng bộ " + (state.tick + 1) + "/" + (state.max + 1));
-    math.setNumber($("anim-counter"), String.raw`\dfrac{${state.tick + 1}}{${state.max + 1}}`);
+    math.rich($("anim-counter"), "Nhịp " + (state.tick + 1) + " trên " + (state.max + 1));
     $("anim-prev").disabled = state.tick === 0;
     $("anim-next").disabled = state.tick === state.max;
     const done = state.tick === state.max;
@@ -147,7 +144,7 @@
       } else {
         schedule();
       }
-    }, Math.round(680 / state.speed));
+    }, Math.round(220 / state.speed));
   }
 
   function play() {
