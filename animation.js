@@ -47,9 +47,9 @@
     wrapper.replaceChildren();
     const cells = state.bars[mode];
     cells.clear();
-    const lo = Math.min(...input);
-    const hi = Math.max(...input);
-    const delta = hi - lo;
+    const low = Math.min(...input);
+    const high = Math.max(...input);
+    const delta = high - low;
 
     input.forEach((value, identity) => {
       const bar = document.createElement("div");
@@ -60,7 +60,7 @@
       bar.title = String(value);
       // Uniform order-preserving normalization for negative or zero values.
       // The height encodes relative values, NOT elapsed time or operation cost.
-      const normalized = delta === 0 ? .5 : (value - lo) / delta;
+      const normalized = delta === 0 ? .5 : (value - low) / delta;
       bar.style.height = (20 + normalized * 71) + "%";
       const valueLabel = document.createElement("span");
       valueLabel.className = "animation-value";
@@ -77,7 +77,7 @@
   function renderPanel(mode, animate) {
     const frame = currentFrame(mode);
     const root = $("animation-bars-" + mode);
-    const activeSet = new Set(frame.identities.slice(Math.max(0, frame.lo), frame.hi + 1));
+    const activeSet = new Set(frame.identities.slice(Math.max(0, frame.low), frame.high + 1));
     const fixedSet = new Set(frame.fixed);
     const sampleSet = new Set(frame.samples);
     frame.identities.forEach((identity, position) => {
