@@ -4,16 +4,16 @@
   const engine = window.QuickSortEngine;
   const math = window.ReportMath;
   const presets = Object.freeze({
-    mixed: [15, 2, 4, 9, 14, 7, 3, 8, 11, 12, 13, 10, 6, 5, 1],
-    ascending: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-    descending: [15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1],
-    nearly: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 13, 15],
-    duplicates: [7, 1, 7, 2, 9, 3, 7, 4, 7, 5, 8, 7, 6, 7, 7]
+    mixed: [8, 7, 3, 4, 6, 5, 2, 1],
+    ascending: [1, 2, 3, 4, 5, 6, 7, 8],
+    descending: [8, 7, 6, 5, 4, 3, 2, 1],
+    nearly: [1, 2, 3, 5, 4, 6, 7, 8],
+    duplicates: [3, 1, 3, 2, 3, 2, 1, 3]
   });
   const view = {
     runs: null,
     strategy: "first",
-    detailed: false,
+    compact: false,
     frameIndex: 0
   };
 
@@ -89,7 +89,7 @@
 
   function filteredFrames() {
     const frames = view.runs[view.strategy].frames;
-    return engine.presentationFrames(frames, view.detailed);
+    return engine.presentationFrames(frames, view.compact);
   }
 
   function renderFrame() {
@@ -102,7 +102,8 @@
       enter: "Mảng con",
       select: "Chọn pivot",
       move: "Đưa pivot về đầu",
-      scan: "Quét con trỏ",
+      scan: "So sánh khóa",
+      compare: "So sánh mẫu",
       cross: "Kết thúc quét",
       swap: "Hoán đổi",
       fixed: "Cố định pivot",
@@ -192,7 +193,7 @@
   $("trace-first").addEventListener("click", () => setStrategy("first"));
   $("trace-median").addEventListener("click", () => setStrategy("median"));
   $("show-scans").addEventListener("change", (event) => {
-    view.detailed = event.target.checked;
+    view.compact = event.target.checked;
     view.frameIndex = 0;
     renderFrame();
   });
