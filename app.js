@@ -48,15 +48,15 @@
     const percent = 100 * Math.abs(diff) / view.runs.first.comparisons;
     let text;
     if (diff > 0) {
-      text = "Ở mảng này, Median-of-Three ít hơn " + fmt(diff) +
-        " so sánh (" + percent.toFixed(1).replace(".", ",") + "%).";
+      text = "Median-of-Three: ít hơn " + fmt(diff) +
+        " phép so sánh (" + percent.toFixed(1).replace(".", ",") + "%).";
     } else if (diff < 0) {
-      text = "Ở mảng này, Median-of-Three nhiều hơn " + fmt(-diff) +
-        " so sánh (" + percent.toFixed(1).replace(".", ",") + "%).";
+      text = "Median-of-Three: nhiều hơn " + fmt(-diff) +
+        " phép so sánh (" + percent.toFixed(1).replace(".", ",") + "%).";
     } else {
-      text = "Ở mảng này, hai phương án có cùng số phép so sánh.";
+      text = "Hai cách chọn pivot có cùng số phép so sánh.";
     }
-    math.rich($("outcome"), text + " Chi phí chọn trung vị đã được tính.");
+    math.rich($("outcome"), text);
   }
 
   function renderSplit(mode) {
@@ -111,8 +111,8 @@
     };
     $("step-kind").textContent = labels[frame.type];
     math.rich($("step-count"), "Bước " + (view.frameIndex + 1) + " · Tổng " + frames.length + " bước");
-    math.rich($("step-caption"), frame.message + " — " +
-      fmt(frame.comparisons) + " so sánh, " + fmt(frame.swaps) + " hoán đổi (tích lũy).");
+    math.rich($("step-caption"), frame.message + " · " +
+      fmt(frame.comparisons) + " so sánh · " + fmt(frame.swaps) + " hoán đổi");
 
     const array = $("trace-array");
     math.clear(array);
