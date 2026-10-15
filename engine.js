@@ -162,5 +162,13 @@
     };
   }
 
-  return Object.freeze({ run });
+  // Presentation steps count the actual key-comparison scans, pivot choices,
+  // exchanges and completed partitions. Enter/cross are control-flow messages,
+  // not additional data operations. The full trace can be requested explicitly.
+  function presentationFrames(frames, showControlFlow = false) {
+    return showControlFlow ? frames.slice() : frames.filter(frame =>
+      frame.type !== "enter" && frame.type !== "cross");
+  }
+
+  return Object.freeze({ run, presentationFrames });
 });
