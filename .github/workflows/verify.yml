@@ -1,0 +1,23 @@
+name: Verify QuickSort
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: JavaScript unit tests
+        run: node --test tests/quicksort.test.cjs
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Compile Java reference
+        run: javac src/QuickPivotSelection.java
+      - name: Run Java reference
+        run: java -cp src QuickPivotSelection
