@@ -152,7 +152,7 @@
       quicksort(p + 1, high, level + 1);
     }
 
-    save("initial", "Dữ liệu đầu vào, chưa thực highện phân hoạch.",
+    save("initial", "Dữ liệu đầu vào, chưa thực hiện phân hoạch.",
          0, a.length - 1);
     quicksort(0, a.length - 1, 1);
     save("done", "Đã hoàn tất sắp xếp.", 0, a.length - 1);
