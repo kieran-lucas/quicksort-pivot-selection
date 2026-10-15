@@ -129,24 +129,25 @@
       save("enter", "Phân hoạch đoạn [" + low + ", " + high + "].",
            low, high);
 
+      let pivotIndex = low;
       if (strategy === "median" && high - low >= 2) {
         const mid = low + Math.floor((high - low) / 2);
         const sampled = [a[low], a[mid], a[high]];
-        const chosen = medianOf3(low, mid, high, low, high);
-        const value = a[chosen];
+        pivotIndex = medianOf3(low, mid, high, low, high);
+        const value = a[pivotIndex];
         save("select", "Ba giá trị " + sampled.join(", ") +
              " → trung vị " + value + ".", low, high,
-             { pivot: chosen, samples: [low, mid, high] });
-        if (exchange(low, chosen)) {
-          save("move", "Đổi trung vị về a[" + low + "] để dùng partition() gốc.",
-               low, high, { pivot: low });
-        }
+             { pivot: pivotIndex, samples: [low, mid, high] });
       } else {
         save("select", "Chọn a[" + low + "] = " + a[low] +
              " làm pivot" + (strategy === "median" ? " (đoạn chỉ có 2 phần tử)." : "."),
              low, high, { pivot: low });
       }
 
+      if (exchange(low, pivotIndex)) {
+        save("move", "Đổi trung vị về a[" + low + "] để dùng partition() gốc.",
+             low, high, { pivot: low });
+      }
       const p = partition(low, high);
       quicksort(low, p - 1, level + 1);
       quicksort(p + 1, high, level + 1);
