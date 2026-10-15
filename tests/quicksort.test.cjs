@@ -298,7 +298,7 @@ test("problem-to-solution narrative covers four eight-key patterns and both extr
   const problem = html.split('<section id="problem"')[1].split('<section id="median"')[0];
   const medianSection = html.split('<section id="median"')[1].split('<section id="code"')[0];
   const lab = html.split('<section id="lab"')[1].split('<section id="analysis"')[0];
-  assert.match(problem, /pivot ở hai đầu trở nên bất lợi/);
+  assert.match(problem, /Pivot ở hai đầu mảng/);
   const cases = [
     ["Tăng dần", [1, 2, 3, 4, 5, 6, 7, 8], [0, 7], 4, [3, 4]],
     ["Giảm dần", [8, 7, 6, 5, 4, 3, 2, 1], [7, 0], 5, [4, 3]],
@@ -322,14 +322,39 @@ test("problem-to-solution narrative covers four eight-key patterns and both extr
   assert.match(problem, /Pivot đầu \\\(8\\\)[\s\S]*?\\\(7:0\\\)/);
   assert.match(problem, /Pivot cuối \\\(1\\\)[\s\S]*?\\\(0:7\\\)/);
   assert.match(problem, /Median-of-Three \\\(4\\\)[\s\S]*?\\\(3:4\\\)/);
-  assert.match(problem, /mô phỏng bên dưới chỉ đối chứng/);
+  assert.match(problem, /mô phỏng sử dụng pivot đầu và Median-of-Three/);
   assert.match(problem, /hoán vị ngẫu nhiên/);
   assert.match(problem, /StdRandom\.shuffle\(a\)/);
   assert.match(problem, /T\(n\)=T\(n-1\)/);
-  assert.match(medianSection, /<strong>Giải pháp:<\/strong>/);
+  assert.match(medianSection, /Lấy ba giá trị tại/);
   assert.match(medianSection, /không phải trung vị của toàn mảng/);
-  assert.match(medianSection, /phân hoạch ba chiều/);
-  assert.match(lab, /Hỗn hợp<\/strong>, <strong>Tăng dần<\/strong>, <strong>Giảm dần<\/strong>/);
+  assert.match(html, /phân hoạch ba chiều/);
+  assert.match(lab, /Hai phiên bản dùng cùng một mảng/);
   assert.match(css, /\.pattern-list li\{display:grid/);
   assert.match(css, /@media\(max-width:700px\)\{\s*\.pattern-list li\{grid-template-columns:minmax\(0,1fr\)/);
+});
+
+
+test("report uses concise academic prose, keeps derivations and sources", () => {
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const html = fs.readFileSync(path.join(__dirname, "../index.html"), "utf8");
+  const body = html.split("<body>")[1];
+  assert.ok(body);
+  for (const phrase of [
+    "Hãy thử lần lượt", "Một thay đổi nhỏ", "Bài toán đặt ra:",
+    "Vì vậy, cần phân biệt", "Phần diễn giải qua phân bố", "theo slide",
+    "(Theta(n^2))", "(2)–(3)", "Mặc định hiện từng phép so sánh"
+  ]) assert.ok(!body.includes(phrase), "reintroduced editorial/process wording: " + phrase);
+  assert.ok(html.includes("\\(2\\)–\\(3\\) phép so sánh"),
+    "median sampling cost must render as proper MathJax");
+  assert.equal((html.match(/class="math-display"/g) || []).length, 12);
+  assert.equal((html.match(/class="language-java"/g) || []).length, 3);
+  assert.ok(html.includes("23Quicksort.pdf"), "retain academic source");
+  assert.ok(html.includes("QuickPivotSelection.java"), "retain reference implementation");
+  assert.ok(html.includes("f_3(x)=6x(1-x)"), "retain sampled-pivot density");
+  assert.ok(html.includes("\\dfrac{12}{7}"), "retain asymptotic coefficient");
+  assert.ok(html.includes("\\Theta(n^2)"), "retain worst case");
+  assert.ok(html.includes('id="anim-details"'), "retain compact mode");
+  assert.ok(html.includes('id="trace-array"'), "retain step tracing");
 });
