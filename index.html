@@ -40,7 +40,7 @@
     <h2 id="problem-heading">Chọn pivot cố định có gì bất lợi?</h2>
     <p>QuickSort chọn một phần tử làm <strong>pivot</strong>, phân hoạch mảng rồi đệ quy trên hai mảng con. Cách cài đặt đơn giản thường dùng phần tử đầu hoặc cuối; chi phí chọn rất thấp, nhưng pivot có thể nằm gần một đầu của thứ tự giá trị.</p>
     <p>Xét một mảng <strong>chưa sắp xếp</strong> với \(15\) phần tử phân biệt:</p>
-    <div class="math-display">\( \displaystyle A=\left[15,\,2,\,4,\,9,\,14,\,7,\,3,\,8,\,11,\,12,\,13,\,10,\,6,\,5,\,1\right]. \)</div>
+    <div class="math-display">\(\displaystyle A=\left[15,\,2,\,4,\,9,\,14,\,7,\,3,\,8,\,11,\,12,\,13,\,10,\,6,\,5,\,1\right]. \)</div>
     <p>Nếu lấy phần tử đầu, <code>a[lo]</code>, làm pivot thì giá trị được chọn là \(15\) — lớn nhất của mảng. Phân hoạch đầu tiên đưa nó về cuối, tạo hai mảng con có kích thước \(14\) và \(0\).</p>
     <figure class="simple-figure">
       <div class="diagram-title">Cùng một mảng, hai cách chọn pivot</div>
@@ -59,7 +59,7 @@
       <figcaption>Độ dài hai mảng con <em>sau lần phân hoạch đầu tiên</em>, tính bằng cùng thủ tục <code>partition()</code>.</figcaption>
     </figure>
     <p>Một lần phân hoạch lệch chưa đủ kết luận toàn bộ thuật toán có độ phức tạp bậc hai. Tuy nhiên, nếu sự lệch này lặp lại ở mỗi cấp (chẳng hạn chọn pivot đầu trên mảng tăng dần), ta có:</p>
-    <div class="math-display">\( \displaystyle T(n)=T(n-1)+\Theta(n)=\Theta(n^2). \)</div>
+    <div class="math-display">\(\displaystyle T(n)=T(n-1)+\Theta(n)=\Theta(n^2). \)</div>
     <p>Trong khi đó, nếu phân hoạch gần cân bằng ở các cấp, chi phí là \(\Theta(n\log n)\). Vấn đề đặt ra là: <strong>có cách chọn pivot tốt hơn mà vẫn đủ rẻ hay không?</strong></p>
     <p class="aside-note">Đây là ví dụ được chọn để làm rõ sự khác biệt giữa hai chiến lược, không phải mẫu đại diện cho mọi mảng ngẫu nhiên. QuickSort gốc của Princeton thường gọi <code>StdRandom.shuffle(a)</code> trước khi sắp xếp; để so sánh tác động của pivot trên một đầu vào cụ thể, mô phỏng bên dưới không tự shuffle.</p>
   </section>
@@ -68,7 +68,7 @@
     <div class="section-label">\(02\) — Phương pháp</div>
     <h2 id="median-heading">Median-of-Three hoạt động thế nào?</h2>
     <p>Thay vì chọn ngay <code>a[lo]</code>, lấy ba ứng viên tại vị trí <code>lo</code>, <code>mid</code> và <code>hi</code>, trong đó:</p>
-    <div class="math-display">\( \displaystyle \mathrm{mid}=\mathrm{lo}+\left\lfloor\dfrac{\mathrm{hi}-\mathrm{lo}}{2}\right\rfloor. \)</div>
+    <div class="math-display">\(\displaystyle \mathrm{mid}=\mathrm{lo}+\left\lfloor\dfrac{\mathrm{hi}-\mathrm{lo}}{2}\right\rfloor. \)</div>
     <p>Chọn <strong>trung vị theo giá trị</strong> trong ba ứng viên, rồi chuyển nó về <code>lo</code> để sử dụng thủ tục phân hoạch ban đầu.</p>
     <figure class="simple-figure">
       <div class="diagram-title">Ba ứng viên nằm trong mảng hỗn hợp \(15\) phần tử</div>
