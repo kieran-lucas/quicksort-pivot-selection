@@ -8,8 +8,8 @@
   <title>Median-of-Three trong QuickSort</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20261015-8items-full-v3">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=20261015-layout-v4">
   <script>
     window.MathJax = {
       tex: {
@@ -22,10 +22,10 @@
     };
   </script>
   <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
-  <script src="math-format.js?v=20261015-8items-full-v3" defer></script>
-  <script src="engine.js?v=20261015-8items-full-v3" defer></script>
-  <script src="animation.js?v=20261015-8items-full-v3" defer></script>
-  <script src="app.js?v=20261015-8items-full-v3" defer></script>
+  <script src="math-format.js?v=20261015-layout-v4" defer></script>
+  <script src="engine.js?v=20261015-layout-v4" defer></script>
+  <script src="animation.js?v=20261015-layout-v4" defer></script>
+  <script src="app.js?v=20261015-layout-v4" defer></script>
 </head>
 <body>
 <main class="page">
@@ -91,9 +91,9 @@
   <section id="code" aria-labelledby="code-heading">
     <div class="section-label">\(03\) — Cài đặt Java</div>
     <h2 id="code-heading">Giữ nguyên <code class="heading-code">partition()</code></h2>
-    <p>Trong bài giảng <em>Algorithms, Fourth Edition</em>, Sedgewick và Wayne dùng phân hoạch hai con trỏ: <code>i</code> quét từ trái, <code>j</code> từ phải; các con trỏ dừng khi gặp phần tử bằng pivot. Median-of-Three chỉ bổ sung bước lựa chọn <strong>trước</strong> khi gọi cùng một hàm <code>partition()</code>.</p>
+    <p>Mã dưới đây dựa trên phân hoạch hai con trỏ của Sedgewick–Wayne: <code>i</code> quét từ trái, <code>j</code> từ phải. Hai phiên bản giữ nguyên <code>partition()</code>; Median-of-Three chỉ thay đổi bước chọn pivot.</p>
 
-    <div class="code-heading"><h3>\(1.\) Phân hoạch hai con trỏ (mã gốc chuyển sang <code>int[]</code>)</h3><button class="copy" type="button" data-copy="partition-code">Sao chép</button></div>
+    <div class="code-heading"><h3>Phân hoạch hai con trỏ</h3><button class="copy" type="button" data-copy="partition-code">Sao chép</button></div>
     <pre class="code" id="partition-code"><code>private static int partition(int[] a, int lo, int hi) {
     int i = lo, j = hi + 1;
     while (true) {
@@ -110,7 +110,7 @@
     return j;
 }</code></pre>
 
-    <div class="code-heading"><h3>\(2.\) Thay đổi ở bước chọn pivot</h3><button class="copy" type="button" data-copy="selection-code">Sao chép</button></div>
+    <div class="code-heading"><h3>Thay đổi cách chọn pivot</h3><button class="copy" type="button" data-copy="selection-code">Sao chép</button></div>
     <pre class="code" id="selection-code"><code>private static void sort(int[] a, int lo, int hi,
                          Strategy strategy) {
     if (hi &lt;= lo) return;
@@ -166,7 +166,7 @@
       <section class="dual-animation" id="animation" aria-label="Animation so sánh QuickSort">
         <div class="animation-heading">
           <h3>Animation đối chứng</h3>
-          <p>Mặc định hiện mọi lần so sánh khóa, kể cả khi tìm trung vị của ba mẫu. Hai thuật toán có tổng số bước riêng; bật Rút gọn nếu chỉ muốn xem thao tác chính.</p>
+          <p>Hai bên chạy trên cùng dữ liệu. Mặc định hiện từng phép so sánh; chọn <em>Rút gọn</em> để chỉ xem các thao tác chính.</p>
         </div>
         <div class="animation-panels">
           <article class="animation-panel" aria-labelledby="anim-title-first">
@@ -201,17 +201,19 @@
           </select>
         </div>
         <div class="animation-timeline">
+          <label for="anim-progress">Tiến trình chung</label>
           <input type="range" id="anim-progress" min="0" max="0" value="0" aria-label="Tiến trình animation">
-          <span id="anim-counter">Nhịp \(1\) · Tổng \(1\)</span>
+          
         </div>
         <div class="animation-foot">
           <label><input type="checkbox" id="anim-details"> Rút gọn (ẩn các lần so sánh)</label>
           <span id="anim-status" role="status">Tạm dừng</span>
         </div>
-        <p class="animation-legend">Viền đậm: pivot · viền nét đứt: ứng viên · xám nhạt: đã cố định. Chiều cao cột biểu thị giá trị tương đối, không phải thời gian chạy.</p>
+        <p class="animation-legend">Viền đậm: pivot · Nét đứt: ứng viên · Xám nhạt: phần tử đã cố định. Chiều cao cột thể hiện giá trị, không phải thời gian.</p>
       </section>
 
       <div class="results" aria-live="polite">
+        <h3 class="results-heading">Kết quả so sánh</h3>
         <table class="metric-table">
           <thead><tr><th>Chỉ tiêu</th><th>Pivot đầu</th><th>Median-of-Three</th></tr></thead>
           <tbody>
@@ -224,11 +226,14 @@
         <p id="outcome" class="small outcome"></p>
       </div>
 
+      <details class="partition-disclosure">
+        <summary>Xem kích thước hai mảng con sau phân hoạch đầu tiên</summary>
       <figure class="partition-compare">
-        <figcaption>Phân hoạch đầu tiên — độ dài hai mảng con</figcaption>
+        <figcaption>Phân hoạch đầu tiên</figcaption>
         <div id="split-first" class="split-meter"></div>
         <div id="split-median" class="split-meter"></div>
       </figure>
+      </details>
 
       <details class="trace-disclosure">
         <summary>Truy vết mảng theo từng bước</summary>
@@ -253,7 +258,7 @@
       </div>
       </details>
     </div>
-    <p class="small">Bộ đếm đo số phép so sánh trên <em>mảng hiện tại</em>, không đo mili-giây và không đại diện cho tốc độ trung bình. Hai phần tử bằng nhau vẫn có thể được trao đổi theo phân hoạch gốc.</p>
+    <p class="small lab-note">Các số liệu phản ánh số phép toán trên mảng đang chọn, không phải thời gian chạy thực tế.</p>
   </section>
 
   <section id="analysis" aria-labelledby="analysis-heading">
