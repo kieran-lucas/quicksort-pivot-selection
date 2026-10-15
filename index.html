@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Mini báo cáo tương tác về lựa chọn pivot trong QuickSort: từ phân hoạch mất cân bằng đến Median-of-Three, mã Java và phân tích toán học.">
+  <meta name="theme-color" content="#f7f8fa">
+  <title>QuickSort · Pivot Selection & Optimization</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="progress-track" aria-hidden="true"><span class="progress-bar" id="progress"></span></div>
+  <button class="mobile-menu" id="mobile-menu" type="button" aria-expanded="false" aria-controls="sidebar">Mục lục ☰</button>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <a class="identity" href="#top" aria-label="Về đầu trang">
+        <span class="identity-mark">QS</span>
+        <span><strong class="identity-name">Pivot Selection</strong><small class="identity-sub">ALGORITHMS / MINI REPORT</small></span>
+      </a>
+      <div class="sidebar-label">Nội dung nghiên cứu</div>
+      <nav class="side-nav" aria-label="Mục lục">
+        <a class="side-link active" href="#problem"><span class="nav-num">01</span>Đặt vấn đề</a>
+        <a class="side-link" href="#mechanism"><span class="nav-num">02</span>Bản chất vấn đề</a>
+        <a class="side-link" href="#solution"><span class="nav-num">03</span>Median-of-Three</a>
+        <a class="side-link" href="#implementation"><span class="nav-num">04</span>Triển khai Java</a>
+        <a class="side-link" href="#experiment"><span class="nav-num">05</span>Mô phỏng đối chứng</a>
+        <a class="side-link" href="#theory"><span class="nav-num">06</span>Phân tích toán học</a>
+        <a class="side-link" href="#limitations"><span class="nav-num">07</span>Giới hạn &amp; mở rộng</a>
+        <a class="side-link" href="#conclusion"><span class="nav-num">08</span>Kết luận &amp; nguồn</a>
+      </nav>
+      <div class="side-bottom">
+        <strong>QuickSort · Research Note</strong>
+        <span>Java · Two-way partition · Median-of-Three</span>
+        <a href="https://github.com/kieran-lucas/quicksort-pivot-selection" target="_blank" rel="noopener noreferrer">GitHub repository ↗</a>
+      </div>
+    </aside>
+
+    <main class="main" id="top"><div class="main-inner">
+      <header class="hero">
+        <div class="eyebrow">UET / DATA STRUCTURES &amp; ALGORITHMS</div>
+        <h1>QuickSort:<br><span>Pivot Selection</span> &amp; Optimization</h1>
+        <p class="hero-desc">Vì sao chỉ thay đổi cách chọn một phần tử có thể cải thiện hiệu năng QuickSort? Một mini báo cáo từ vấn đề phân hoạch mất cân bằng đến kỹ thuật <strong>Median-of-Three</strong>, cùng mã Java, mô phỏng và phân tích định lượng.</p>
+        <div class="hero-stats">
+          <div class="stat"><strong>2n ln n</strong><span>So sánh kỳ vọng · pivot ngẫu nhiên</span></div>
+          <div class="stat"><strong>12/7</strong><span>Hệ số n ln n · median-of-three</span></div>
+          <div class="stat"><strong>14.3%</strong><span>Mức giảm hệ số so sánh</span></div>
+        </div>
+        <div class="note"><span class="note-symbol">i</span><span>Các hệ số trên áp dụng cho mô hình khóa phân biệt, chọn mẫu ngẫu nhiên; <b>không phải</b> mức tăng tốc thời gian chạy đã đo. Nguồn: Sedgewick &amp; Wayne, <i>Algorithms</i>, bài 2.3, trang 23–24, 28.</span></div>
+      </header>
+
+      <section class="chapter" id="problem">
+        <div class="chapter-top"><span class="number">01</span><span class="chapter-type">PROBLEM STATEMENT</span></div>
+        <h2>Khi QuickSort chọn pivot không tốt</h2>
+        <div class="prose">
+          <p>QuickSort dựa trên <b>chia để trị</b>: chọn một pivot, phân hoạch mảng rồi sắp xếp đệ quy hai phần. Trong cài đặt đơn giản nhất, pivot thường lấy tại đầu hoặc cuối mảng. Việc chọn rất rẻ, nhưng hoàn toàn không xét xem giá trị đó nằm ở đâu trong thứ tự của dữ liệu.</p>
+          <p>Với mảng tăng dần <code>[1, 2, 3, 4, 5, 6, 7]</code>, chọn phần tử đầu <code>1</code> tạo hai phía có kích thước <b>0 và 6</b>. Nếu tiếp tục theo cùng quy tắc, mỗi lần đệ quy chỉ loại đi một phần tử: <code>n−1, n−2, …, 1</code>. Tổng chi phí phân hoạch vì thế tăng bậc hai.</p>
+        </div>
+        <div class="illustration">
+          <div class="illustration-label"><span>MINH HỌA 01</span><span>CHỌN PIVOT ĐẦU MẢNG</span></div>
+          <div class="arr static" aria-label="Mảng 1, 2, 3, 4, 5, 6, 7"><span class="cell pivot">1<small>pivot</small></span><span class="cell">2</span><span class="cell">3</span><span class="cell">4</span><span class="cell">5</span><span class="cell">6</span><span class="cell">7</span></div>
+          <div class="split-row"><div class="split-zero">∅ <small>0 phần tử</small></div><div class="split-pivot">1 <small>pivot</small></div><div class="split-rest">2 · 3 · 4 · 5 · 6 · 7 <small>6 phần tử</small></div></div>
+          <p class="figure-caption">Phân hoạch lệch hoàn toàn. Đây là ví dụ <em>không shuffle</em>; trong bản QuickSort gốc của Princeton, bước <code>StdRandom.shuffle(a)</code> được dùng nhằm tránh việc thời gian chạy phụ thuộc xấu vào thứ tự đầu vào.</p>
+        </div>
+        <div class="equation"><span class="eq-kicker">TRƯỜNG HỢP XẤU</span><span class="eq-main">T(n) = T(n − 1) + Θ(n) = Θ(n²)</span></div>
+        <div class="question">Có thể cải thiện <strong>chất lượng pivot</strong> mà vẫn giữ chi phí lựa chọn đủ thấp?</div>
+      </section>
+
+      <section class="chapter" id="mechanism">
+        <div class="chapter-top"><span class="number">02</span><span class="chapter-type">WHY IT MATTERS</span></div>
+        <h2>Không phải pivot lớn hay nhỏ — mà là hai phía có cân bằng không</h2>
+        <div class="prose">
+          <p>Sau khi phân hoạch, pivot nằm đúng vị trí cuối cùng. Chi phí của một lần phân hoạch bằng <code>Θ(n)</code>; sự khác biệt nằm ở kích thước hai bài toán con mà nó tạo ra.</p>
+          <p>Nếu mỗi lần pivot chia gần đôi, độ sâu đệ quy khoảng <code>log₂n</code> và tổng công việc là <code>Θ(n log n)</code>. Nếu mỗi lần chỉ tách được một phần tử, độ sâu có thể lên tới <code>n−1</code>, dẫn đến <code>Θ(n²)</code>.</p>
+        </div>
+        <div class="compare-grid">
+          <article class="compare-tile"><div class="mini-eyebrow">UNBALANCED / 0 : 6</div><div class="division"><span style="flex:0.01"></span><b>1</b><span style="flex:6"></span></div><div class="depth-bars"><span style="width:100%"></span><span style="width:84%"></span><span style="width:68%"></span><span style="width:52%"></span><span style="width:36%"></span><span style="width:20%"></span></div><b>Đệ quy gần tuyến tính theo n</b><p>Mỗi cấp chỉ xử lý một mảng con gần như nguyên vẹn.</p></article>
+          <article class="compare-tile"><div class="mini-eyebrow">BALANCED / 3 : 3</div><div class="division balanced"><span style="flex:3"></span><b>4</b><span style="flex:3"></span></div><div class="depth-bars balanced-bars"><span style="width:100%"></span><span style="width:50%"></span><span style="width:25%"></span></div><b>Đệ quy xấp xỉ log₂n</b><p>Tổng kích thước các mảng con mỗi tầng vẫn ở mức O(n).</p></article>
+        </div>
+        <p class="figure-caption">Sơ đồ trực quan hóa độ sâu, không biểu diễn số phép so sánh chính xác của từng tầng.</p>
+      </section>
+
+      <section class="chapter" id="solution">
+        <div class="chapter-top"><span class="number">03</span><span class="chapter-type">PROPOSED SOLUTION</span></div>
+        <h2>Median-of-Three: chọn trung vị của ba mẫu</h2>
+        <div class="prose">
+          <p>Thay vì chọn ngay phần tử đầu, lấy ba ứng viên ở vị trí <code>lo</code>, <code>mid = lo + (hi−lo)/2</code> và <code>hi</code>. Giá trị đứng giữa trong ba ứng viên được chọn làm pivot. Đây là <b>median</b> (trung vị), <b>không phải mean</b> (trung bình cộng).</p>
+          <p>Với dãy tăng dần, ba ứng viên <code>1, 4, 7</code> cho trung vị <code>4</code>, tạo hai phần có kích thước <b>3 : 3</b>. Chi phí chọn pivot là một số hằng phép so sánh, thay vì phải tìm trung vị thật của toàn bộ mảng.</p>
+        </div>
+        <div class="illustration">
+          <div class="illustration-label"><span>MINH HỌA 02</span><span>ỨNG VIÊN → TRUNG VỊ → PHÂN HOẠCH</span></div>
+          <div class="arr static"><span class="cell sample">1<small>lo</small></span><span class="cell">2</span><span class="cell">3</span><span class="cell pivot">4<small>mid</small></span><span class="cell">5</span><span class="cell">6</span><span class="cell sample">7<small>hi</small></span></div>
+          <div class="median-flow"><span>Ứng viên <b>1</b> · <b>4</b> · <b>7</b></span><span aria-hidden="true">→</span><strong>median = 4</strong></div>
+          <div class="split-row"><div class="split-left">1 · 2 · 3 <small>3 phần tử</small></div><div class="split-pivot">4 <small>pivot</small></div><div class="split-right">5 · 6 · 7 <small>3 phần tử</small></div></div>
+          <p class="figure-caption">Trong mã Princeton, chỉ cần đưa giá trị trung vị về <code>a[lo]</code> trước khi gọi <code>partition()</code>: không cần viết lại thủ tục phân hoạch.</p>
+        </div>
+        <div class="note neutral"><span class="note-symbol">!</span><span>Median-of-Three <b>không tìm trung vị thật của mảng</b> và <b>không bảo đảm</b> hai nửa cân bằng. Nó là một ước lượng rẻ, thường có ích trong thực tế.</span></div>
+      </section>
+
+      <section class="chapter" id="implementation">
+        <div class="chapter-top"><span class="number">04</span><span class="chapter-type">JAVA IMPLEMENTATION</span></div>
+        <h2>Giữ nguyên phân hoạch, chỉ thay cách chọn pivot</h2>
+        <div class="prose"><p>Hai phiên bản dưới đây dùng cùng thủ tục <b>2-way partition</b> kiểu Sedgewick với hai con trỏ <code>i</code>, <code>j</code>. Bản gốc đặt pivot tại <code>a[lo]</code>; bản cải tiến tìm trung vị rồi đổi về <code>lo</code>. Điều này giúp so sánh công bằng hơn so với việc thay cả thuật toán phân hoạch.</p></div>
+        <div class="block-topbar"><div class="block-title"><span class="section-kicker">CODE 01</span><h3>Phân hoạch gốc (Princeton, slide 13)</h3></div><a class="inline-link" href="https://github.com/kieran-lucas/quicksort-pivot-selection/blob/main/src/QuickPivotSelection.java" target="_blank" rel="noopener noreferrer">Xem file đầy đủ ↗</a></div>
+        <div class="code-panel" data-codepanel><div class="code-toolbar"><span class="code-file">JAVA / two-way partition</span><div class="code-actions"><button class="tool-btn copy-code" type="button">Sao chép</button><button class="tool-btn expand-code" type="button">Mở rộng ↗</button></div></div><div class="code-viewport"><pre class="code-body"><code>private static int partition(int[] a, int lo, int hi) {
+    int i = lo, j = hi + 1;
+
+    while (true) {
+        while (a[++i] &lt; a[lo])
+            if (i == hi) break;
+
+        while (a[lo] &lt; a[--j])
+            if (j == lo) break;
+
+        if (i &gt;= j) break;
+        exch(a, i, j);
+    }
+
+    exch(a, lo, j);
+    return j;
+}</code></pre></div></div>
+        <p class="code-caption">Chuyển kiểu dữ liệu từ <code>Comparable[]</code> trong slide sang <code>int[]</code> để thuận tiện cho trình diễn; cấu trúc phân hoạch được giữ nguyên. Không nên gọi đây là phân hoạch Lomuto.</p>
+        <div class="block-topbar"><div class="block-title"><span class="section-kicker">CODE 02</span><h3>Điểm thay đổi để dùng Median-of-Three</h3></div></div>
+        <div class="code-panel" data-codepanel><div class="code-toolbar"><span class="code-file">JAVA / median-of-three</span><div class="code-actions"><button class="tool-btn copy-code" type="button">Sao chép</button><button class="tool-btn expand-code" type="button">Mở rộng ↗</button></div></div><div class="code-viewport"><pre class="code-body"><code>private static void sort(int[] a, int lo, int hi,
+                         Strategy strategy) {
+    if (hi &lt;= lo) return;
+
+    if (strategy == Strategy.MEDIAN_OF_THREE) {
+        int mid = lo + (hi - lo) / 2;
+        int median = medianOf3(a, lo, mid, hi);
+        exch(a, lo, median);
+    }
+
+    int j = partition(a, lo, hi);
+    sort(a, lo, j - 1, strategy);
+    sort(a, j + 1, hi, strategy);
+}
+
+private static int medianOf3(int[] a, int i, int j, int k) {
+    if (a[i] &lt; a[j]) {
+        if (a[j] &lt; a[k]) return j;
+        return a[i] &lt; a[k] ? k : i;
+    }
+    if (a[i] &lt; a[k]) return i;
+    return a[j] &lt; a[k] ? k : j;
+}</code></pre></div></div>
+        <p class="code-caption">Slide 28 nêu rõ thao tác <code>medianOf3 → swap(a, lo, median) → partition</code>; hàm <code>medianOf3</code> đầy đủ được bổ sung trong repo. Nếu muốn giữ bảo đảm kỳ vọng trước đầu vào đối kháng, có thể shuffle trước như bản gốc ở slide 15.</p>
+      </section>
+
+      <section class="chapter" id="experiment">
+        <div class="chapter-top"><span class="number">05</span><span class="chapter-type">INTERACTIVE EXPERIMENT</span></div>
+        <h2>Chạy cùng một mảng, so sánh hai chiến lược</h2>
+        <div class="prose"><p>Để trực tiếp thấy tác dụng của lựa chọn pivot, mô phỏng bên dưới <b>không shuffle trước</b>, sử dụng cùng một 2-way partition. Mỗi phép so sánh khóa, phép hoán đổi thực và lần phân hoạch đều được bộ đếm ghi nhận. Đây là mô phỏng xác định trên mảng đang chọn, <b>không phải thống kê hiệu năng trung bình</b>.</p></div>
+        <div class="lab">
+          <div class="lab-head"><strong>QuickSort lab</strong><span>2-way partition · deterministic</span></div>
+          <div class="lab-controls">
+            <label for="preset">Bộ dữ liệu</label>
+            <select id="preset"><option value="ascending">Tăng dần — 7 phần tử</option><option value="descending">Giảm dần — 7 phần tử</option><option value="nearly">Gần có thứ tự — 9 phần tử</option><option value="mixed">Hỗn hợp — 7 phần tử</option><option value="organ">Organ-pipe — 9 phần tử</option><option value="duplicates">Nhiều phần tử bằng nhau</option><option value="custom">Tùy chỉnh</option></select>
+            <label for="numbers">Mảng đầu vào (phân cách bằng dấu phẩy hoặc khoảng trắng)</label>
+            <textarea id="numbers" rows="2" spellcheck="false">1, 2, 3, 4, 5, 6, 7</textarea>
+            <div class="lab-actions"><button class="primary-btn" id="run" type="button">Chạy mô phỏng ↗</button><button class="outline-btn" id="randomize" type="button">Tạo mảng ngẫu nhiên</button><button class="outline-btn" id="reset" type="button">Đặt lại</button></div>
+            <p class="error" id="error" role="alert" hidden></p>
+          </div>
+          <div class="lab-result" id="lab-result">
+            <div class="result-title">Kết quả trên cùng dữ liệu</div>
+            <div class="result-grid">
+              <article class="result-card"><span class="result-label">FIRST-ELEMENT PIVOT</span><strong class="big-number" id="first-count">—</strong><small>phép so sánh khóa</small><div class="meter"><span id="first-meter"></span></div><div class="metric-list"><span>Hoán đổi thực</span><b id="first-swaps">—</b><span>Số phân hoạch</span><b id="first-partitions">—</b><span>Độ sâu đệ quy lớn nhất</span><b id="first-depth">—</b></div></article>
+              <article class="result-card accent"><span class="result-label">MEDIAN-OF-THREE</span><strong class="big-number" id="median-count">—</strong><small>phép so sánh khóa, gồm chọn pivot</small><div class="meter"><span id="median-meter"></span></div><div class="metric-list"><span>Hoán đổi thực</span><b id="median-swaps">—</b><span>Số phân hoạch</span><b id="median-partitions">—</b><span>Độ sâu đệ quy lớn nhất</span><b id="median-depth">—</b></div></article>
+            </div>
+            <p class="result-comment" id="result-comment" aria-live="polite"></p>
+          </div>
+          <div class="trace-wrapper"><div class="trace-top"><div><strong>Minh họa từng thao tác</strong><p>Pivot · hai con trỏ · các phép đổi chỗ · kết quả phân hoạch</p></div><div class="trace-tabs" role="group" aria-label="Chọn chiến lược truy vết"><button id="trace-first" class="trace-tab active" type="button" aria-pressed="true">Pivot đầu</button><button id="trace-median" class="trace-tab" type="button" aria-pressed="false">Median-of-Three</button></div></div>
+            <div class="trace-state"><span id="step-type" class="step-badge">Khởi tạo</span><span id="step-numbers">Bước 1/1</span></div>
+            <div class="trace-array" id="trace-array" aria-live="polite"></div>
+            <div class="trace-legend"><span><i class="legend-pivot"></i>Pivot</span><span><i class="legend-active"></i>Mảng con đang xét</span><span><i class="legend-fixed"></i>Pivot đã cố định</span></div>
+            <p class="trace-caption" id="step-caption">Mảng đầu vào.</p>
+            <div class="trace-navigator"><button class="nav-btn" id="prev" type="button" aria-label="Bước trước">←</button><input type="range" id="step-slider" min="0" max="0" value="0" aria-label="Chọn bước mô phỏng"><button class="nav-btn" id="next" type="button" aria-label="Bước tiếp theo">→</button></div>
+          </div>
+        </div>
+        <div class="note neutral"><span class="note-symbol">i</span><span>Phép so sánh được tính mỗi khi so sánh hai khóa. Đối với Median-of-Three, các so sánh để tìm trung vị <b>được cộng vào tổng</b>. Phép hoán đổi thực chỉ được đếm khi hai chỉ số khác nhau. Các kết quả đo chính xác cho một đầu vào, không dùng để suy ra tốc độ chạy trên CPU.</span></div>
+      </section>
+
+      <section class="chapter" id="theory">
+        <div class="chapter-top"><span class="number">06</span><span class="chapter-type">MATHEMATICAL ANALYSIS</span></div>
+        <h2>Lợi ích kỳ vọng sau khi tính cả chi phí chọn pivot</h2>
+        <div class="prose"><p>Trên mô hình các khóa <b>phân biệt</b> với thứ tự đầu vào ngẫu nhiên đều, thứ hạng tương đối của pivot lấy ngẫu nhiên một mẫu tiệm cận phân bố đều. Nếu lấy <b>ba mẫu ngẫu nhiên</b> rồi chọn trung vị, phân bố thứ hạng pivot tập trung quanh một nửa hơn.</p></div>
+        <div class="math-panels"><div class="math-panel"><span class="mini-eyebrow">MỘT MẪU</span><div class="large-math">f₁(x) = 1</div><p>Pivot có thể nằm gần một trong hai biên với xác suất tương đối cao.</p></div><div class="math-panel accent"><span class="mini-eyebrow">TRUNG VỊ BA MẪU</span><div class="large-math">f₃(x) = 6x(1 − x)</div><p>Mật độ lớn nhất tại <code>x = 1/2</code>, nơi phân hoạch cân bằng nhất.</p></div></div>
+        <div class="plot-panel"><div class="plot-heading"><h3>Phân bố vị trí tương đối của pivot</h3><span>mô hình liên tục · n lớn</span></div><svg viewBox="0 0 700 280" class="density-plot" aria-label="Đồ thị mật độ: pivot ngẫu nhiên là đường ngang y=1, median ba mẫu là đường cong cao nhất tại x=0.5" role="img">
+            <line x1="60" y1="233" x2="667" y2="233" class="axis"/><line x1="60" y1="34" x2="60" y2="233" class="axis"/>
+            <line x1="60" y1="131" x2="667" y2="131" class="guide"/>
+            <line x1="363.5" y1="34" x2="363.5" y2="233" class="guide dashed"/>
+            <path d="M60 233 C170 97, 255 80, 363.5 80 C472 80, 558 97, 667 233" class="curve-median" fill="none"/>
+            <path d="M60 131 L667 131" class="curve-first" fill="none"/>
+            <text x="50" y="239" text-anchor="end">0</text><text x="50" y="136" text-anchor="end">1</text><text x="50" y="84" text-anchor="end">1.5</text>
+            <text x="60" y="254" text-anchor="middle">0</text><text x="363.5" y="254" text-anchor="middle">0.5</text><text x="667" y="254" text-anchor="middle">1</text>
+            <text x="363.5" y="274" text-anchor="middle">Vị trí tương đối x của pivot</text></svg><div class="plot-key"><span><i class="line-first"></i>Một mẫu · f₁</span><span><i class="line-median"></i>Median-of-Three · f₃</span></div></div>
+        <div class="prose">
+          <p>Gọi <code>C(n) ~ c·n ln n</code>. Với chi phí phân hoạch tuyến tính, hệ số <code>c</code> phụ thuộc vào phân bố tỷ lệ chia <code>X</code> thông qua biểu thức kỳ vọng sau:</p>
+        </div>
+        <div class="equation formula"><span class="eq-kicker">HỆ SỐ TIỆM CẬN</span><span class="eq-main">c = 1 / E[−X ln X − (1−X) ln(1−X)]</span><span class="eq-sub">Một mẫu: E[…] = 1/2 ⇒ c = 2. Ba mẫu: E[…] = 7/12 ⇒ c = 12/7.</span></div>
+        <div class="block-topbar"><div class="block-title"><span class="section-kicker">COMPARISON</span><h3>Các hệ số dẫn đầu</h3></div></div>
+        <div class="coefficient-table" role="table" aria-label="Các hệ số kỳ vọng">
+          <div class="coefficient-row heading" role="row"><span>Chỉ tiêu</span><span>Một mẫu</span><span>Median-of-Three</span></div>
+          <div class="coefficient-row" role="row"><span>Số phép so sánh</span><b>2n ln n</b><b>(12/7)n ln n</b></div>
+          <div class="coefficient-row" role="row"><span>Số phép hoán đổi (nguồn)</span><b>(1/3)n ln n</b><b>(12/35)n ln n</b></div>
+          <div class="coefficient-row" role="row"><span>Worst-case</span><b>Θ(n²)</b><b>Θ(n²)</b></div>
+        </div>
+        <div class="comparison-bar"><div class="comparison-line"><span>Một mẫu</span><div class="bar-track"><i style="width:100%"></i></div><b>2.000</b></div><div class="comparison-line"><span>Median-of-Three</span><div class="bar-track"><i class="bar-accent" style="width:85.7143%"></i></div><b>1.714</b></div></div>
+        <div class="finding"><b>≈ 14,29% ít phép so sánh hơn ở hệ số dẫn đầu.</b><p>Phép chọn trung vị cần 2–3 so sánh ở mỗi mảng con, nhưng tổng số lần chọn chỉ O(n), nên không thay đổi hệ số trước <code>n ln n</code>. Theo trang 28 của slide, số hoán đổi kỳ vọng có thể <em>tăng</em> khoảng 3%; do đó không thể tự động suy ra tăng tốc thực tế đúng 14,29%.</p></div>
+        <p class="source-line">Định lượng theo slide 23–24 và 28 của tài liệu Sedgewick–Wayne. Mô hình phân tích ở đây nói đến lấy mẫu ngẫu nhiên; hình thức lấy ba vị trí cố định đầu/giữa/cuối là biến thể triển khai được minh họa ở phần trước.</p>
+      </section>
+
+      <section class="chapter" id="limitations">
+        <div class="chapter-top"><span class="number">07</span><span class="chapter-type">LIMITATIONS &amp; ENGINEERING</span></div>
+        <h2>Median-of-Three tốt hơn, nhưng không miễn nhiễm trường hợp xấu</h2>
+        <div class="three-points">
+          <article><span class="point-index">01 / WORST-CASE</span><h3>Vẫn có thể lệch mạnh</h3><p>Nếu ba mẫu có giá trị nhỏ nhất, nhỏ thứ hai và lớn nhất, trung vị của ba mẫu vẫn chỉ là phần tử nhỏ thứ hai. Có thể thiết kế dữ liệu khiến những tình huống bất lợi tiếp tục tái diễn: worst-case vẫn là <code>Θ(n²)</code>.</p></article>
+          <article><span class="point-index">02 / EQUAL KEYS</span><h3>Nhiều khóa trùng</h3><p>Chọn pivot tốt không tự giải quyết vấn đề các khóa bằng nhau. Slide 42–47 đề xuất <b>Dijkstra 3-way partitioning</b>, chia thành ba nhóm <code>&lt;v</code>, <code>=v</code>, <code>&gt;v</code> để xử lý trường hợp này hiệu quả hơn.</p></article>
+          <article><span class="point-index">03 / SMALL SUBARRAYS</span><h3>Overhead của mảng nhỏ</h3><p>Đối với mảng con rất nhỏ, chọn pivot và đệ quy có thể đắt hơn lợi ích mang lại. Slide 27 khuyến nghị chuyển sang <b>Insertion Sort</b> gần ngưỡng 10 phần tử; ngưỡng tối ưu phụ thuộc môi trường.</p></article>
+        </div>
+        <div class="engineering"><div class="mini-eyebrow">FURTHER ENGINEERING</div><h3>Từ Median-of-Three đến system sort</h3><p>Slide 53 giới thiệu hướng Bentley–McIlroy: ngưỡng Insertion Sort, Median-of-Three hoặc <em>Tukey’s ninther</em>, kết hợp phân hoạch ba chiều. Slide 63 còn chỉ ra rằng số phép so sánh không quyết định tất cả: số lần trao đổi và đặc biệt khả năng tận dụng cache cũng ảnh hưởng đến thời gian thực tế.</p></div>
+      </section>
+
+      <section class="chapter" id="conclusion">
+        <div class="chapter-top"><span class="number">08</span><span class="chapter-type">CONCLUSION &amp; REFERENCES</span></div>
+        <h2>Kết luận</h2>
+        <div class="prose"><p>Lựa chọn pivot là một trong những quyết định quan trọng nhất khi triển khai QuickSort. Pivot cố định ở đầu mảng đơn giản nhưng dễ gây phân hoạch lệch trên dữ liệu đã có thứ tự nếu không được shuffle. Median-of-Three là một cải tiến có chi phí thấp: lấy trung vị của ba ứng viên rồi dùng lại chính thủ tục phân hoạch gốc.</p><p>Trong mô hình ngẫu nhiên phù hợp, hệ số dẫn đầu của số phép so sánh giảm từ <code>2</code> xuống <code>12/7</code>, tức khoảng <b>14,29%</b>, kể cả khi tính chi phí chọn mẫu vào bậc thấp. Tuy nhiên, kỹ thuật không thay đổi worst-case <code>Θ(n²)</code> và không bảo đảm giảm thời gian chạy trong mọi trường hợp.</p></div>
+        <div class="takeaway"><span>TAKEAWAY</span><strong>Một pivot “thông minh” không nhất thiết phải hoàn hảo; nó cần đủ tốt để bù lại chi phí chọn nó.</strong></div>
+        <div class="references"><h3>Nguồn tham khảo</h3><ol><li>Robert Sedgewick &amp; Kevin Wayne. <i>Algorithms, 4th Edition</i>, lecture 2.3: <a href="https://algs4.cs.princeton.edu/lectures/23Quicksort.pdf" target="_blank" rel="noopener noreferrer">23Quicksort.pdf ↗</a> (slides 13, 15, 23–24, 27–28, 42–47, 53, 63).</li><li>Robert Sedgewick &amp; Kevin Wayne. <a href="https://algs4.cs.princeton.edu/23quicksort/" target="_blank" rel="noopener noreferrer">Quicksort · Algorithms, 4th Edition ↗</a>.</li><li>Code báo cáo: <a href="https://github.com/kieran-lucas/quicksort-pivot-selection" target="_blank" rel="noopener noreferrer">github.com/kieran-lucas/quicksort-pivot-selection ↗</a>.</li></ol></div>
+      </section>
+      <footer class="footer"><span>QuickSort / Pivot Selection &amp; Optimization</span><span>MINI REPORT · UET</span></footer>
+    </div></main>
+  </div>
+</body>
+</html>
