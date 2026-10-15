@@ -229,7 +229,6 @@
         <div class="animation-timeline">
           <label for="anim-progress">Tiến trình chung</label>
           <input type="range" id="anim-progress" min="0" max="0" value="0" aria-label="Tiến trình animation">
-          
         </div>
         <div class="animation-foot">
           <label><input type="checkbox" id="anim-details"> Rút gọn (ẩn các lần so sánh)</label>
@@ -288,16 +287,16 @@
 
   <section id="analysis" aria-labelledby="analysis-heading">
     <div class="section-label">\(05\) — Phân tích và kết luận</div>
-    <h2 id="analysis-heading">Lợi ích có bù được chi phí chọn pivot?</h2>
-    <p>Xét mô hình các khóa <strong>phân biệt</strong>, mọi hoán vị đầu vào có xác suất như nhau. Khi \(n\) lớn, vị trí tương đối \(X\) của pivot được chọn ngẫu nhiên có mật độ \(f_1(x)=1\). Nếu lấy trung vị của ba mẫu ngẫu nhiên, mật độ trở thành \(f_3(x)=6x(1-x)\), tập trung nhiều hơn gần \(x=\dfrac{1}{2}\).</p>
+    <h2 id="analysis-heading">Chi phí và hiệu quả kỳ vọng</h2>
+    <p>Giả sử các khóa <strong>phân biệt</strong> và mọi hoán vị đầu vào đồng xác suất. Với \(n\) lớn, vị trí chuẩn hóa \(X\) của pivot đầu có mật độ \(f_1(x)=1\); trung vị ba mẫu có mật độ \(f_3(x)=6x(1-x)\), tập trung hơn quanh \(x=\tfrac12\).</p>
     <div class="math-display">\(\displaystyle f_1(x)=1,\qquad f_3(x)=6x(1-x),\qquad 0\lt x\lt 1. \)</div>
-    <p>Với một hoán vị ngẫu nhiên, ba vị trí cố định đầu/giữa/cuối cũng tương ứng với ba mẫu ngẫu nhiên; điều này không đúng với đầu vào tùy ý.</p>
+    <p>Ba vị trí đầu, giữa và cuối tương ứng với ba mẫu ngẫu nhiên trong mô hình hoán vị đều, nhưng không phải với mọi đầu vào.</p>
     <div class="math-derivation">
-      <p>Đặt hàm đo độ cân bằng của hai nhánh:</p>
+      <p>Đặt:</p>
       <div class="math-display">\(\displaystyle h(x)=-x\ln x-(1-x)\ln(1-x). \)</div>
-      <p>Với chi phí phân hoạch tiệm cận \(n\), số phép so sánh kỳ vọng có dạng \(\mathbb E[C_n]\sim cn\ln n\), trong đó:</p>
+      <p>Với chi phí phân hoạch xấp xỉ \(n\), ta có \(\mathbb E[C_n]\sim cn\ln n\), trong đó:</p>
       <div class="math-display">\(\displaystyle c=\dfrac{1}{\mathbb E[h(X)]}. \)</div>
-      <p>Thay hai phân bố pivot vào công thức:</p>
+      <p>Từ hai phân bố pivot:</p>
       <div class="math-display">\(\displaystyle \begin{aligned}
         \text{Một mẫu:}\quad& \mathbb E[h(X)]=\dfrac{1}{2}
           &&\Longrightarrow c=2,\\[3pt]
@@ -306,21 +305,21 @@
         \end{aligned} \)</div>
     </div>
     <details class="detail proof">
-      <summary>Chi tiết phép tính kỳ vọng</summary>
-      <p>Với mật độ xác suất \(f(x)\), ta tính:</p>
+      <summary>Phép tính kỳ vọng</summary>
+      <p>Với mật độ \(f(x)\):</p>
       <div class="math-display">\(\displaystyle \mathbb E[h(X)]=\int_0^1 f(x)\,h(x)\,\mathrm dx. \)</div>
-      <p>Đối với một mẫu:</p>
+      <p>Một mẫu:</p>
       <div class="math-display">\(\displaystyle \mathbb E[h(X)]=\int_0^1 h(x)\,\mathrm dx=\dfrac{1}{2}. \)</div>
-      <p>Đối với trung vị ba mẫu, dùng tính đối xứng:</p>
+      <p>Trung vị ba mẫu, sử dụng tính đối xứng:</p>
       <div class="math-display">\(\displaystyle \begin{aligned}
         \mathbb E[h(X)]
           &=-12\int_0^1 x^2(1-x)\ln x\,\mathrm dx\\
           &=-12\left(-\dfrac{1}{9}+\dfrac{1}{16}\right)\\
           &=\dfrac{7}{12}.
         \end{aligned} \)</div>
-      <p>Ở đây sử dụng hệ thức:</p>
+      <p>Với hệ thức:</p>
       <div class="math-display">\(\displaystyle \int_0^1 x^k\ln x\,\mathrm dx=-\dfrac{1}{(k+1)^2},\qquad k>-1. \)</div>
-      <p>Vì vậy \(c_1=2\) và \(c_3=\dfrac{12}{7}\).</p>
+      
     </details>
     <table class="metric-table theory-table">
       <thead><tr><th>Chỉ tiêu (bậc dẫn đầu)</th><th>Một mẫu</th><th>Median-of-Three</th></tr></thead>
@@ -330,15 +329,15 @@
         <tr><td>Trường hợp xấu nhất</td><td>\(\Theta(n^2)\)</td><td>\(\Theta(n^2)\)</td></tr>
       </tbody>
     </table>
-    <p>Hệ số của số phép so sánh giảm:</p>
+    <p>Mức giảm của hệ số dẫn đầu:</p>
     <div class="math-display">\(\displaystyle 1-\dfrac{12}{7}\cdot\dfrac{1}{2}=\dfrac{1}{7}\approx 14{,}29\%. \)</div>
-    <p>Tìm trung vị ba mẫu cần \(2\)–\(3\) phép so sánh mỗi lần, với tối đa \(O(n)\) lần gọi; phần chi phí bổ sung là \(O(n)\), không thay đổi hệ số trước \(n\ln n\). Tuy nhiên, số hoán đổi có thể tăng nhẹ (theo slide \(28\)), và thời gian thực tế còn phụ thuộc dữ liệu, bộ nhớ cùng chi phí cài đặt.</p>
-    <p><strong>Giới hạn:</strong> Median-of-Three vẫn có thể tạo phân hoạch lệch, vì thế không loại bỏ worst-case \(\Theta(n^2)\). Với nhiều khóa bằng nhau, kỹ thuật <em>three-way partitioning</em> thường thích hợp hơn; với mảng con nhỏ, có thể chuyển sang Insertion Sort.</p>
-    <p class="conclusion"><strong>Kết luận.</strong> Median-of-Three là một phương án cân bằng giữa <em>chi phí chọn pivot thấp</em> và <em>chất lượng phân hoạch tốt hơn theo kỳ vọng</em>; không phải một bảo đảm tăng tốc cho mọi đầu vào.</p>
+    <p>Số lần chọn pivot là \(O(n)\), nên chi phí lấy ba mẫu chỉ bổ sung \(O(n)\) phép so sánh và không làm thay đổi hệ số của \(n\ln n\). Số hoán đổi và thời gian chạy thực tế không nhất thiết giảm.</p>
+    <p>Trường hợp xấu nhất vẫn là \(\Theta(n^2)\). Với nhiều khóa bằng nhau, phân hoạch ba chiều phù hợp hơn; với mảng con nhỏ có thể dùng Insertion Sort.</p>
+    <p class="conclusion">Median-of-Three cải thiện chất lượng phân hoạch theo kỳ vọng với chi phí chọn pivot nhỏ, nhưng không bảo đảm nhanh hơn trên mọi dữ liệu.</p>
     <div class="sources">
       <h3>Nguồn tham khảo</h3>
-      <p>Robert Sedgewick &amp; Kevin Wayne, <em>Algorithms, Fourth Edition</em>, bài giảng <a href="https://algs4.cs.princeton.edu/lectures/23Quicksort.pdf" target="_blank" rel="noopener noreferrer">\(2.3\) Quicksort</a>, tr. \(13\), \(15\), \(23\)–\(24\), \(27\)–\(28\), \(42\)–\(47\). Mã nguyên mẫu và giải thích thêm: <a href="https://algs4.cs.princeton.edu/23quicksort/" target="_blank" rel="noopener noreferrer">Algorithms — Quicksort</a>.</p>
-      <p>Hệ số lý thuyết và ghi chú về hoán đổi lấy từ bài giảng. Phần diễn giải qua phân bố \(f_1,f_3\) và hàm \(h(x)\) là phép suy luận toán học bổ sung để làm rõ kết quả.</p>
+      <p>R. Sedgewick &amp; K. Wayne, <em>Algorithms, 4th Edition</em>, <a href="https://algs4.cs.princeton.edu/lectures/23Quicksort.pdf" target="_blank" rel="noopener noreferrer">bài giảng Quicksort (2.3)</a>, tr. 13, 15, 23–24, 27–28, 42–47; <a href="https://algs4.cs.princeton.edu/23quicksort/" target="_blank" rel="noopener noreferrer">mã và mô tả thuật toán</a>.</p>
+      
     </div>
   </section>
 </main>
