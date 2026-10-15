@@ -108,7 +108,6 @@ select{min-width:205px;max-width:100%}
 .dual-animation{margin:32px 0 24px;padding:25px 0 28px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .animation-heading{margin-bottom:20px}
 .animation-heading h3{font-size:17px;margin:0 0 6px}
-.animation-heading p{font-size:13.5px;line-height:1.7;color:var(--subtle);margin:0}
 .animation-panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .animation-panel{min-width:0;padding:17px 17px 15px;border:1px solid #e0e3e7;border-radius:6px;background:#fff}
 .animation-panel-heading{display:flex;flex-direction:column;gap:5px}
@@ -154,7 +153,6 @@ select{min-width:205px;max-width:100%}
 .outcome{margin:15px 0 0}
 .partition-disclosure{margin-top:27px}
 .partition-compare{margin:0}
-.partition-compare figcaption{margin:0 0 14px;font-size:13px;font-weight:600}
 .split-meter{display:grid;grid-template-columns:140px minmax(0,1fr) 65px;gap:15px;align-items:center;margin-bottom:12px;color:#5f6872;font-size:13px}
 .split-meter-label{white-space:nowrap}
 .split-meter-track{display:flex;align-items:stretch;height:13px;border:1px solid #dde0e4;background:#f2f3f4}
