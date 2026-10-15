@@ -1,8 +1,4 @@
-/* Minimal, dependency-free, side-by-side QuickSort animation.
- * The underlying snapshots come exclusively from engine.js.
- * Each original item has a stable identity, so equal-valued items can
- * still visibly exchange their positions.
- */
+/* QuickSort animation: track each element's identity through swaps. */
 (() => {
   "use strict";
   const $ = (id) => document.getElementById(id);
@@ -20,10 +16,7 @@
     bars: { first: new Map(), median: new Map() }
   };
 
-  // Both algorithms share wall-clock ticks, but each has its OWN complete
-  // operation timeline. The shorter run stops at its own last frame.
-  // An operation-step counts a scan comparison or other observable mutation;
-  // control-flow enter/cross events are hidden unless expanded.
+  // One timeline advances both traces; the shorter one stops at its last frame.
   function snapshots(mode) {
     if (!state.runs) return [];
     return window.QuickSortEngine.presentationFrames(state.runs[mode].frames, state.compact);
