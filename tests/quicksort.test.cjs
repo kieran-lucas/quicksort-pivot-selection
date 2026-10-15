@@ -401,7 +401,7 @@ test("low/high names are consistent across Java, article and live engine frames"
   assert.match(html, /\\mathrm\{high\}/);
   assert.match(html, /private static int partition\(int\[\] a, int low, int high\)/);
   assert.match(html, /private static void sort\(int\[\] a, int low, int high,/);
-  assert.match(html, /src="engine\.js\?v=20261015-boundaries-v9"/);
+  assert.match(html, /src="engine\.js\?v=20261015-conclusion-v10"/);
   assert.match(html, /src="animation\.js\?v=20261015-boundaries-v9"/);
   assert.match(html, /src="app\.js\?v=20261015-boundaries-v9"/);
   const engine = require("../engine.js");
