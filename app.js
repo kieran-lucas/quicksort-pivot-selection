@@ -4,11 +4,11 @@
   const engine = window.QuickSortEngine;
   const math = window.ReportMath;
   const presets = Object.freeze({
-    ascending: [1, 2, 3, 4, 5, 6, 7],
-    descending: [7, 6, 5, 4, 3, 2, 1],
-    mixed: [8, 1, 6, 4, 9, 2, 7],
-    nearly: [1, 2, 3, 4, 6, 5, 7, 8, 9],
-    duplicates: [3, 3, 2, 3, 1, 3, 2, 3, 1]
+    mixed: [15, 2, 4, 9, 14, 7, 3, 8, 11, 12, 13, 10, 6, 5, 1],
+    ascending: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+    descending: [15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1],
+    nearly: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 13, 15],
+    duplicates: [7, 1, 7, 2, 9, 3, 7, 4, 7, 5, 8, 7, 6, 7, 7]
   });
   const view = {
     runs: null,
