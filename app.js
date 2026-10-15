@@ -109,7 +109,7 @@
       done: "Hoàn tất"
     };
     $("step-kind").textContent = labels[frame.type];
-    math.rich($("step-count"), "Bước " + (view.frameIndex + 1) + " trên " + frames.length);
+    math.rich($("step-count"), "Bước " + (view.frameIndex + 1) + " · Tổng " + frames.length + " bước");
     math.rich($("step-caption"), frame.message + " — " +
       fmt(frame.comparisons) + " so sánh, " + fmt(frame.swaps) + " hoán đổi (tích lũy).");
 
