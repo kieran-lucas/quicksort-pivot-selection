@@ -73,3 +73,28 @@ test("input validation", () => {
   assert.throws(() => run([1, Number.NaN], "first"), TypeError);
   assert.throws(() => run("1,2,3", "median"), TypeError);
 });
+
+
+test("animation identities track each actual exchange, even when values repeat", () => {
+  const cases = [
+    [7, 2, 7, 4, 2, 7, 1],
+    [9, 9, 9, 9, 9],
+    [1, 2, 3, 4, 5, 6, 7],
+    [-3, -1, 0, -1, 5, 2]
+  ];
+  for (const input of cases) {
+    for (const mode of ["first", "median"]) {
+      const out = run(input, mode);
+      for (const frame of out.frames) {
+        assert.equal(frame.identities.length, input.length);
+        assert.deepEqual(frame.identities.slice().sort((a, b) => a - b),
+          input.map((_, i) => i));
+        frame.identities.forEach((id, pos) => {
+          assert.equal(frame.array[pos], input[id],
+            "identity and value must move together");
+        });
+      }
+      assert.deepEqual(out.frames.at(-1).array, input.slice().sort((a, b) => a - b));
+    }
+  }
+});
