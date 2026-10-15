@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Mini báo cáo học thuật về Median-of-Three trong QuickSort: vấn đề, mã Java Princeton, mô phỏng và chứng minh hiệu quả kỳ vọng.">
+  <meta name="description" content="Phân tích cách chọn pivot Median-of-Three trong QuickSort: cài đặt Java, mô phỏng và số phép so sánh kỳ vọng.">
   <meta name="theme-color" content="#ffffff">
   <title>Median-of-Three trong QuickSort</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -31,43 +31,42 @@
 <body>
 <main class="page">
   <header class="intro">
-    <p class="course">Cấu trúc dữ liệu và giải thuật · Mini báo cáo</p>
+    <p class="course">Cấu trúc dữ liệu và giải thuật · Báo cáo</p>
     <h1>Median-of-Three trong QuickSort</h1>
-    <p class="lead">Một thay đổi nhỏ trong cách chọn <em>pivot</em> có thể giảm đáng kể chi phí phân hoạch. Vấn đề là: lợi ích ấy có đủ lớn để bù cho chi phí chọn pivot hay không?</p>
+    <p class="lead">So sánh pivot đầu mảng với Median-of-Three trên cùng thủ tục phân hoạch: ví dụ, cài đặt và số phép so sánh kỳ vọng.</p>
   </header>
 
   <section id="problem" aria-labelledby="problem-heading">
     <div class="section-label">\(01\) — Đặt vấn đề</div>
-    <h2 id="problem-heading">Khi nào pivot ở hai đầu trở nên bất lợi?</h2>
-    <p>QuickSort phân hoạch mảng quanh một <strong>pivot</strong> rồi tiếp tục sắp xếp hai phần. Chọn phần tử <code>a[lo]</code> hoặc <code>a[hi]</code> rất đơn giản, nhưng nếu pivot thường xuyên là giá trị nhỏ nhất hoặc lớn nhất của mảng con, một phía sẽ gần như rỗng và nhánh còn lại vẫn rất dài.</p>
-    <h3 class="pattern-heading">Những dạng dữ liệu dễ gặp vấn đề</h3>
-    <ul class="pattern-list" aria-label="Các dạng mảng dễ bất lợi khi chọn pivot đầu hoặc cuối">
+    <h2 id="problem-heading">Pivot ở hai đầu mảng</h2>
+    <p>Trong QuickSort, vị trí của pivot quyết định độ dài hai nhánh đệ quy. Chọn cố định <code>a[lo]</code> hoặc <code>a[hi]</code> có chi phí thấp, nhưng dễ tạo phân hoạch lệch khi phần tử ở hai đầu là cực trị.</p>
+    <h3 class="pattern-heading">Một số dạng dữ liệu bất lợi</h3>
+    <ul class="pattern-list" aria-label="Bốn ví dụ về phân hoạch lệch">
       <li>
         <strong>Tăng dần</strong>
         <span class="pattern-values">\([1,2,3,4,5,6,7,8]\)</span>
-        <span class="pattern-note">Đầu là nhỏ nhất, cuối là lớn nhất.</span>
+        <span class="pattern-note">Đầu nhỏ nhất, cuối lớn nhất.</span>
       </li>
       <li>
         <strong>Giảm dần</strong>
         <span class="pattern-values">\([8,7,6,5,4,3,2,1]\)</span>
-        <span class="pattern-note">Đầu là lớn nhất, cuối là nhỏ nhất.</span>
+        <span class="pattern-note">Đầu lớn nhất, cuối nhỏ nhất.</span>
       </li>
       <li>
         <strong>Gần có thứ tự</strong>
         <span class="pattern-values">\([1,2,3,5,4,6,7,8]\)</span>
-        <span class="pattern-note">Một vài giá trị đổi chỗ nhưng hai đầu vẫn là cực trị.</span>
+        <span class="pattern-note">Hai đầu vẫn là cực trị.</span>
       </li>
       <li>
         <strong>Hỗn hợp, cực trị ở hai đầu</strong>
         <span class="pattern-values">\([8,7,3,4,6,5,2,1]\)</span>
-        <span class="pattern-note">Dãy không có thứ tự, nhưng đầu và cuối vẫn bất lợi.</span>
+        <span class="pattern-note">Không tăng, giảm đơn điệu.</span>
       </li>
     </ul>
-    <p>Chẳng hạn, với dãy tăng dần gồm \(8\) phần tử, chọn pivot đầu là \(1\) dẫn tới phân hoạch \(0:7\); chọn pivot cuối là \(8\) dẫn tới \(7:0\). Nếu tình trạng này lặp lại ở các mảng con, QuickSort mất lợi thế chia để trị.</p>
-    <p>Trường hợp không cần sắp xếp sẵn cũng có thể gặp vấn đề. Xét mảng hỗn hợp đang dùng trong mô phỏng:</p>
+    <p>Với dãy tăng dần, pivot đầu \(1\) tạo phân hoạch \(0:7\), còn pivot cuối \(8\) tạo \(7:0\). Tình huống tương tự xuất hiện ở mảng hỗn hợp dưới đây:</p>
     <div class="math-display">\(\displaystyle A=\left[8,\,7,\,3,\,4,\,6,\,5,\,2,\,1\right].\)</div>
     <figure class="simple-figure">
-      <div class="diagram-title">Độ cân bằng của lần phân hoạch đầu tiên</div>
+      <div class="diagram-title">Phân hoạch đầu tiên</div>
       <div class="pivot-compare">
         <div class="pivot-compare-row">
           <span>Pivot đầu \(8\)</span>
@@ -85,22 +84,22 @@
           <strong>\(3:4\)</strong>
         </div>
       </div>
-      <figcaption>Kích thước hai mảng con (trái : phải). Dòng pivot cuối minh họa phương án chọn <code>a[hi]</code>; phần mô phỏng bên dưới chỉ đối chứng <strong>pivot đầu</strong> và <strong>Median-of-Three</strong> với cùng thủ tục <code>partition()</code>.</figcaption>
+      <figcaption>Số phần tử bên trái : bên phải pivot. Dòng pivot cuối là trường hợp minh họa riêng; mô phỏng sử dụng pivot đầu và Median-of-Three.</figcaption>
     </figure>
-    <p>Nếu pivot liên tục là cực trị và mỗi lần chỉ loại được một phần tử, quan hệ truy hồi trở thành:</p>
+    <p>Nếu sự mất cân bằng lặp lại ở mọi cấp, chi phí của QuickSort thỏa mãn:</p>
     <div class="math-display">\(\displaystyle T(n)=T(n-1)+\Theta(n)=\Theta(n^2).\)</div>
-    <p>Ngược lại, phân hoạch cân bằng qua các cấp cho chi phí \(\Theta(n\log n)\). <strong>Bài toán đặt ra:</strong> làm thế nào chọn pivot ít phụ thuộc vào một vị trí cố định mà vẫn có chi phí đủ thấp?</p>
-    <p class="aside-note">Đây là các dạng dữ liệu minh họa nguy cơ, không phải quy luật cho mọi mảng gần có thứ tự. Trên hoán vị ngẫu nhiên, chọn đầu hoặc cuối không mặc nhiên bất lợi. Bản QuickSort gốc của Princeton còn thực hiện <code>StdRandom.shuffle(a)</code> để hạn chế ảnh hưởng của thứ tự đầu vào; báo cáo này giữ nguyên dữ liệu nhằm cô lập tác động của bước chọn pivot.</p>
+    <p>Phân hoạch gần cân bằng, ngược lại, cho độ phức tạp \(\Theta(n\log n)\). Cần một cách chọn pivot ít phụ thuộc vào vị trí đầu hoặc cuối nhưng vẫn đủ rẻ.</p>
+    <p class="aside-note">Các ví dụ trên không đại diện cho mọi đầu vào. Với hoán vị ngẫu nhiên, pivot đầu không mặc nhiên xấu. Phiên bản Princeton có bước <code>StdRandom.shuffle(a)</code>; mô phỏng ở đây giữ nguyên thứ tự đầu vào.</p>
   </section>
 
-    <section id="median" aria-labelledby="median-heading">
+  <section id="median" aria-labelledby="median-heading">
     <div class="section-label">\(02\) — Phương pháp</div>
-    <h2 id="median-heading">Median-of-Three hoạt động thế nào?</h2>
-    <p><strong>Giải pháp:</strong> thay vì tin vào một phần tử ở đầu hoặc cuối, lấy ba ứng viên tại <code>lo</code>, <code>mid</code> và <code>hi</code>, với:</p>
+    <h2 id="median-heading">Median-of-Three</h2>
+    <p>Lấy ba giá trị tại <code>lo</code>, <code>mid</code> và <code>hi</code>, rồi chọn trung vị của chúng làm pivot:</p>
     <div class="math-display">\(\displaystyle \mathrm{mid}=\mathrm{lo}+\left\lfloor\dfrac{\mathrm{hi}-\mathrm{lo}}{2}\right\rfloor.\)</div>
-    <p>Chọn <strong>trung vị theo giá trị</strong> của ba ứng viên (không phải trung bình cộng), rồi đưa về <code>lo</code> để dùng lại hàm <code>partition()</code>. Trên dãy tăng hoặc giảm dần, cách này tránh lấy cực trị ở hai đầu và thường tạo phân hoạch cân bằng hơn.</p>
+    <p>Đưa phần tử được chọn về <code>lo</code>; hàm <code>partition()</code> không thay đổi.</p>
     <figure class="simple-figure">
-      <div class="diagram-title">Ba ứng viên trên mảng \(8\) phần tử</div>
+      <div class="diagram-title">Ba vị trí được lấy mẫu</div>
       <div class="candidate-array" aria-label="Mảng 8, 7, 3, 4, 6, 5, 2, 1">
         <span class="candidate">\(\displaystyle 8\)<small>đầu</small></span>
         <span>\(\displaystyle 7\)</span>
@@ -111,16 +110,15 @@
         <span>\(\displaystyle 2\)</span>
         <span class="candidate">\(\displaystyle 1\)<small>cuối</small></span>
       </div>
-      <figcaption>Ba ứng viên là \(8,\,4,\,1\). Vì \(1\lt4\lt8\), chọn \(\mathrm{pivot}=4\). Phân hoạch đầu tiên tạo hai phía có kích thước \(3\) và \(4\).</figcaption>
+      <figcaption>\(1\lt4\lt8\), do đó chọn pivot \(4\). Kết quả phân hoạch: \(3:4\).</figcaption>
     </figure>
-    <p>Trong ví dụ này, Median-of-Three giảm số phép so sánh từ \(39\) xuống \(27\), nhưng số hoán đổi tăng từ \(3\) lên \(7\). Vì vậy, cần phân biệt chi phí so sánh với thời gian chạy thực tế.</p>
-    <p>Chọn trung vị ba mẫu chỉ cần (2)–(3) phép so sánh, nên chi phí bổ sung nhỏ. Tuy vậy, đây <strong>không phải trung vị của toàn mảng</strong>: Median-of-Three vẫn có thể phân hoạch lệch và không loại trừ trường hợp xấu nhất (Theta(n^2)). Với nhiều khóa trùng nhau, phân hoạch ba chiều thường phù hợp hơn.</p>
+    <p>Tìm trung vị ba mẫu cần \(2\)–\(3\) phép so sánh. Đây không phải trung vị của toàn mảng; Median-of-Three vẫn có thể tạo phân hoạch lệch.</p>
   </section>
 
-  <section id="code" aria-labelledby="code-heading">
+    <section id="code" aria-labelledby="code-heading">
     <div class="section-label">\(03\) — Cài đặt Java</div>
     <h2 id="code-heading">Giữ nguyên <code class="heading-code">partition()</code></h2>
-    <p>Mã dưới đây dựa trên phân hoạch hai con trỏ của Sedgewick–Wayne: <code>i</code> quét từ trái, <code>j</code> từ phải. Hai phiên bản giữ nguyên <code>partition()</code>; Median-of-Three chỉ thay đổi bước chọn pivot.</p>
+    <p>Cả hai phiên bản dùng phân hoạch hai con trỏ của Sedgewick–Wayne (chuyển sang <code>int[]</code>). Khác biệt nằm ở bước chọn pivot trước khi gọi <code>partition()</code>.</p>
 
     <div class="code-heading"><h3>Phân hoạch hai con trỏ</h3><button class="copy" type="button" data-copy="partition-code">Sao chép</button></div>
     <pre class="code" id="partition-code"><code class="language-java">private static int partition(int[] a, int lo, int hi) {
@@ -166,13 +164,13 @@
     return a[j] &lt; a[k] ? k : j;
 }</code></pre>
     </details>
-    <p class="small">Mã đầy đủ, có thể biên dịch: <a href="https://github.com/kieran-lucas/quicksort-pivot-selection/blob/main/src/QuickPivotSelection.java" target="_blank" rel="noopener noreferrer">QuickPivotSelection.java ↗</a>. Với mảng con dài \(2\) phần tử, phiên bản minh họa bỏ qua bước lấy ba mẫu để tránh hai vị trí trùng nhau.</p>
+    <p class="small">Mã Java đầy đủ: <a href="https://github.com/kieran-lucas/quicksort-pivot-selection/blob/main/src/QuickPivotSelection.java" target="_blank" rel="noopener noreferrer">QuickPivotSelection.java ↗</a>. Mảng con có hai phần tử không thực hiện lấy ba mẫu.</p>
   </section>
 
   <section id="lab" aria-labelledby="lab-heading">
     <div class="section-label">\(04\) — Mô phỏng</div>
     <h2 id="lab-heading">So sánh trên cùng một mảng</h2>
-    <p>Hãy thử lần lượt <strong>Hỗn hợp</strong>, <strong>Tăng dần</strong>, <strong>Giảm dần</strong> và <strong>Gần có thứ tự</strong> để kiểm chứng lập luận ở phần đặt vấn đề. Hai phiên bản dùng cùng phân hoạch hai con trỏ; số phép so sánh đã bao gồm chi phí tìm trung vị.</p>
+    <p>Hai phiên bản dùng cùng một mảng và thủ tục phân hoạch. Số phép so sánh bao gồm cả bước chọn trung vị của ba mẫu.</p>
     <div class="lab">
       <div class="control-row">
         <label for="preset">Dữ liệu mẫu</label>
@@ -194,8 +192,7 @@
 
       <section class="dual-animation" id="animation" aria-label="Animation so sánh QuickSort">
         <div class="animation-heading">
-          <h3>Animation đối chứng</h3>
-          <p>Hai bên chạy trên cùng dữ liệu. Mặc định hiện từng phép so sánh; chọn <em>Rút gọn</em> để chỉ xem các thao tác chính.</p>
+          <h3>Diễn tiến thuật toán</h3>
         </div>
         <div class="animation-panels">
           <article class="animation-panel" aria-labelledby="anim-title-first">
@@ -238,7 +235,7 @@
           <label><input type="checkbox" id="anim-details"> Rút gọn (ẩn các lần so sánh)</label>
           <span id="anim-status" role="status">Tạm dừng</span>
         </div>
-        <p class="animation-legend">Viền đậm: pivot · Nét đứt: ứng viên · Xám nhạt: phần tử đã cố định. Chiều cao cột thể hiện giá trị, không phải thời gian.</p>
+        <p class="animation-legend">Viền đậm: pivot · Nét đứt: vị trí lấy mẫu · Xám nhạt: đã cố định.</p>
       </section>
 
       <div class="results" aria-live="polite">
@@ -256,19 +253,18 @@
       </div>
 
       <details class="partition-disclosure">
-        <summary>Xem kích thước hai mảng con sau phân hoạch đầu tiên</summary>
+        <summary>Kích thước hai mảng con</summary>
       <figure class="partition-compare">
-        <figcaption>Phân hoạch đầu tiên</figcaption>
         <div id="split-first" class="split-meter"></div>
         <div id="split-median" class="split-meter"></div>
       </figure>
       </details>
 
       <details class="trace-disclosure">
-        <summary>Truy vết mảng theo từng bước</summary>
+        <summary>Truy vết từng bước</summary>
       <div class="trace">
         <div class="trace-header">
-          <h3>Diễn tiến thuật toán</h3>
+          <h3>Trạng thái mảng</h3>
           <div class="trace-tabs" role="group" aria-label="Chiến lược đang xem">
             <button type="button" id="trace-first" class="trace-tab active" aria-pressed="true">Pivot đầu</button>
             <button type="button" id="trace-median" class="trace-tab" aria-pressed="false">Median-of-Three</button>
@@ -283,11 +279,11 @@
           <input id="step-slider" type="range" min="0" max="0" value="0" aria-label="Vị trí trong quá trình mô phỏng">
           <button id="next" type="button" aria-label="Bước tiếp theo">→</button>
         </div>
-        <p class="legend">Viền đậm: pivot · xám nhạt: vị trí pivot đã cố định · <code>i</code>, <code>j</code>: con trỏ đang quét (chế độ chi tiết).</p>
+        <p class="legend">Viền đậm: pivot · Xám: đã cố định · <code>i</code>, <code>j</code>: con trỏ quét.</p>
       </div>
       </details>
     </div>
-    <p class="small lab-note">Các số liệu phản ánh số phép toán trên mảng đang chọn, không phải thời gian chạy thực tế.</p>
+    <p class="small lab-note">Số liệu là phép toán được đếm trong mô phỏng, không phải thời gian chạy.</p>
   </section>
 
   <section id="analysis" aria-labelledby="analysis-heading">
