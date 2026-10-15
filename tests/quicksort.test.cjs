@@ -18,8 +18,8 @@ function check(input) {
     }
     for (const f of out.frames.filter(f => f.type === "fixed")) {
       const p = f.pivot;
-      for (let j = f.lo; j < p; j++) assert.ok(f.array[j] <= f.array[p]);
-      for (let j = p + 1; j <= f.hi; j++) assert.ok(f.array[j] >= f.array[p]);
+      for (let j = f.low; j < p; j++) assert.ok(f.array[j] <= f.array[p]);
+      for (let j = p + 1; j <= f.high; j++) assert.ok(f.array[j] >= f.array[p]);
     }
   }
 }
@@ -315,9 +315,9 @@ test("problem-to-solution narrative covers four eight-key patterns and both extr
       "both ends should be extrema in this specific example");
     const first = run(input, "first").frames.find(f => f.type === "fixed");
     const median = run(input, "median").frames.find(f => f.type === "fixed");
-    assert.deepEqual([first.pivot - first.lo, first.hi - first.pivot], firstSplit);
+    assert.deepEqual([first.pivot - first.low, first.high - first.pivot], firstSplit);
     assert.equal(median.array[median.pivot], expectedMedianPivot);
-    assert.deepEqual([median.pivot - median.lo, median.hi - median.pivot], medianSplit);
+    assert.deepEqual([median.pivot - median.low, median.high - median.pivot], medianSplit);
   }
   assert.match(problem, /Pivot đầu \\\(8\\\)[\s\S]*?\\\(7:0\\\)/);
   assert.match(problem, /Pivot cuối \\\(1\\\)[\s\S]*?\\\(0:7\\\)/);
@@ -344,7 +344,7 @@ test("report uses concise academic prose, keeps derivations and sources", () => 
   for (const phrase of [
     "Hãy thử lần lượt", "Một thay đổi nhỏ", "Bài toán đặt ra:",
     "Vì vậy, cần phân biệt", "Phần diễn giải qua phân bố", "theo slide",
-    "(Theta(n^2))", "(2)–(3)", "Mặc định hiện từng phép so sánh"
+    "(Theta(n^2))", "(2)–(3)", "Mặc định highện từng phép so sánh"
   ]) assert.ok(!body.includes(phrase), "reintroduced editorial/process wording: " + phrase);
   assert.ok(html.includes("\\(2\\)–\\(3\\) phép so sánh"),
     "median sampling cost must render as proper MathJax");
