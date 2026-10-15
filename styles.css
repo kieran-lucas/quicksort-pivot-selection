@@ -101,6 +101,9 @@ select{padding:8px 11px;min-width:185px;max-width:100%}
 .trace-controls button:disabled{opacity:.4;cursor:not-allowed}
 #step-slider{flex:1;min-width:0;accent-color:#4a4a4a}
 .legend{font-size:11px;color:#777;line-height:1.8;margin-top:16px}
+.math-display{width:100%;margin:19px 0 23px;text-align:center;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin}
+.math-display mjx-container[jax="CHTML"][display="true"]{max-width:100%;margin:.15em auto!important}
+.math-display mjx-container{font-size:105%!important}
 .math-derivation{padding:16px 0;margin:21px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
 .math-derivation p{font-size:13px;margin:0 0 10px;color:#444}
 .math-derivation p:last-child{margin:0}
@@ -187,4 +190,10 @@ footer{padding:25px 0 47px;text-align:right;font:500 11px var(--mono);color:#777
   .animation-controls{gap:6px}
   .animation-controls .run,.animation-button{min-height:35px}
   .speed-label{margin-left:0}
+}
+
+@media(max-width:650px){
+  .math-display{font-size:13px;margin:16px 0 20px}
+  .math-display mjx-container{font-size:100%!important}
+  .theory-table mjx-container{font-size:93%!important}
 }
