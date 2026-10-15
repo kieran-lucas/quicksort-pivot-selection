@@ -29,11 +29,14 @@ public final class QuickPivotSelection {
 
     private static void sort(int[] a, int low, int high, Strategy strategy) {
         if (high <= low) return;
+
+        int pivotIndex = low;
         if (strategy == Strategy.MEDIAN_OF_THREE && high - low >= 2) {
             int mid = low + (high - low) / 2;
-            int median = medianOf3(a, low, mid, high);
-            exch(a, low, median);
+            pivotIndex = medianOf3(a, low, mid, high);
         }
+
+        exch(a, low, pivotIndex);
         int j = partition(a, low, high);
         sort(a, low, j - 1, strategy);
         sort(a, j + 1, high, strategy);
