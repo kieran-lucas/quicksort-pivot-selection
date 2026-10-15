@@ -2,13 +2,9 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
- * QuickSort 2-way partition, adapted from Sedgewick & Wayne,
- * Algorithms, 4th ed., lecture 2.3 (slides 13, 15, 28).
- *
- * The change for MEDIAN_OF_THREE is deliberately minimal:
- * find median(a[lo], a[mid], a[hi]), then exchange it with a[lo]
- * before calling the SAME partition routine. For subarrays of
- * length two we do not sample three overlapping positions.
+ * QuickSort with first-element and median-of-three pivots.
+ * Two-way partition adapted from Sedgewick & Wayne,
+ * Algorithms, 4th ed., lecture 2.3.
  */
 public final class QuickPivotSelection {
 
@@ -21,7 +17,7 @@ public final class QuickPivotSelection {
         sort(a, 0, a.length - 1, strategy);
     }
 
-    /** Optional randomized baseline, as in the Princeton slides. */
+    /** Randomized baseline. */
     public static void sortShuffled(int[] a, Strategy strategy, long seed) {
         if (a == null) throw new IllegalArgumentException("Array is null");
         Random rnd = new Random(seed);
