@@ -384,7 +384,7 @@ test("all report UI colors are grayscale; Java syntax colors remain distinct", (
   assert.match(css, /\.animation-bar\.pivot\{background:#363636/);
   assert.match(css, /\.trace-tab\.active\{border-color:#494949/);
   assert.match(css, /\.animation-timeline input\{[^}]*accent-color:#202020/);
-  assert.match(html, /styles\.css\?v=20261015-conclusion-v10/);
+  assert.match(html, /styles\.css\?v=20261015-conclusion-v11/);
 });
 
 
