@@ -62,10 +62,10 @@
   function renderSplit(mode) {
     const run = view.runs[mode];
     const firstPartition = run.frames.find(f => f.type === "fixed");
-    const lo = firstPartition.lo;
-    const hi = firstPartition.hi;
-    const left = firstPartition.pivot - lo;
-    const right = hi - firstPartition.pivot;
+    const low = firstPartition.low;
+    const high = firstPartition.high;
+    const left = firstPartition.pivot - low;
+    const right = high - firstPartition.pivot;
     const total = left + 1 + right;
     const label = mode === "first" ? "Pivot đầu" : "Median-of-Three";
     const root = $("split-" + mode);
@@ -119,7 +119,7 @@
     array.replaceChildren();
     frame.array.forEach((value, index) => {
       const classes = ["element"];
-      if (index < frame.lo || index > frame.hi) classes.push("off-range");
+      if (index < frame.low || index > frame.high) classes.push("off-range");
       if (frame.fixed.includes(index)) classes.push("fixed");
       if (frame.samples.includes(index)) classes.push("sample");
       if (index === frame.pivot) classes.push("pivot");
