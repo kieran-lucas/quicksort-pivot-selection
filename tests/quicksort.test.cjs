@@ -326,7 +326,7 @@ test("problem-to-solution narrative covers four eight-key patterns and both extr
   assert.match(problem, /hoán vị ngẫu nhiên/);
   assert.match(problem, /StdRandom\.shuffle\(a\)/);
   assert.match(problem, /T\(n\)=T\(n-1\)/);
-  assert.match(medianSection, /Lấy ba giá trị tại/);
+  assert.match(medianSection, /Lấy các giá trị tại ba vị trí/);
   assert.match(medianSection, /không phải trung vị của toàn mảng/);
   assert.match(html, /phân hoạch ba chiều/);
   assert.match(lab, /Hai phiên bản dùng cùng một mảng/);
