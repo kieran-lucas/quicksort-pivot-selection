@@ -271,34 +271,6 @@
     if (event.key === 'End') { state.current = state.simulations[state.strategy].steps.length - 1; renderTrace(); }
   });
 
-  const menu = $('mobile-menu');
-  const sidebar = $('sidebar');
-  menu.addEventListener('click', () => {
-    const expanded = sidebar.classList.toggle('nav-open');
-    menu.setAttribute('aria-expanded', String(expanded));
-    menu.textContent = expanded ? 'Đóng mục lục ×' : 'Mục lục ☰';
-  });
-  const links = Array.from(document.querySelectorAll('.side-link'));
-  links.forEach((link) => link.addEventListener('click', () => {
-    sidebar.classList.remove('nav-open');
-    menu.setAttribute('aria-expanded', 'false');
-    menu.textContent = 'Mục lục ☰';
-  }));
-  if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver((entries) => {
-      const visible = entries.filter((x) => x.isIntersecting)
-        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-      if (!visible) return;
-      links.forEach((link) => {
-        const active = link.hash === '#' + visible.target.id;
-        link.classList.toggle('active', active);
-        if (active) link.setAttribute('aria-current', 'location');
-        else link.removeAttribute('aria-current');
-      });
-    }, { rootMargin: '-10% 0px -56% 0px', threshold: [0, .1, .3, .6] });
-    document.querySelectorAll('.chapter').forEach((section) => observer.observe(section));
-  }
-
   let ticking = false;
   function updateProgress() {
     const max = document.documentElement.scrollHeight - window.innerHeight;
