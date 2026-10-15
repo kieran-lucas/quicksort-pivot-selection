@@ -1,10 +1,6 @@
-/* QuickSort laboratory: Sedgewick–Wayne 2-way partition.
- * Adapted for integer arrays and step-by-step explanation.
+/* Sedgewick–Wayne two-way QuickSort partition.
+ * Both pivot strategies share the same partition routine.
  * https://algs4.cs.princeton.edu/23quicksort/
- *
- * Both strategies use the exact same partition implementation. The only
- * difference is whether the first pivot is retained or moved from the
- * median of the first/middle/last candidate positions.
  */
 (function (root, factory) {
   const api = factory();
@@ -62,7 +58,7 @@
     // Index of the median value among positions i, j, k.
     // In a length >= 3 subarray these are distinct positions.
     function medianOf3(i, j, k, lo, hi) {
-      // Record EVERY median-sampling comparison, not only partition scans.
+      // Count the median-sampling comparisons as well.
       function compare(x, y) {
         const left = a[x], right = a[y];
         const isLess = less(left, right);
