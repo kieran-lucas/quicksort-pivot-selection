@@ -110,8 +110,28 @@ test("math display blocks stay HTML-safe and use MathJax inline delimiters", () 
     assert.ok(tex.startsWith("\\(\\displaystyle "), "display equations should use working inline delimiters");
     assert.ok(tex.endsWith("\\)"), "missing MathJax closing delimiter");
     assert.ok(!tex.includes("<"), "raw < is HTML markup, not safe text in LaTeX");
-    assert.ok(!tex.includes("\\["), "do not mix display delimiters");
+    // A legal \\[3pt] spacing command inside aligned is not a display opener.
+    assert.ok(!/^\\s*\\\\\[/.test(tex), "do not open a display environment");
   }
   assert.ok(html.includes("mathjax@3.2.2"), "MathJax must load");
   assert.ok(html.includes("\\dfrac"), "fractions should use dfrac");
+});
+
+test("illustrative values are LaTeX, but code identifiers stay monospace", () => {
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const file = (name) => fs.readFileSync(path.join(__dirname, "..", name), "utf8");
+  const html = file("index.html");
+  const app = file("app.js");
+  const animation = file("animation.js");
+  const math = file("math-format.js");
+  assert.match(html, /class="split-example"[\s\S]*?\\\(1\\\)[\s\S]*?\\\(2\\quad3/);
+  assert.match(html, /class="candidate"[\s\S]*?\\\(8\\\)/);
+  assert.match(html, /\\left\[1,\\,2/);
+  assert.match(html, /<code>partition\(\)<\/code>/);
+  assert.match(html, /src="math-format\.js"/);
+  assert.match(app, /math\.setNumber/);
+  assert.match(app, /math\.latex\(value\)/);
+  assert.match(animation, /math\.latex\(value\)/);
+  assert.match(math, /createElement\(isCode \? "code" : "span"\)/);
 });
