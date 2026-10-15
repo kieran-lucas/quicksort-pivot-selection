@@ -435,3 +435,19 @@ test("conclusion draws attention to the supported result without extra graphics"
     "conclusion should remain editorial, not a filled card");
   assert.doesNotMatch(html, /highệu|highện|lowại/, "Vietnamese text corrupted by variable renaming");
 });
+
+
+test("page title reflects the classroom exploration of pivot selection", () => {
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const read = file => fs.readFileSync(path.join(__dirname, "..", file), "utf8");
+  const html = read("index.html");
+  const readme = read("README.md");
+  assert.match(html, /<title>Tìm hiểu cách chọn pivot trong QuickSort<\/title>/);
+  assert.match(html, /<h1>Tìm hiểu cách chọn pivot trong QuickSort<\/h1>/);
+  assert.match(html, /<p class="course">Cấu trúc dữ liệu và giải thuật<\/p>/);
+  assert.match(html, /So sánh pivot đầu mảng và Median-of-Three qua cài đặt Java/);
+  assert.match(readme, /^# Tìm hiểu cách chọn pivot trong QuickSort/m);
+  assert.ok(html.includes('id="problem"') && html.includes('id="median"'),
+    "retain both the selection problem and Median-of-Three method");
+});
