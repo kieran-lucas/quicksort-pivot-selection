@@ -9,7 +9,8 @@ Mini báo cáo học thuật bằng tiếng Việt, sử dụng mã phân hoạc
 1. Vấn đề: pivot cố định có thể gây phân hoạch lệch và thời gian Θ(n²).
 2. Giải pháp: chọn trung vị của ba phần tử đầu / giữa / cuối.
 3. Mã Java: giữ nguyên two-way partition, chỉ đổi bước chọn pivot.
-4. Mô phỏng: các bước đệ quy, quét hai con trỏ, hoán đổi và số phép so sánh.
+4. Animation: hai QuickSort chạy song song bằng các cột di chuyển theo hoán đổi thật, có Play/Pause, bước trước/sau, tốc độ, tua và chế độ quét chi tiết.
+   Phần truy vết thủ công vẫn có sẵn ở bên dưới, mặc định thu gọn.
 5. Đánh giá: so sánh hệ số kỳ vọng `2n ln n` và `(12/7)n ln n`, tính cả overhead chọn pivot và nêu giới hạn worst-case.
 
 Giao diện là **một trang báo cáo tối giản**, không có thanh mục lục hay đồ họa trang trí.
@@ -20,8 +21,9 @@ Giao diện là **một trang báo cáo tối giản**, không có thanh mục l
 | --- | --- |
 | `index.html` | Nội dung báo cáo và giao diện minh họa |
 | `styles.css` | Kiểu chữ, bố cục đơn cột và responsive |
-| `engine.js` | Lõi QuickSort, phân hoạch hai con trỏ và ghi lại trace |
-| `app.js` | Điều khiển mô phỏng, nhập dữ liệu, bảng so sánh |
+| `engine.js` | Lõi QuickSort, phân hoạch hai con trỏ, trace và định danh phần tử phục vụ animation |
+| `app.js` | Điều khiển nhập dữ liệu, bảng so sánh và truy vết từng bước |
+| `animation.js` | Hiển thị animation song song, quản lý Play/Pause và tốc độ |
 | `src/QuickPivotSelection.java` | Mã Java tương ứng với thuật toán từ bài giảng |
 | `tests/quicksort.test.cjs` | Kiểm thử thuật toán và bất biến phân hoạch |
 | `.github/workflows/verify.yml` | Tự động chạy test Node.js và biên dịch Java |
