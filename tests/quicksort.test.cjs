@@ -98,3 +98,20 @@ test("animation identities track each actual exchange, even when values repeat",
     }
   }
 });
+
+
+test("math display blocks stay HTML-safe and use MathJax inline delimiters", () => {
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const html = fs.readFileSync(path.join(__dirname, "../index.html"), "utf8");
+  const blocks = [...html.matchAll(/<div class="math-display">([\s\S]*?)<\/div>/g)];
+  assert.equal(blocks.length, 11);
+  for (const [, tex] of blocks) {
+    assert.ok(tex.startsWith("\\(\\displaystyle "), "display equations should use working inline delimiters");
+    assert.ok(tex.endsWith("\\)"), "missing MathJax closing delimiter");
+    assert.ok(!tex.includes("<"), "raw < is HTML markup, not safe text in LaTeX");
+    assert.ok(!tex.includes("\\["), "do not mix display delimiters");
+  }
+  assert.ok(html.includes("mathjax@3.2.2"), "MathJax must load");
+  assert.ok(html.includes("\\dfrac"), "fractions should use dfrac");
+});
