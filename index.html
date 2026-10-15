@@ -11,6 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script src="engine.js" defer></script>
+  <script src="animation.js" defer></script>
   <script src="app.js" defer></script>
 </head>
 <body>
@@ -125,6 +126,54 @@
       </div>
       <p id="error" class="error" role="alert" hidden></p>
 
+      <section class="dual-animation" id="animation" aria-label="Animation so sánh QuickSort">
+        <div class="animation-heading">
+          <h3>Animation đối chứng</h3>
+          <p>Hai thuật toán đi một sự kiện mỗi nhịp; bên hoàn tất trước sẽ giữ nguyên kết quả.</p>
+        </div>
+        <div class="animation-panels">
+          <article class="animation-panel" aria-labelledby="anim-title-first">
+            <div class="animation-panel-heading">
+              <h4 id="anim-title-first">Pivot đầu mảng</h4>
+              <span id="anim-step-first" class="animation-step">Bước 1</span>
+            </div>
+            <div class="animation-plot" id="animation-bars-first" aria-label="Các phần tử của QuickSort dùng pivot đầu mảng"></div>
+            <div class="animation-meta"><strong id="anim-phase-first">Ban đầu</strong><span id="anim-metrics-first">0 so sánh · 0 hoán đổi</span></div>
+            <p class="animation-caption" id="anim-caption-first">Mảng ban đầu.</p>
+          </article>
+          <article class="animation-panel" aria-labelledby="anim-title-median">
+            <div class="animation-panel-heading">
+              <h4 id="anim-title-median">Median-of-Three</h4>
+              <span id="anim-step-median" class="animation-step">Bước 1</span>
+            </div>
+            <div class="animation-plot" id="animation-bars-median" aria-label="Các phần tử của QuickSort dùng median-of-three"></div>
+            <div class="animation-meta"><strong id="anim-phase-median">Ban đầu</strong><span id="anim-metrics-median">0 so sánh · 0 hoán đổi</span></div>
+            <p class="animation-caption" id="anim-caption-median">Mảng ban đầu.</p>
+          </article>
+        </div>
+        <div class="animation-controls" role="group" aria-label="Điều khiển animation">
+          <button type="button" id="anim-play" class="run" aria-pressed="false">▶ Phát</button>
+          <button type="button" id="anim-prev" class="animation-button" aria-label="Sự kiện trước">←</button>
+          <button type="button" id="anim-next" class="animation-button" aria-label="Sự kiện sau">→</button>
+          <button type="button" id="anim-reset" class="animation-button">Làm lại</button>
+          <label class="speed-label" for="anim-speed">Tốc độ</label>
+          <select id="anim-speed" aria-label="Tốc độ phát">
+            <option value="0.5">0,5×</option>
+            <option value="1" selected>1×</option>
+            <option value="2">2×</option>
+          </select>
+        </div>
+        <div class="animation-timeline">
+          <input type="range" id="anim-progress" min="0" max="0" value="0" aria-label="Tiến trình animation">
+          <span id="anim-counter">1 / 1</span>
+        </div>
+        <div class="animation-foot">
+          <label><input type="checkbox" id="anim-details"> Hiện từng phép quét của i, j</label>
+          <span id="anim-status" role="status">Tạm dừng</span>
+        </div>
+        <p class="animation-legend">Viền đậm: pivot · viền nét đứt: ứng viên · xám nhạt: đã cố định. Chiều cao cột biểu thị giá trị tương đối, không phải thời gian chạy.</p>
+      </section>
+
       <div class="results" aria-live="polite">
         <table class="metric-table">
           <thead><tr><th>Chỉ tiêu</th><th>Pivot đầu</th><th>Median-of-Three</th></tr></thead>
@@ -144,6 +193,8 @@
         <div id="split-median" class="split-meter"></div>
       </figure>
 
+      <details class="trace-disclosure">
+        <summary>Truy vết mảng theo từng bước</summary>
       <div class="trace">
         <div class="trace-header">
           <h3>Diễn tiến thuật toán</h3>
@@ -163,6 +214,7 @@
         </div>
         <p class="legend">Viền đậm: pivot · xám nhạt: vị trí pivot đã cố định · <code>i</code>, <code>j</code>: con trỏ đang quét (chế độ chi tiết).</p>
       </div>
+      </details>
     </div>
     <p class="small">Bộ đếm đo số phép so sánh trên <em>mảng hiện tại</em>, không đo mili-giây và không đại diện cho tốc độ trung bình. Hai phần tử bằng nhau vẫn có thể được trao đổi theo phân hoạch gốc.</p>
   </section>
