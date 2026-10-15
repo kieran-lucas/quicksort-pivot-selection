@@ -288,3 +288,48 @@ test("Java source blocks are colorized with safe, lossless syntax tokens", () =>
   assert.match(css, /\.code \.java-string\{[^}]*color:/);
   assert.match(css, /\.code \.java-comment\{[^}]*color:/);
 });
+
+
+test("problem-to-solution narrative covers four eight-key patterns and both extreme endpoints", () => {
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const html = fs.readFileSync(path.join(__dirname, "../index.html"), "utf8");
+  const css = fs.readFileSync(path.join(__dirname, "../styles.css"), "utf8");
+  const problem = html.split('<section id="problem"')[1].split('<section id="median"')[0];
+  const medianSection = html.split('<section id="median"')[1].split('<section id="code"')[0];
+  const lab = html.split('<section id="lab"')[1].split('<section id="analysis"')[0];
+  assert.match(problem, /pivot ở hai đầu trở nên bất lợi/);
+  const cases = [
+    ["Tăng dần", [1, 2, 3, 4, 5, 6, 7, 8], [0, 7], 4, [3, 4]],
+    ["Giảm dần", [8, 7, 6, 5, 4, 3, 2, 1], [7, 0], 5, [4, 3]],
+    ["Gần có thứ tự", [1, 2, 3, 5, 4, 6, 7, 8], [0, 7], 5, [4, 3]],
+    ["Hỗn hợp, cực trị ở hai đầu", [8, 7, 3, 4, 6, 5, 2, 1], [7, 0], 4, [3, 4]]
+  ];
+  assert.equal((problem.match(/class="pattern-values"/g) || []).length, cases.length);
+  for (const [name, input, firstSplit, expectedMedianPivot, medianSplit] of cases) {
+    assert.ok(problem.includes(name), "missing pattern " + name);
+    assert.ok(problem.includes("\\([" + input.join(",") + "]\\)"), "wrong example for " + name);
+    assert.equal(input.length, 8);
+    assert.deepEqual([Math.min(...input), Math.max(...input)],
+      [Math.min(input[0], input.at(-1)), Math.max(input[0], input.at(-1))],
+      "both ends should be extrema in this specific example");
+    const first = run(input, "first").frames.find(f => f.type === "fixed");
+    const median = run(input, "median").frames.find(f => f.type === "fixed");
+    assert.deepEqual([first.pivot - first.lo, first.hi - first.pivot], firstSplit);
+    assert.equal(median.array[median.pivot], expectedMedianPivot);
+    assert.deepEqual([median.pivot - median.lo, median.hi - median.pivot], medianSplit);
+  }
+  assert.match(problem, /Pivot đầu \\\(8\\\)[\s\S]*?\\\(7:0\\\)/);
+  assert.match(problem, /Pivot cuối \\\(1\\\)[\s\S]*?\\\(0:7\\\)/);
+  assert.match(problem, /Median-of-Three \\\(4\\\)[\s\S]*?\\\(3:4\\\)/);
+  assert.match(problem, /mô phỏng bên dưới chỉ đối chứng/);
+  assert.match(problem, /hoán vị ngẫu nhiên/);
+  assert.match(problem, /StdRandom\.shuffle\(a\)/);
+  assert.match(problem, /T\(n\)=T\(n-1\)/);
+  assert.match(medianSection, /<strong>Giải pháp:<\/strong>/);
+  assert.match(medianSection, /không phải trung vị của toàn mảng/);
+  assert.match(medianSection, /phân hoạch ba chiều/);
+  assert.match(lab, /Hỗn hợp<\/strong>, <strong>Tăng dần<\/strong>, <strong>Giảm dần<\/strong>/);
+  assert.match(css, /\.pattern-list li\{display:grid/);
+  assert.match(css, /@media\(max-width:700px\)\{\s*\.pattern-list li\{grid-template-columns:minmax\(0,1fr\)/);
+});
