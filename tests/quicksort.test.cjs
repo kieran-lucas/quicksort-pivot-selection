@@ -384,7 +384,7 @@ test("all report UI colors are grayscale; Java syntax colors remain distinct", (
   assert.match(css, /\.animation-bar\.pivot\{background:#363636/);
   assert.match(css, /\.trace-tab\.active\{border-color:#494949/);
   assert.match(css, /\.animation-timeline input\{[^}]*accent-color:#202020/);
-  assert.match(html, /styles\.css\?v=20261015-body-font-v14/);
+  assert.match(html, /styles\.css\?v=20261015-spacing-review-v16/);
 });
 
 
@@ -523,7 +523,7 @@ test("pivotIndex explicitly selects between first and median pivots", () => {
   for (const sample of [code, java]) {
     assert.match(sample, /int pivotIndex = low;/);
     assert.match(sample, /pivotIndex = medianOf3\(a, low, mid, high\);/);
-    assert.match(sample, /exch\(a, low, pivotIndex\);/);
+    assert.match(sample, /if \(pivotIndex != low\) exch\(a, low, pivotIndex\);/);
     assert.ok(sample.indexOf("int pivotIndex = low;") <
       sample.indexOf("pivotIndex = medianOf3(a, low, mid, high);"));
     assert.ok(sample.indexOf("exch(a, low, pivotIndex);") <
@@ -540,4 +540,43 @@ test("pivotIndex explicitly selects between first and median pivots", () => {
   assert.deepEqual(first.result, median.result);
   assert.equal(first.comparisons, 39);
   assert.equal(median.comparisons, 27);
+});
+
+
+test("layout removes redundant dividers while retaining section hierarchy and syntax colors", () => {
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const html = fs.readFileSync(path.join(__dirname, "../index.html"), "utf8");
+  const css = fs.readFileSync(path.join(__dirname, "../styles.css"), "utf8");
+  assert.equal((html.match(/<section\b/g) || []).length,
+    (html.match(/<\/section>/g) || []).length, "sections must stay balanced");
+  assert.match(css, /\.page>section\{padding:46px 0 49px;border-bottom:1px solid var\(--line\)/);
+  assert.match(css, /\.simple-figure\{[^}]*border:0/);
+  assert.match(css, /\.dual-animation\{[^}]*border:0/);
+  assert.match(css, /\.math-derivation\{[^}]*border:0/);
+  assert.match(css, /\.sources\{[^}]*border:0/);
+  assert.match(css, /\.metric-table th,\.metric-table td\{[^}]*border-bottom:0/);
+  assert.match(css, /\.metric-table thead th\{border-bottom:1px solid #d5d5d5/);
+  assert.match(css, /\.conclusion\{[^}]*border-top:1px solid var\(--line\)/);
+  assert.match(css, /\.code \.java-keyword\{color:#7950a4/);
+  assert.match(html, /styles\.css\?v=20261015-spacing-review-v16/);
+});
+
+test("selected pivot swaps only when positions differ", () => {
+  const fs = require("node:fs");
+  const path = require("node:path");
+  for (const file of ["index.html", "src/QuickPivotSelection.java"]) {
+    const code = fs.readFileSync(path.join(__dirname, "..", file), "utf8");
+    assert.match(code, /if \(pivotIndex != low\) exch\(a, low, pivotIndex\);/);
+    assert.doesNotMatch(code, /(?:^|\n)\s+exch\(a, low, pivotIndex\);/);
+  }
+  const engine = fs.readFileSync(path.join(__dirname, "../engine.js"), "utf8");
+  assert.match(engine, /if \(exchange\(low, pivotIndex\)\)/);
+  for (const input of [[1], [2, 1], [1, 2, 3, 4, 5, 6, 7],
+    [8, 7, 3, 4, 6, 5, 2, 1], [4, 4, 4, 4, 4, 4, 4]]) {
+    const expected = input.slice().sort((a,b) => a-b);
+    for (const method of ["first", "median"]) {
+      assert.deepEqual(run(input, method).result, expected);
+    }
+  }
 });
