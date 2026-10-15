@@ -125,11 +125,11 @@ test("illustrative values are LaTeX, but code identifiers stay monospace", () =>
   const app = file("app.js");
   const animation = file("animation.js");
   const math = file("math-format.js");
-  assert.match(html, /class="pivot-compare"[\s\S]*?\\\(14:0\\\)[\s\S]*?\\\(7:7\\\)/);
-  assert.match(html, /class="candidate"[\s\S]*?\\\(\\displaystyle 15\\\)/);
-  assert.match(html, /\\left\[15,\\,2/);
+  assert.match(html, /class="pivot-compare"[\s\S]*?\\\(7:0\\\)[\s\S]*?\\\(3:4\\\)/);
+  assert.match(html, /class="candidate"[\s\S]*?\\\(\\displaystyle 8\\\)/);
+  assert.match(html, /\\left\[8,\\,7/);
   assert.match(html, /<code>partition\(\)<\/code>/);
-  assert.match(html, /src="math-format\.js"/);
+  assert.match(html, /src="math-format\.js(?:\?[^"]+)?"/);
   assert.match(app, /math\.setNumber/);
   assert.match(app, /math\.latex\(value\)/);
   assert.match(animation, /math\.latex\(value\)/);
@@ -145,66 +145,73 @@ test("candidate figures use MathJax fonts; function headings use code font", () 
   const figure = html.match(/<div class="candidate-array"[\s\S]*?<\/div>/)?.[0];
   assert.ok(figure, "missing median-of-three figure");
   const values = [...figure.matchAll(/\\\(\\displaystyle\s+(-?\d+)\\\)/g)].map(m => +m[1]);
-  assert.deepEqual(values, [15, 2, 4, 9, 14, 7, 3, 8, 11, 12, 13, 10, 6, 5, 1]);
+  assert.deepEqual(values, [8, 7, 3, 4, 6, 5, 2, 1]);
   assert.match(css, /\.candidate-array mjx-container\[jax="CHTML"\]/);
   assert.doesNotMatch(css, /\.candidate-array>span\{[^}]*font:[^}]*var\(--mono\)/);
   assert.match(html, /<code class="heading-code">partition\(\)<\/code>/);
   assert.match(css, /h2 code\.heading-code\{[^}]*font-family:var\(--mono\)/);
 });
 
-test("unsorted fifteen-element default and illustrated partition statistics agree", () => {
+test("eight unsorted keys: article figures and metrics match the same engine", () => {
   const fs = require("node:fs");
   const path = require("node:path");
   const html = fs.readFileSync(path.join(__dirname, "../index.html"), "utf8");
   const app = fs.readFileSync(path.join(__dirname, "../app.js"), "utf8");
-  const example = [15, 2, 4, 9, 14, 7, 3, 8, 11, 12, 13, 10, 6, 5, 1];
-  assert.match(html, /<option value="mixed" selected>Hỗn hợp/);
-  assert.match(html, /value="15, 2, 4, 9, 14, 7, 3, 8, 11, 12, 13, 10, 6, 5, 1"/);
+  const example = [8, 7, 3, 4, 6, 5, 2, 1];
+  assert.match(html, /<option value="mixed" selected>Hỗn hợp \(8 phần tử\)<\/option>/);
+  assert.ok(html.includes('value="' + example.join(", ") + '"'));
   assert.ok(app.includes("mixed: [" + example.join(", ") + "]"));
   const first = run(example, "first");
   const median = run(example, "median");
   const pFirst = first.frames.find(f => f.type === "fixed");
   const pMedian = median.frames.find(f => f.type === "fixed");
-  assert.equal(example[7], 8);
-  assert.equal(pFirst.array[pFirst.pivot], 15);
-  assert.equal(pMedian.array[pMedian.pivot], 8);
-  assert.deepEqual([pFirst.pivot, 14 - pFirst.pivot], [14, 0]);
-  assert.deepEqual([pMedian.pivot, 14 - pMedian.pivot], [7, 7]);
-  assert.equal(first.comparisons, 103);
-  assert.equal(median.comparisons, 67);
-  assert.equal(first.swaps, 11);
-  assert.equal(median.swaps, 17);
+  assert.deepEqual([example[0], example[3], example[7]], [8, 4, 1]);
+  assert.equal(pFirst.array[pFirst.pivot], 8);
+  assert.equal(pMedian.array[pMedian.pivot], 4);
+  assert.deepEqual([pFirst.pivot, 7 - pFirst.pivot], [7, 0]);
+  assert.deepEqual([pMedian.pivot, 7 - pMedian.pivot], [3, 4]);
+  assert.deepEqual([first.comparisons, median.comparisons], [39, 27]);
+  assert.deepEqual([first.swaps, median.swaps], [3, 7]);
+  assert.deepEqual([first.depth, median.depth], [7, 3]);
 });
 
-
-test("animation counts observable operations separately for each pivot strategy", () => {
+test("default visualization shows EVERY comparison; compact hides only comparisons", () => {
   const fs = require("node:fs");
   const path = require("node:path");
   const source = require("../engine.js");
-  const input = [15, 2, 4, 9, 14, 7, 3, 8, 11, 12, 13, 10, 6, 5, 1];
+  const input = [8, 7, 3, 4, 6, 5, 2, 1];
   const first = source.run(input, "first");
   const median = source.run(input, "median");
-  const f = source.presentationFrames(first.frames);
-  const m = source.presentationFrames(median.frames);
-  assert.equal(f.length, 131);
-  assert.equal(m.length, 83);
-  assert.equal(source.presentationFrames(first.frames, true).length, 153);
-  assert.equal(source.presentationFrames(median.frames, true).length, 101);
-  assert.deepEqual(f.at(0).array, input);
-  assert.deepEqual(m.at(0).array, input);
-  assert.deepEqual(f.at(-1).array, first.result);
-  assert.deepEqual(m.at(-1).array, median.result);
-  assert.equal(f.at(-1).comparisons, 103);
-  assert.equal(m.at(-1).comparisons, 67);
-  assert.ok(f.some(frame => frame.type === "scan"));
-  assert.ok(m.some(frame => frame.type === "scan"));
-  assert.ok(!f.some(frame => frame.type === "enter" || frame.type === "cross"));
-  const anim = fs.readFileSync(path.join(__dirname, "../animation.js"), "utf8");
+  const fullF = source.presentationFrames(first.frames);
+  const fullM = source.presentationFrames(median.frames);
+  const compactF = source.presentationFrames(first.frames, true);
+  const compactM = source.presentationFrames(median.frames, true);
+  assert.deepEqual([fullF.length, fullM.length], [55, 40]);
+  assert.deepEqual([compactF.length, compactM.length], [16, 13]);
+  for (const current of [first, median]) {
+    const comps = current.frames.filter(f => f.type === "scan" || f.type === "compare");
+    assert.equal(comps.length, current.comparisons,
+      "a separate frame must exist for each comparison, including pivot samples");
+    const full = source.presentationFrames(current.frames);
+    const compact = source.presentationFrames(current.frames, true);
+    assert.deepEqual(full.at(0).array, input);
+    assert.deepEqual(full.at(-1).array, current.result);
+    assert.deepEqual(compact.at(-1).array, current.result);
+    assert.equal(full.filter(f => f.type === "scan" || f.type === "compare").length,
+      current.comparisons);
+    assert.ok(!compact.some(f => f.type === "scan" || f.type === "compare"));
+    assert.ok(!full.some(f => f.type === "enter" || f.type === "cross"));
+  }
+  assert.ok(median.frames.some(f => f.type === "compare"), "median sampling comparisons must be shown");
+  const animation = fs.readFileSync(path.join(__dirname, "../animation.js"), "utf8");
   const app = fs.readFileSync(path.join(__dirname, "../app.js"), "utf8");
   const html = fs.readFileSync(path.join(__dirname, "../index.html"), "utf8");
-  assert.match(anim, /QuickSortEngine\.presentationFrames/);
+  assert.match(animation, /compact: false/);
+  assert.match(app, /compact: false/);
+  assert.match(animation, /QuickSortEngine\.presentationFrames/);
   assert.match(app, /engine\.presentationFrames/);
-  assert.match(anim, /"Bước ".*?state\.tick/);
-  assert.doesNotMatch(anim + app, /\\dfrac\{/);
-  assert.match(html, /Bước \\\(1\\\) trên \\\(1\\\)/);
+  assert.match(html, /Rút gọn \(ẩn các lần so sánh\)/);
+  assert.match(html, /Bước \\\(1\\\) · Tổng \\\(1\\\) bước/);
+  assert.doesNotMatch(animation + app, /\\dfrac\{/);
+  assert.doesNotMatch(html, /15 phần tử/);
 });
