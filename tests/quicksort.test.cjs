@@ -384,7 +384,7 @@ test("all report UI colors are grayscale; Java syntax colors remain distinct", (
   assert.match(css, /\.animation-bar\.pivot\{background:#363636/);
   assert.match(css, /\.trace-tab\.active\{border-color:#494949/);
   assert.match(css, /\.animation-timeline input\{[^}]*accent-color:#202020/);
-  assert.match(html, /styles\.css\?v=20261015-inline-arrows-v13/);
+  assert.match(html, /styles\.css\?v=20261015-body-font-v14/);
 });
 
 
@@ -425,7 +425,7 @@ test("conclusion draws attention to the supported result without extra graphics"
   assert.match(conclusion, /<h3 id="conclusion-heading">Kết luận<\/h3>/);
   assert.match(conclusion, /\\\(14\{,\}29\\%\\\)/);
   assert.doesNotMatch(conclusion, /<strong>\\\(14/, "result must remain plain inline math");
-  assert.match(conclusion, /hoán vị ngẫu nhiên/);
+  assert.match(conclusion, /giá trị không trùng nhau và thứ tự ban đầu ngẫu nhiên/);
   assert.match(conclusion, /\\Theta\(n\^2\)/);
   assert.match(css, /\.conclusion\{[^}]*border-top:1px solid var\(--line\)/);
   assert.match(css, /\.conclusion h3\{font:650 17px/);
@@ -488,4 +488,24 @@ test("input action clearly applies data without implying animation playback", ()
   assert.match(app, /\$\("run"\)\.addEventListener\("click", run\)/);
   assert.match(app, /if \(event\.key === "Enter"\) run\(\)/);
   assert.match(html, /id="anim-play"/, "animation Play/Pause remains separate");
+});
+
+
+test("section indices share the prose font and inline fraction uses dfrac", () => {
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const html = fs.readFileSync(path.join(__dirname, "../index.html"), "utf8");
+  const css = fs.readFileSync(path.join(__dirname, "../styles.css"), "utf8");
+  const labels = [...html.matchAll(/<div class="section-label">([^<]+)<\/div>/g)].map(m => m[1]);
+  assert.deepEqual(labels, [
+    "01 — Đặt vấn đề", "02 — Phương pháp", "03 — Cài đặt Java",
+    "04 — Mô phỏng", "05 — Phân tích và kết luận"
+  ]);
+  assert.match(css, /\.section-label\{font-family:var\(--sans\)/);
+  assert.doesNotMatch(html, /\\\((?:01|02|03|04|05)\\\) —/);
+  assert.match(html, /\\dfrac\{1\}\{2\}/);
+  assert.doesNotMatch(html, /\\tfrac/);
+  assert.match(html, /mọi hoán vị đầu vào có xác suất như nhau/);
+  assert.match(html, /Nhiều giá trị trùng/);
+  assert.match(html, /So sánh giá trị/);
 });
