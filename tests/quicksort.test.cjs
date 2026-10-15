@@ -126,7 +126,7 @@ test("illustrative values are LaTeX, but code identifiers stay monospace", () =>
   const animation = file("animation.js");
   const math = file("math-format.js");
   assert.match(html, /class="split-example"[\s\S]*?\\\(1\\\)[\s\S]*?\\\(2\\quad3/);
-  assert.match(html, /class="candidate"[\s\S]*?\\\(8\\\)/);
+  assert.match(html, /class="candidate"[\s\S]*?\\\(\\displaystyle 8\\\)/);
   assert.match(html, /\\left\[1,\\,2/);
   assert.match(html, /<code>partition\(\)<\/code>/);
   assert.match(html, /src="math-format\.js"/);
