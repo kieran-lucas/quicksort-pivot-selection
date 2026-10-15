@@ -112,8 +112,8 @@
     $("anim-prev").disabled = state.tick === 0;
     $("anim-next").disabled = state.tick === state.max;
     const done = state.tick === state.max;
-    $("anim-status").textContent = done ? "Đã hoàn tất cả hai" :
-      state.playing ? "Đang chạy" : "Tạm dừng";
+    $("anim-status").textContent = done ? "Hoàn tất" :
+      state.playing ? "Đang chạy" : state.tick === 0 ? "Sẵn sàng" : "Tạm dừng";
   }
 
   function seek(tick, animate = false) {
