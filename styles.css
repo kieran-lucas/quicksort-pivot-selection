@@ -78,8 +78,8 @@ h3 code{font:500 .88em/1.3 var(--mono)}
 /* Java tokens: restrained, high-contrast palette inspired by code editors.
    Source text is unchanged, so selection and copying behave normally. */
 .code .java-keyword{color:#7950a4;font-weight:650}
-.code .java-primitive{color:#08798a;font-weight:600}
-.code .java-type{color:#147487;font-weight:600}
+.code .java-primitive{color:#3079b7;font-weight:600}
+.code .java-type{color:#3079b7;font-weight:600}
 .code .java-function{color:#235fa1;font-weight:600}
 .code .java-number{color:#af5a17}
 .code .java-literal{color:#a14d7b;font-weight:600}
