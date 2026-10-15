@@ -401,7 +401,7 @@ test("low/high names are consistent across Java, article and live engine frames"
   assert.match(html, /\\mathrm\{high\}/);
   assert.match(html, /private static int partition\(int\[\] a, int low, int high\)/);
   assert.match(html, /private static void sort\(int\[\] a, int low, int high,/);
-  assert.match(html, /src="engine\.js\?v=20261015-conclusion-v10"/);
+  assert.match(html, /src="engine\.js\?v=20261015-explicit-pivot-v15"/);
   assert.match(html, /src="animation\.js\?v=20261015-boundaries-v9"/);
   assert.match(html, /src="app\.js\?v=20261015-boundaries-v9"/);
   const engine = require("../engine.js");
@@ -508,4 +508,36 @@ test("section indices share the prose font and inline fraction uses dfrac", () =
   assert.match(html, /mọi hoán vị đầu vào có xác suất như nhau/);
   assert.match(html, /Nhiều giá trị trùng/);
   assert.match(html, /So sánh giá trị/);
+});
+
+
+test("pivotIndex explicitly selects between first and median pivots", () => {
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const read = file => fs.readFileSync(path.join(__dirname, "..", file), "utf8");
+  const html = read("index.html");
+  const java = read("src/QuickPivotSelection.java");
+  const engine = read("engine.js");
+  const code = html.match(/id="selection-code"><code class="language-java">([\s\S]*?)<\/code><\/pre>/)?.[1];
+  assert.ok(code, "QuickSort code example must exist");
+  for (const sample of [code, java]) {
+    assert.match(sample, /int pivotIndex = low;/);
+    assert.match(sample, /pivotIndex = medianOf3\(a, low, mid, high\);/);
+    assert.match(sample, /exch\(a, low, pivotIndex\);/);
+    assert.ok(sample.indexOf("int pivotIndex = low;") <
+      sample.indexOf("pivotIndex = medianOf3(a, low, mid, high);"));
+    assert.ok(sample.indexOf("exch(a, low, pivotIndex);") <
+      sample.indexOf("int j = partition(a, low, high);"));
+  }
+  assert.match(engine, /let pivotIndex = low;/);
+  assert.match(engine, /pivotIndex = medianOf3\(low, mid, high, low, high\)/);
+  assert.match(engine, /exchange\(low, pivotIndex\)/);
+  const input = [8, 7, 3, 4, 6, 5, 2, 1];
+  const first = run(input, "first");
+  const median = run(input, "median");
+  assert.equal(first.frames.find(f => f.type === "select").pivot, 0);
+  assert.equal(median.frames.find(f => f.type === "select").pivot, 3);
+  assert.deepEqual(first.result, median.result);
+  assert.equal(first.comparisons, 39);
+  assert.equal(median.comparisons, 27);
 });
