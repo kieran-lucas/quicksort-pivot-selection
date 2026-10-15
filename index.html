@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20261015-inline-arrows-v13">
+  <link rel="stylesheet" href="styles.css?v=20261015-body-font-v14">
   <script>
     window.MathJax = {
       tex: {
@@ -178,7 +178,7 @@
           <option value="ascending">Tăng dần</option>
           <option value="descending">Giảm dần</option>
           <option value="nearly">Gần có thứ tự</option>
-          <option value="duplicates">Nhiều khóa trùng</option>
+          <option value="duplicates">Nhiều giá trị trùng</option>
           <option value="custom">Tự nhập</option>
         </select>
       </div>
@@ -241,7 +241,7 @@
         <table class="metric-table">
           <thead><tr><th>Chỉ tiêu</th><th>Pivot đầu</th><th>Median-of-Three</th></tr></thead>
           <tbody>
-            <tr><td>So sánh khóa</td><td id="first-comparisons">–</td><td id="median-comparisons">–</td></tr>
+            <tr><td>So sánh giá trị</td><td id="first-comparisons">–</td><td id="median-comparisons">–</td></tr>
             <tr><td>Hoán đổi</td><td id="first-swaps">–</td><td id="median-swaps">–</td></tr>
             <tr><td>Số lần phân hoạch</td><td id="first-partitions">–</td><td id="median-partitions">–</td></tr>
             <tr><td>Độ sâu phân hoạch lớn nhất</td><td id="first-depth">–</td><td id="median-depth">–</td></tr>
@@ -287,7 +287,7 @@
   <section id="analysis" aria-labelledby="analysis-heading">
     <div class="section-label">05 — Phân tích và kết luận</div>
     <h2 id="analysis-heading">Chi phí và hiệu quả kỳ vọng</h2>
-    <p>Giả sử các khóa <strong>phân biệt</strong> và mọi hoán vị đầu vào đồng xác suất. Với \(n\) lớn, vị trí chuẩn hóa \(X\) của pivot đầu có mật độ \(f_1(x)=1\); trung vị ba mẫu có mật độ \(f_3(x)=6x(1-x)\), tập trung hơn quanh \(x=\dfrac{1}{2}\).</p>
+    <p>Giả sử các giá trị trong mảng không trùng nhau và mọi hoán vị đầu vào có xác suất như nhau. Với \(n\) lớn, vị trí chuẩn hóa \(X\) của pivot đầu có mật độ \(f_1(x)=1\); trung vị ba mẫu có mật độ \(f_3(x)=6x(1-x)\), tập trung hơn quanh \(x=\dfrac{1}{2}\).</p>
     <div class="math-display">\(\displaystyle f_1(x)=1,\qquad f_3(x)=6x(1-x),\qquad 0\lt x\lt 1. \)</div>
     <p>Ba vị trí đầu, giữa và cuối tương ứng với ba mẫu ngẫu nhiên trong mô hình hoán vị đều, nhưng không phải với mọi đầu vào.</p>
     <div class="math-derivation">
@@ -331,7 +331,7 @@
     <p>Mức giảm của hệ số dẫn đầu:</p>
     <div class="math-display">\(\displaystyle 1-\dfrac{12}{7}\cdot\dfrac{1}{2}=\dfrac{1}{7}\approx 14{,}29\%. \)</div>
     <p>Số lần chọn pivot là \(O(n)\), nên chi phí lấy ba mẫu chỉ bổ sung \(O(n)\) phép so sánh và không làm thay đổi hệ số của \(n\ln n\). Số hoán đổi và thời gian chạy thực tế không nhất thiết giảm.</p>
-    <p>Với nhiều khóa bằng nhau, phân hoạch ba chiều phù hợp hơn; với mảng con nhỏ có thể dùng Insertion Sort.</p>
+    <p>Với nhiều giá trị bằng nhau, phân hoạch ba chiều phù hợp hơn; với mảng con nhỏ có thể dùng Insertion Sort.</p>
     <div class="conclusion" aria-labelledby="conclusion-heading">
       <h3 id="conclusion-heading">Kết luận</h3>
       <p class="conclusion-lead">Với mảng có các giá trị không trùng nhau và thứ tự ban đầu ngẫu nhiên, Median-of-Three thường tạo phân hoạch cân bằng hơn. Khi kích thước mảng lớn, hệ số dẫn đầu của số phép so sánh kỳ vọng giảm khoảng \(14{,}29\%\) so với chọn pivot đầu mảng.</p>
