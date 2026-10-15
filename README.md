@@ -1,8 +1,6 @@
-# Tìm hiểu cách chọn pivot trong QuickSort
+# Tìm hiểu kỹ thuật chọn pivot Median-of-Three trong QuickSort
 
-Tìm hiểu cách chọn pivot đầu mảng và **Median-of-Three**, dựa trên thủ tục phân hoạch của **Robert Sedgewick & Kevin Wayne — Algorithms, Fourth Edition**. Nội dung gồm cài đặt Java, mô phỏng và phân tích số phép so sánh.
-
-**Website:** https://kieran-lucas.github.io/quicksort-pivot-selection/
+Tìm hiểu cách chọn pivot **Median-of-Three** và đối chiếu với pivot đầu mảng trên cùng thủ tục phân hoạch, dựa theo **Robert Sedgewick & Kevin Wayne — Algorithms, Fourth Edition**. Nội dung gồm cài đặt Java, mô phỏng và phân tích số phép so sánh.
 
 ## Nội dung
 
@@ -50,6 +48,4 @@ Con số khoảng **14,29%** nói đến giảm *hệ số dẫn đầu số ph�
 
 ## Tài liệu
 
-Robert Sedgewick & Kevin Wayne, *Algorithms, 4th Edition*, [2.3 Quicksort](https://algs4.cs.princeton.edu/lectures/23Quicksort.pdf), đặc biệt các trang 13, 15, 23–24, 27–28, 42–47.
-
-Đối chiếu thêm: https://algs4.cs.princeton.edu/23quicksort/
+Robert Sedgewick & Kevin Wayne, *Algorithms, 4th Edition*, bài giảng 2.3 — *Quicksort*, các slide 13, 15, 23–24, 27–28 và 42–47.
