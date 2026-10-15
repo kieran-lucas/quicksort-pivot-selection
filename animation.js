@@ -10,12 +10,13 @@
   const modes = ["first", "median"];
   const labels = {
     initial: "Ban đầu", enter: "Chọn mảng con", select: "Chọn pivot",
+    compare: "So sánh mẫu",
     move: "Đưa pivot về đầu", scan: "Quét", cross: "Hai con trỏ gặp nhau",
     swap: "Hoán đổi", fixed: "Cố định pivot", done: "Hoàn tất"
   };
   const state = {
     runs: null, frames: null, tick: 0, max: 0, playing: false,
-    timer: null, detailed: false, speed: 1,
+    timer: null, compact: false, speed: 1,
     bars: { first: new Map(), median: new Map() }
   };
 
@@ -25,7 +26,7 @@
   // control-flow enter/cross events are hidden unless expanded.
   function snapshots(mode) {
     if (!state.runs) return [];
-    return window.QuickSortEngine.presentationFrames(state.runs[mode].frames, state.detailed);
+    return window.QuickSortEngine.presentationFrames(state.runs[mode].frames, state.compact);
   }
 
   function currentFrame(mode) {
@@ -94,7 +95,7 @@
       bar.classList.toggle("inactive", !activeSet.has(identity) && frame.type !== "done");
       bar.classList.toggle("pivot", frame.pivot === position && frame.type !== "done");
       bar.classList.toggle("sample", sampleSet.has(position) && frame.type === "select");
-      bar.classList.toggle("scanner", state.detailed && (position === frame.i || position === frame.j));
+      bar.classList.toggle("scanner", !state.compact && (position === frame.i || position === frame.j));
     });
     const done = frame.type === "done";
     const phase = labels[frame.type] || frame.type;
@@ -188,7 +189,7 @@
     });
     $("anim-details").addEventListener("change", (event) => {
       pause();
-      state.detailed = event.target.checked;
+      state.compact = event.target.checked;
       if (state.runs) update(state.runs);
     });
     $("anim-progress").addEventListener("input", (event) => {
