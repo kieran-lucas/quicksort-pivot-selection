@@ -89,7 +89,7 @@
 
   function filteredFrames() {
     const frames = view.runs[view.strategy].frames;
-    return view.detailed ? frames : frames.filter(f => !f.detail);
+    return engine.presentationFrames(frames, view.detailed);
   }
 
   function renderFrame() {
@@ -109,7 +109,7 @@
       done: "Hoàn tất"
     };
     $("step-kind").textContent = labels[frame.type];
-    math.setNumber($("step-count"), String.raw`\dfrac{${view.frameIndex + 1}}{${frames.length}}`);
+    math.rich($("step-count"), "Bước " + (view.frameIndex + 1) + " trên " + frames.length);
     math.rich($("step-caption"), frame.message + " — " +
       fmt(frame.comparisons) + " so sánh, " + fmt(frame.swaps) + " hoán đổi (tích lũy).");
 
