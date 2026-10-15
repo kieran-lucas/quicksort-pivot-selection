@@ -87,7 +87,7 @@
       <figcaption>Tỉ lệ trái : phải không tính pivot. Chọn trung vị của ba giá trị đầu, giữa và cuối cho cách chia \(3:4\), thay vì \(7:0\) hoặc \(0:7\). Trường hợp pivot cuối chỉ dùng để minh họa.</figcaption>
     </figure>
     <p>Nếu mỗi lần phân hoạch chỉ loại được một phần tử, các lần gọi đệ quy sẽ xét những mảng có kích thước \(n-1,n-2,\ldots\). Khi đó:</p>
-    <div class="math-display">\(\displaystyle T(n)=T(n-1)+\Theta(n)=\Theta(n^2).\)</div>
+    <div class="math-display">\(\displaystyle T(n)=T(n-1)+\Theta(n)\quad\Longrightarrow\quad T(n)=\Theta(n^2).\)</div>
     <p>Ngược lại, khi hai phía liên tục gần cân bằng, chi phí là \(\Theta(n\log n)\). Vì vậy, thay vì tìm trung vị của toàn mảng, có thể chọn pivot từ một số ít phần tử đại diện.</p>
     <p class="aside-note">Mô phỏng giữ nguyên thứ tự đầu vào để so sánh riêng cách chọn pivot. Bản QuickSort gốc của Princeton có bước <code>StdRandom.shuffle(a)</code> nhằm tránh phụ thuộc vào thứ tự ban đầu; vì vậy, chọn pivot đầu không mặc nhiên kém trên mọi dữ liệu.</p>
   </section>
@@ -294,7 +294,7 @@
     <div class="math-display">\(\displaystyle f_1(x)=1,\qquad f_3(x)=6x(1-x),\qquad 0\lt x\lt 1. \)</div>
     <p>Ở mô hình này, ba vị trí đầu, giữa và cuối tương ứng với ba mẫu ngẫu nhiên. Vì \(f_3(x)\) tập trung quanh \(x=\dfrac{1}{2}\), Median-of-Three có xu hướng chọn pivot chia mảng cân bằng hơn.</p>
     <div class="math-derivation">
-      <p>Để chuyển sự khác biệt về cách chia mảng thành số phép so sánh kỳ vọng, dùng hàm:</p>
+      <p>Khi tính chi phí đệ quy, hai mảng con chiếm tỉ lệ \(x\) và \(1-x\) của mảng đang xét. Từ quan hệ truy hồi của QuickSort, ta sử dụng hàm:</p>
       <div class="math-display">\(\displaystyle h(x)=-x\ln x-(1-x)\ln(1-x). \)</div>
       <p>Hàm \(h(x)\) đạt giá trị lớn nhất khi \(x=\dfrac{1}{2}\). Với \(C_n\) là tổng số phép so sánh để sắp xếp \(n\) phần tử, khi \(n\) lớn ta có \(\mathbb E[C_n]\sim cn\ln n\). Hệ số \(c\) được xác định bởi:</p>
       <div class="math-display">\(\displaystyle c=\dfrac{1}{\mathbb E[h(X)]}. \)</div>
