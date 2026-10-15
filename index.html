@@ -56,7 +56,7 @@
     <h2 id="median-heading">Median-of-Three hoạt động thế nào?</h2>
     <p>Thay vì chọn ngay <code>a[lo]</code>, lấy ba ứng viên tại vị trí <code>lo</code>, <code>mid</code> và <code>hi</code>, trong đó:</p>
     <div class="math-display">\[
-      \mathrm{mid}=\mathrm{lo}+\left\lfloor\frac{\mathrm{hi}-\mathrm{lo}}{2}\right\rfloor.
+      \mathrm{mid}=\mathrm{lo}+\left\lfloor\dfrac{\mathrm{hi}-\mathrm{lo}}{2}\right\rfloor.
     \]</div>
     <p>Chọn <strong>trung vị theo giá trị</strong> trong ba ứng viên, rồi chuyển nó về <code>lo</code> để dùng thủ tục phân hoạch ban đầu.</p>
     <figure class="simple-figure">
@@ -242,9 +242,9 @@
   <section id="analysis" aria-labelledby="analysis-heading">
     <div class="section-label">05 — Phân tích và kết luận</div>
     <h2 id="analysis-heading">Lợi ích có bù được chi phí chọn pivot?</h2>
-    <p>Xét mô hình các khóa <strong>phân biệt</strong>, mọi hoán vị đầu vào có xác suất như nhau. Khi \(n\) lớn, vị trí tương đối \(X\) của pivot được chọn ngẫu nhiên có mật độ \(f_1(x)=1\). Nếu lấy trung vị của ba mẫu ngẫu nhiên, mật độ trở thành \(f_3(x)=6x(1-x)\), tập trung nhiều hơn gần \(x=\tfrac12\).</p>
+    <p>Xét mô hình các khóa <strong>phân biệt</strong>, mọi hoán vị đầu vào có xác suất như nhau. Khi \(n\) lớn, vị trí tương đối \(X\) của pivot được chọn ngẫu nhiên có mật độ \(f_1(x)=1\). Nếu lấy trung vị của ba mẫu ngẫu nhiên, mật độ trở thành \(f_3(x)=6x(1-x)\), tập trung nhiều hơn gần \(x=\dfrac{1}{2}\).</p>
     <div class="math-display">\[
-      f_1(x)=1,\qquad f_3(x)=6x(1-x),\qquad 0<x<1.
+      f_1(x)=1,\qquad f_3(x)=6x(1-x),\qquad 0\lt x\lt 1.
     \]</div>
     <p>Với một hoán vị ngẫu nhiên, ba vị trí cố định đầu/giữa/cuối cũng tương ứng với ba mẫu ngẫu nhiên; điều này không đúng với đầu vào tùy ý.</p>
     <div class="math-derivation">
@@ -254,15 +254,15 @@
       \]</div>
       <p>Với chi phí phân hoạch tiệm cận \(n\), số phép so sánh kỳ vọng có dạng \(\mathbb E[C_n]\sim cn\ln n\), trong đó:</p>
       <div class="math-display">\[
-        c=\frac{1}{\mathbb E[h(X)]}.
+        c=\dfrac{1}{\mathbb E[h(X)]}.
       \]</div>
       <p>Thay hai phân bố pivot vào công thức:</p>
       <div class="math-display">\[
         \begin{aligned}
-        \text{Một mẫu:}\quad& \mathbb E[h(X)]=\frac12
+        \text{Một mẫu:}\quad& \mathbb E[h(X)]=\dfrac{1}{2}
           &&\Longrightarrow c=2,\\[3pt]
-        \text{Ba mẫu:}\quad& \mathbb E[h(X)]=\frac7{12}
-          &&\Longrightarrow c=\frac{12}{7}.
+        \text{Ba mẫu:}\quad& \mathbb E[h(X)]=\dfrac{7}{12}
+          &&\Longrightarrow c=\dfrac{12}{7}.
         \end{aligned}
       \]</div>
     </div>
@@ -274,34 +274,34 @@
       \]</div>
       <p>Đối với một mẫu:</p>
       <div class="math-display">\[
-        \mathbb E[h(X)]=\int_0^1 h(x)\,\mathrm dx=\frac12.
+        \mathbb E[h(X)]=\int_0^1 h(x)\,\mathrm dx=\dfrac{1}{2}.
       \]</div>
       <p>Đối với trung vị ba mẫu, dùng tính đối xứng:</p>
       <div class="math-display">\[
         \begin{aligned}
         \mathbb E[h(X)]
           &=-12\int_0^1 x^2(1-x)\ln x\,\mathrm dx\\
-          &=-12\left(-\frac19+\frac1{16}\right)\\
-          &=\frac7{12}.
+          &=-12\left(-\dfrac{1}{9}+\dfrac{1}{16}\right)\\
+          &=\dfrac{7}{12}.
         \end{aligned}
       \]</div>
       <p>Ở đây sử dụng hệ thức:</p>
       <div class="math-display">\[
-        \int_0^1 x^k\ln x\,\mathrm dx=-\frac{1}{(k+1)^2},\qquad k>-1.
+        \int_0^1 x^k\ln x\,\mathrm dx=-\dfrac{1}{(k+1)^2},\qquad k>-1.
       \]</div>
-      <p>Vì vậy \(c_1=2\) và \(c_3=\tfrac{12}{7}\).</p>
+      <p>Vì vậy \(c_1=2\) và \(c_3=\dfrac{12}{7}\).</p>
     </details>
     <table class="metric-table theory-table">
       <thead><tr><th>Chỉ tiêu (bậc dẫn đầu)</th><th>Một mẫu</th><th>Median-of-Three</th></tr></thead>
       <tbody>
         <tr><td>So sánh kỳ vọng</td><td>\(2n\ln n\)</td><td>\(\dfrac{12}{7}n\ln n\)</td></tr>
-        <tr><td>Hoán đổi kỳ vọng</td><td>\(\dfrac13 n\ln n\)</td><td>\(\dfrac{12}{35}n\ln n\)</td></tr>
+        <tr><td>Hoán đổi kỳ vọng</td><td>\(\dfrac{1}{3} n\ln n\)</td><td>\(\dfrac{12}{35}n\ln n\)</td></tr>
         <tr><td>Trường hợp xấu nhất</td><td>\(\Theta(n^2)\)</td><td>\(\Theta(n^2)\)</td></tr>
       </tbody>
     </table>
     <p>Hệ số của số phép so sánh giảm:</p>
     <div class="math-display">\[
-      1-\frac{12/7}{2}=\frac17\approx 14{,}29\%.
+      1-\dfrac{12}{7}\cdot\dfrac{1}{2}=\dfrac{1}{7}\approx 14{,}29\%.
     \]</div>
     <p>Tìm trung vị ba mẫu cần 2–3 phép so sánh mỗi lần, với tối đa \(O(n)\) lần gọi; phần chi phí bổ sung là \(O(n)\), không thay đổi hệ số trước \(n\ln n\). Tuy nhiên, số hoán đổi có thể tăng nhẹ (theo slide 28), và thời gian thực tế còn phụ thuộc dữ liệu, bộ nhớ cùng chi phí cài đặt.</p>
     <p><strong>Giới hạn:</strong> Median-of-Three vẫn có thể tạo phân hoạch lệch, vì thế không loại bỏ worst-case \(\Theta(n^2)\). Với nhiều khóa bằng nhau, kỹ thuật <em>three-way partitioning</em> thường thích hợp hơn; với mảng con nhỏ, có thể chuyển sang Insertion Sort.</p>
