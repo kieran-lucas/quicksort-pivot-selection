@@ -105,7 +105,7 @@ test("math display blocks stay HTML-safe and use MathJax inline delimiters", () 
   const path = require("node:path");
   const html = fs.readFileSync(path.join(__dirname, "../index.html"), "utf8");
   const blocks = [...html.matchAll(/<div class="math-display">([\s\S]*?)<\/div>/g)];
-  assert.equal(blocks.length, 11);
+  assert.equal(blocks.length, 12);
   for (const [, tex] of blocks) {
     assert.ok(tex.startsWith("\\(\\displaystyle "), "display equations should use working inline delimiters");
     assert.ok(tex.endsWith("\\)"), "missing MathJax closing delimiter");
@@ -125,9 +125,9 @@ test("illustrative values are LaTeX, but code identifiers stay monospace", () =>
   const app = file("app.js");
   const animation = file("animation.js");
   const math = file("math-format.js");
-  assert.match(html, /class="split-example"[\s\S]*?\\\(1\\\)[\s\S]*?\\\(2\\quad3/);
-  assert.match(html, /class="candidate"[\s\S]*?\\\(\\displaystyle 8\\\)/);
-  assert.match(html, /\\left\[1,\\,2/);
+  assert.match(html, /class="pivot-compare"[\s\S]*?\\\(14:0\\\)[\s\S]*?\\\(7:7\\\)/);
+  assert.match(html, /class="candidate"[\s\S]*?\\\(\\displaystyle 15\\\)/);
+  assert.match(html, /\\left\[15,\\,2/);
   assert.match(html, /<code>partition\(\)<\/code>/);
   assert.match(html, /src="math-format\.js"/);
   assert.match(app, /math\.setNumber/);
@@ -145,9 +145,33 @@ test("candidate figures use MathJax fonts; function headings use code font", () 
   const figure = html.match(/<div class="candidate-array"[\s\S]*?<\/div>/)?.[0];
   assert.ok(figure, "missing median-of-three figure");
   const values = [...figure.matchAll(/\\\(\\displaystyle\s+(-?\d+)\\\)/g)].map(m => +m[1]);
-  assert.deepEqual(values, [8, 1, 6, 4, 9, 2, 7]);
+  assert.deepEqual(values, [15, 2, 4, 9, 14, 7, 3, 8, 11, 12, 13, 10, 6, 5, 1]);
   assert.match(css, /\.candidate-array mjx-container\[jax="CHTML"\]/);
   assert.doesNotMatch(css, /\.candidate-array>span\{[^}]*font:[^}]*var\(--mono\)/);
   assert.match(html, /<code class="heading-code">partition\(\)<\/code>/);
   assert.match(css, /h2 code\.heading-code\{[^}]*font-family:var\(--mono\)/);
+});
+
+test("unsorted fifteen-element default and illustrated partition statistics agree", () => {
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const html = fs.readFileSync(path.join(__dirname, "../index.html"), "utf8");
+  const app = fs.readFileSync(path.join(__dirname, "../app.js"), "utf8");
+  const example = [15, 2, 4, 9, 14, 7, 3, 8, 11, 12, 13, 10, 6, 5, 1];
+  assert.match(html, /<option value="mixed" selected>Hỗn hợp/);
+  assert.match(html, /value="15, 2, 4, 9, 14, 7, 3, 8, 11, 12, 13, 10, 6, 5, 1"/);
+  assert.ok(app.includes("mixed: [" + example.join(", ") + "]"));
+  const first = run(example, "first");
+  const median = run(example, "median");
+  const pFirst = first.frames.find(f => f.type === "fixed");
+  const pMedian = median.frames.find(f => f.type === "fixed");
+  assert.equal(example[7], 8);
+  assert.equal(pFirst.array[pFirst.pivot], 15);
+  assert.equal(pMedian.array[pMedian.pivot], 8);
+  assert.deepEqual([pFirst.pivot, 14 - pFirst.pivot], [14, 0]);
+  assert.deepEqual([pMedian.pivot, 14 - pMedian.pivot], [7, 7]);
+  assert.equal(first.comparisons, 103);
+  assert.equal(median.comparisons, 67);
+  assert.equal(first.swaps, 11);
+  assert.equal(median.swaps, 17);
 });
