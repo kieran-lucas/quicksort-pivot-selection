@@ -283,13 +283,14 @@
       </div>
       </details>
     </div>
-    <p class="small lab-note">Các chỉ tiêu được tính từ số phép toán, không phải thời gian thực thi.</p>
+    <p class="small lab-note">Kết quả trong bảng được đếm từ từng thao tác, không phải đo thời gian thực thi. Độ sâu phân hoạch là số cấp phân hoạch nhiều nhất trên một nhánh.</p>
   </section>
 
   <section id="analysis" aria-labelledby="analysis-heading">
     <div class="section-label">05 — Phân tích và kết luận</div>
     <h2 id="analysis-heading">Lợi ích khi xét nhiều đầu vào</h2>
-    <p>Kết quả mô phỏng chỉ phản ánh một mảng cụ thể. Để đánh giá số phép so sánh trên nhiều đầu vào, xét các mảng có giá trị không trùng nhau và mọi thứ tự xuất hiện đều có xác suất như nhau. Gọi \(X\) là tỉ lệ phần tử nhỏ hơn pivot: \(X\) gần \(0\) hoặc \(1\) nghĩa là cách chia lệch, còn gần \(\dfrac{1}{2}\) nghĩa là hai phía gần cân bằng. Khi mảng đủ lớn, mật độ của \(X\) đối với pivot đầu và Median-of-Three lần lượt là:</p>
+    <p>Mô phỏng chỉ cho biết kết quả trên một mảng cụ thể. Để so sánh hai cách chọn pivot trên nhiều đầu vào, xét các mảng có giá trị không trùng nhau, trong đó mọi thứ tự xuất hiện đều có xác suất như nhau.</p>
+    <p>Gọi \(X\) là tỉ lệ phần tử nhỏ hơn pivot. Khi \(X\) gần \(0\) hoặc \(1\), hai phía rất lệch; khi \(X\) gần \(\dfrac{1}{2}\), chúng gần cân bằng. Với mảng đủ lớn, hai cách chọn pivot có mật độ của \(X\) lần lượt là:</p>
     <div class="math-display">\(\displaystyle f_1(x)=1,\qquad f_3(x)=6x(1-x),\qquad 0\lt x\lt 1. \)</div>
     <p>Ở mô hình này, ba vị trí đầu, giữa và cuối tương ứng với ba mẫu ngẫu nhiên. Vì \(f_3(x)\) tập trung quanh \(x=\dfrac{1}{2}\), Median-of-Three có xu hướng chọn pivot chia mảng cân bằng hơn.</p>
     <div class="math-derivation">
