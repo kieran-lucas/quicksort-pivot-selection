@@ -358,3 +358,31 @@ test("report uses concise academic prose, keeps derivations and sources", () => 
   assert.ok(html.includes('id="anim-details"'), "retain compact mode");
   assert.ok(html.includes('id="trace-array"'), "retain step tracing");
 });
+
+
+test("all report UI colors are grayscale; Java syntax colors remain distinct", () => {
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const css = fs.readFileSync(path.join(__dirname, "../styles.css"), "utf8");
+  const html = fs.readFileSync(path.join(__dirname, "../index.html"), "utf8");
+  const javaRules = css.split("\n").filter(line => line.startsWith(".code .java-"));
+  assert.ok(javaRules.length >= 10, "Java syntax highlighting must be retained");
+  const coloredCode = javaRules.flatMap(line => [...line.matchAll(/#[0-9a-f]{6}\b/gi)].map(m => m[0]));
+  assert.ok(new Set(coloredCode).size >= 5, "Code tokens need multiple distinct colors");
+  const otherRules = css.split("\n").filter(line => !line.startsWith(".code .java-"));
+  for (const line of otherRules) {
+    for (const [, raw] of line.matchAll(/#([0-9a-f]{3}|[0-9a-f]{6})\b/gi)) {
+      const hex = raw.length === 3 ? raw.split("").map(c => c + c).join("") : raw;
+      assert.equal(hex.slice(0, 2).toLowerCase(), hex.slice(2, 4).toLowerCase(),
+        "non-monochrome UI token in " + line);
+      assert.equal(hex.slice(2, 4).toLowerCase(), hex.slice(4, 6).toLowerCase(),
+        "non-monochrome UI token in " + line);
+    }
+  }
+  assert.match(css, /--ink:#151515/);
+  assert.match(css, /--text:#292929/);
+  assert.match(css, /\.animation-bar\.pivot\{background:#363636/);
+  assert.match(css, /\.trace-tab\.active\{border-color:#494949/);
+  assert.match(css, /\.animation-timeline input\{[^}]*accent-color:#202020/);
+  assert.match(html, /styles\.css\?v=20261015-monochrome-ui-v8/);
+});
