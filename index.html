@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20261015-boundaries-v9">
+  <link rel="stylesheet" href="styles.css?v=20261015-conclusion-v10">
   <script>
     window.MathJax = {
       tex: {
@@ -23,7 +23,7 @@
   </script>
   <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
   <script src="math-format.js?v=20261015-layout-v4" defer></script>
-  <script src="engine.js?v=20261015-boundaries-v9" defer></script>
+  <script src="engine.js?v=20261015-conclusion-v10" defer></script>
   <script src="animation.js?v=20261015-boundaries-v9" defer></script>
   <script src="app.js?v=20261015-boundaries-v9" defer></script>
   <script src="java-highlight.js?v=20261015-java-colors-v1" defer></script>
@@ -332,8 +332,12 @@
     <p>Mức giảm của hệ số dẫn đầu:</p>
     <div class="math-display">\(\displaystyle 1-\dfrac{12}{7}\cdot\dfrac{1}{2}=\dfrac{1}{7}\approx 14{,}29\%. \)</div>
     <p>Số lần chọn pivot là \(O(n)\), nên chi phí lấy ba mẫu chỉ bổ sung \(O(n)\) phép so sánh và không làm thay đổi hệ số của \(n\ln n\). Số hoán đổi và thời gian chạy thực tế không nhất thiết giảm.</p>
-    <p>Trường hợp xấu nhất vẫn là \(\Theta(n^2)\). Với nhiều khóa bằng nhau, phân hoạch ba chiều phù hợp hơn; với mảng con nhỏ có thể dùng Insertion Sort.</p>
-    <p class="conclusion">Median-of-Three cải thiện chất lượng phân hoạch theo kỳ vọng với chi phí chọn pivot nhỏ, nhưng không bảo đảm nhanh hơn trên mọi dữ liệu.</p>
+    <p>Với nhiều khóa bằng nhau, phân hoạch ba chiều phù hợp hơn; với mảng con nhỏ có thể dùng Insertion Sort.</p>
+    <div class="conclusion" aria-labelledby="conclusion-heading">
+      <h3 id="conclusion-heading">Kết luận</h3>
+      <p class="conclusion-lead">Với các khóa phân biệt và hoán vị ngẫu nhiên, Median-of-Three giảm khoảng <strong>\(14{,}29\%\)</strong> hệ số dẫn đầu của số phép so sánh kỳ vọng so với cách chọn pivot đầu mảng.</p>
+      <p class="conclusion-note">Chi phí lấy ba mẫu tăng không đáng kể về bậc tiệm cận, nhưng số hoán đổi và thời gian chạy thực tế không nhất thiết giảm. Trường hợp xấu nhất vẫn là \(\Theta(n^2)\).</p>
+    </div>
     <div class="sources">
       <h3>Nguồn tham khảo</h3>
       <p>R. Sedgewick &amp; K. Wayne, <em>Algorithms, 4th Edition</em>, <a href="https://algs4.cs.princeton.edu/lectures/23Quicksort.pdf" target="_blank" rel="noopener noreferrer">bài giảng Quicksort (2.3)</a>, tr. 13, 15, 23–24, 27–28, 42–47; <a href="https://algs4.cs.princeton.edu/23quicksort/" target="_blank" rel="noopener noreferrer">mã và mô tả thuật toán</a>.</p>
