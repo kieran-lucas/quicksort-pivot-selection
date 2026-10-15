@@ -63,6 +63,21 @@ h3 code{font:500 .88em/1.3 var(--mono)}
 .copy:hover,.animation-button:hover,.trace-tab:hover,.trace-controls button:hover{background:#f0f3f7}
 .code{max-width:100%;overflow-x:auto;margin:0;padding:19px 21px;background:var(--surface);border:1px solid #e4e6e9;border-radius:5px;font:13.5px/1.78 var(--mono);tab-size:4}
 .code code{font:inherit;padding:0;background:transparent;border:0;white-space:pre;color:#30363d;overflow-wrap:normal}
+
+/* Java tokens: restrained, high-contrast palette inspired by code editors.
+   Source text is unchanged, so selection and copying behave normally. */
+.code .java-keyword{color:#7950a4;font-weight:650}
+.code .java-primitive{color:#08798a;font-weight:600}
+.code .java-type{color:#147487;font-weight:600}
+.code .java-function{color:#235fa1;font-weight:600}
+.code .java-number{color:#af5a17}
+.code .java-literal{color:#a14d7b;font-weight:600}
+.code .java-constant{color:#a14d7b;font-weight:600}
+.code .java-string{color:#278062}
+.code .java-comment{color:#788394;font-style:italic}
+.code .java-annotation{color:#8f6730}
+.code .java-operator{color:#586779}
+
 .detail,.trace-disclosure,.partition-disclosure{margin-top:22px}
 .detail>summary,.trace-disclosure>summary,.partition-disclosure>summary{cursor:pointer;font:500 13.5px/1.6 var(--sans);color:#515b65;list-style-position:outside;padding:12px 0;border-top:1px solid var(--line)}
 .detail[open]>summary,.trace-disclosure[open]>summary,.partition-disclosure[open]>summary{margin-bottom:16px}
