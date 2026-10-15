@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Tìm hiểu cách chọn pivot trong QuickSort qua so sánh pivot đầu mảng và Median-of-Three, với mã Java, mô phỏng và phân tích.">
+  <meta name="description" content="Tìm hiểu kỹ thuật chọn pivot Median-of-Three trong QuickSort qua cài đặt Java, mô phỏng và phân tích số phép so sánh.">
   <meta name="theme-color" content="#ffffff">
-  <title>Tìm hiểu cách chọn pivot trong QuickSort</title>
+  <title>Tìm hiểu kỹ thuật chọn pivot Median-of-Three trong QuickSort</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20261015-conclusion-regular-v12">
+  <link rel="stylesheet" href="styles.css?v=20261015-inline-arrows-v13">
   <script>
     window.MathJax = {
       tex: {
@@ -32,8 +32,8 @@
 <main class="page">
   <header class="intro">
     <p class="course">Cấu trúc dữ liệu và giải thuật</p>
-    <h1>Tìm hiểu cách chọn pivot trong QuickSort</h1>
-    <p class="lead">So sánh pivot đầu mảng và Median-of-Three qua cài đặt Java, mô phỏng và phân tích số phép so sánh.</p>
+    <h1>Tìm hiểu kỹ thuật chọn pivot Median-of-Three trong QuickSort</h1>
+    <p class="lead">Đối chiếu với cách chọn pivot đầu mảng qua mã Java, mô phỏng và phân tích số phép so sánh.</p>
   </header>
 
   <section id="problem" aria-labelledby="problem-heading">
@@ -164,7 +164,6 @@
     return a[j] &lt; a[k] ? k : j;
 }</code></pre>
     </details>
-    <p class="small">Mã Java đầy đủ: <a href="https://github.com/kieran-lucas/quicksort-pivot-selection/blob/main/src/QuickPivotSelection.java" target="_blank" rel="noopener noreferrer">QuickPivotSelection.java ↗</a>. Mảng con có hai phần tử không thực hiện lấy ba mẫu.</p>
   </section>
 
   <section id="lab" aria-labelledby="lab-heading">
@@ -340,7 +339,7 @@
     </div>
     <div class="sources">
       <h3>Nguồn tham khảo</h3>
-      <p>R. Sedgewick &amp; K. Wayne, <em>Algorithms, 4th Edition</em>, <a href="https://algs4.cs.princeton.edu/lectures/23Quicksort.pdf" target="_blank" rel="noopener noreferrer">bài giảng Quicksort (2.3)</a>, tr. 13, 15, 23–24, 27–28, 42–47; <a href="https://algs4.cs.princeton.edu/23quicksort/" target="_blank" rel="noopener noreferrer">mã và mô tả thuật toán</a>.</p>
+      <p>R. Sedgewick và K. Wayne, <em>Algorithms, 4th Edition</em>, bài giảng 2.3 — <em>Quicksort</em>, các slide 13, 15, 23–24, 27–28 và 42–47.</p>
       
     </div>
   </section>
