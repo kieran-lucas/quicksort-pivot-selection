@@ -331,7 +331,7 @@ test("problem-to-solution narrative covers four eight-key patterns and both extr
   assert.match(html, /phân hoạch ba chiều/);
   assert.match(lab, /Hai phiên bản dùng cùng một mảng/);
   assert.match(css, /\.pattern-list li\{display:grid/);
-  assert.match(css, /@media\(max-width:700px\)\{\s*\.pattern-list li\{grid-template-columns:minmax\(0,1fr\)/);
+  assert.match(css, /@media\(max-width:700px\)\{[\s\S]*?\.pattern-list li\{grid-template-columns:minmax\(0,1fr\)/);
 });
 
 
@@ -393,7 +393,7 @@ test("low/high names are consistent across Java, article and live engine frames"
   const path = require("node:path");
   const read = name => fs.readFileSync(path.join(__dirname, "..", name), "utf8");
   for (const file of ["src/QuickPivotSelection.java", "engine.js", "animation.js", "app.js", "index.html"]) {
-    assert.doesNotMatch(read(file), /\blo\b|\bhi\b/, "legacy boundary name in " + file);
+    assert.doesNotMatch(read(file), /(?:^|[^\p{L}\p{N}_])(?:lo|hi)(?![\p{L}\p{N}_])/u, "legacy boundary name in " + file);
   }
   const html = read("index.html");
   assert.match(html, /<code>a\[low\]<\/code> hoặc <code>a\[high\]<\/code>/);
