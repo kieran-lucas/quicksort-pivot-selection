@@ -22,7 +22,7 @@ h1,h2,h3,h4,p,figure{margin-top:0}
 h1{max-width:800px;font:650 clamp(34px,4.2vw,43px)/1.19 var(--sans);letter-spacing:-.048em;color:var(--ink);margin:0 0 21px}
 .lead{max-width:690px;font-size:16px;line-height:1.82;color:#575757;margin:0}
 .page>section{padding:58px 0 60px;border-bottom:1px solid var(--line)}
-.section-label{margin-bottom:14px}
+.section-label{font-family:var(--sans);margin-bottom:14px}
 h2{font:650 clamp(25px,3.2vw,28px)/1.32 var(--sans);letter-spacing:-.026em;color:var(--ink);margin:0 0 24px}
 h3{font:650 17px/1.46 var(--sans);color:var(--ink)}
 h4{font:650 14px/1.5 var(--sans);color:var(--ink)}
