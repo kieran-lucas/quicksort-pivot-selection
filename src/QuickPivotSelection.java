@@ -36,7 +36,7 @@ public final class QuickPivotSelection {
             pivotIndex = medianOf3(a, low, mid, high);
         }
 
-        exch(a, low, pivotIndex);
+        if (pivotIndex != low) exch(a, low, pivotIndex);
         int j = partition(a, low, high);
         sort(a, low, j - 1, strategy);
         sort(a, j + 1, high, strategy);
