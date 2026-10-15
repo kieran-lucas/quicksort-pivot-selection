@@ -137,7 +137,7 @@ test("illustrative values are LaTeX, but code identifiers stay monospace", () =>
 });
 
 
-test("candidate figures use MathJax fonts; function headings use code font", () => {
+test("candidate figures use MathJax fonts; Java function names stay in code font", () => {
   const fs = require("node:fs");
   const path = require("node:path");
   const html = fs.readFileSync(path.join(__dirname, "../index.html"), "utf8");
@@ -148,8 +148,8 @@ test("candidate figures use MathJax fonts; function headings use code font", () 
   assert.deepEqual(values, [8, 7, 3, 4, 6, 5, 2, 1]);
   assert.match(css, /\.candidate-array mjx-container\[jax="CHTML"\]/);
   assert.doesNotMatch(css, /\.candidate-array>span\{[^}]*font:[^}]*var\(--mono\)/);
-  assert.match(html, /<code class="heading-code">partition\(\)<\/code>/);
-  assert.match(css, /h2 code\.heading-code\{[^}]*font-family:var\(--mono\)/);
+  assert.match(html, /<h3>Phân hoạch quanh <code>a\[low\]<\/code><\/h3>/);
+  assert.match(css, /h3 code\{font:500 \.88em\/1\.3 var\(--mono\)/);
 });
 
 test("eight unsorted keys: article figures and metrics match the same engine", () => {
@@ -252,7 +252,7 @@ test("font pairing matches the reference sorting-algorithms-uet without extra UI
   assert.match(css, /--mono:"JetBrains Mono",Consolas,monospace/);
   assert.doesNotMatch(html + css, /family=Inter|--sans:"Inter"/);
   assert.match(css, /code\{[^}]*font:500 \.89em\/1\.45 var\(--mono\)/);
-  assert.match(css, /h2 code\.heading-code\{[^}]*var\(--mono\)/);
+  assert.match(css, /h3 code\{[^}]*var\(--mono\)/);
   assert.match(html, /class="page"/);
   assert.doesNotMatch(html, /\bclass="sidebar"|\bclass="side-nav"/);
   assert.match(html, /Rút gọn \(ẩn các lần so sánh\)/);
