@@ -344,7 +344,7 @@ test("report uses concise academic prose, keeps derivations and sources", () => 
   for (const phrase of [
     "Hãy thử lần lượt", "Một thay đổi nhỏ", "Bài toán đặt ra:",
     "Vì vậy, cần phân biệt", "Phần diễn giải qua phân bố", "theo slide",
-    "(Theta(n^2))", "(2)–(3)", "Mặc định highện từng phép so sánh"
+    "(Theta(n^2))", "(2)–(3)", "Mặc định hiện từng phép so sánh"
   ]) assert.ok(!body.includes(phrase), "reintroduced editorial/process wording: " + phrase);
   assert.ok(html.includes("\\(2\\)–\\(3\\) phép so sánh"),
     "median sampling cost must render as proper MathJax");
