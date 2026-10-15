@@ -142,12 +142,14 @@
                          Strategy strategy) {
     if (high &lt;= low) return;
 
+    int pivotIndex = low;
     if (strategy == Strategy.MEDIAN_OF_THREE
             &amp;&amp; high - low &gt;= 2) {
         int mid = low + (high - low) / 2;
-        int median = medianOf3(a, low, mid, high);
-        exch(a, low, median);
+        pivotIndex = medianOf3(a, low, mid, high);
     }
+
+    exch(a, low, pivotIndex);
     int j = partition(a, low, high);
     sort(a, low, j - 1, strategy);
     sort(a, j + 1, high, strategy);
