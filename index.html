@@ -63,7 +63,7 @@
         <span class="pattern-note">Không tăng, giảm đơn điệu.</span>
       </li>
     </ul>
-    <p>Với dãy tăng dần, pivot đầu \(1\) tạo phân hoạch \(0:7\), còn pivot cuối \(8\) tạo \(7:0\). Tình huống tương tự xuất highện ở mảng hỗn hợp dưới đây:</p>
+    <p>Với dãy tăng dần, pivot đầu \(1\) tạo phân hoạch \(0:7\), còn pivot cuối \(8\) tạo \(7:0\). Tình huống tương tự xuất hiện ở mảng hỗn hợp dưới đây:</p>
     <div class="math-display">\(\displaystyle A=\left[8,\,7,\,3,\,4,\,6,\,5,\,2,\,1\right].\)</div>
     <figure class="simple-figure">
       <div class="diagram-title">Phân hoạch đầu tiên</div>
@@ -164,7 +164,7 @@
     return a[j] &lt; a[k] ? k : j;
 }</code></pre>
     </details>
-    <p class="small">Mã Java đầy đủ: <a href="https://github.com/kieran-lucas/quicksort-pivot-selection/blob/main/src/QuickPivotSelection.java" target="_blank" rel="noopener noreferrer">QuickPivotSelection.java ↗</a>. Mảng con có hai phần tử không thực highện lấy ba mẫu.</p>
+    <p class="small">Mã Java đầy đủ: <a href="https://github.com/kieran-lucas/quicksort-pivot-selection/blob/main/src/QuickPivotSelection.java" target="_blank" rel="noopener noreferrer">QuickPivotSelection.java ↗</a>. Mảng con có hai phần tử không thực hiện lấy ba mẫu.</p>
   </section>
 
   <section id="lab" aria-labelledby="lab-heading">
@@ -287,7 +287,7 @@
 
   <section id="analysis" aria-labelledby="analysis-heading">
     <div class="section-label">\(05\) — Phân tích và kết luận</div>
-    <h2 id="analysis-heading">Chi phí và highệu quả kỳ vọng</h2>
+    <h2 id="analysis-heading">Chi phí và hiệu quả kỳ vọng</h2>
     <p>Giả sử các khóa <strong>phân biệt</strong> và mọi hoán vị đầu vào đồng xác suất. Với \(n\) lớn, vị trí chuẩn hóa \(X\) của pivot đầu có mật độ \(f_1(x)=1\); trung vị ba mẫu có mật độ \(f_3(x)=6x(1-x)\), tập trung hơn quanh \(x=\tfrac12\).</p>
     <div class="math-display">\(\displaystyle f_1(x)=1,\qquad f_3(x)=6x(1-x),\qquad 0\lt x\lt 1. \)</div>
     <p>Ba vị trí đầu, giữa và cuối tương ứng với ba mẫu ngẫu nhiên trong mô hình hoán vị đều, nhưng không phải với mọi đầu vào.</p>
