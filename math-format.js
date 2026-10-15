@@ -1,8 +1,4 @@
-/* Shared mathematical typography for dynamic report content.
- * All value and measurement labels are MathJax TeX. Code snippets and
- * identifiers use actual <code> nodes and therefore a monospace font.
- * Input fields remain plain text so they can be edited.
- */
+/* MathJax formatting for numbers and labels in the interactive views. */
 (() => {
   "use strict";
   const pending = new Set();
@@ -35,8 +31,7 @@
   window.addEventListener("load", flush);
 
   function latex(value) {
-    // A number becomes a math glyph, not a monospace/code glyph.
-    // Percent and decimal separators are escaped for TeX.
+    // Escape decimal separators and percentages for TeX.
     const s = String(value).replace(/(\d),(\d)/g, "$1{,}$2").replace(/%/g, "\\%");
     return "\\(" + s + "\\)";
   }
@@ -46,8 +41,7 @@
     typeset(target);
   }
 
-  // Only actual source-code tokens (a[k], partition(), i = 3, etc.) are
-  // wrapped in <code>. Other digits become TeX.
+  // Keep code identifiers in <code> and numeric values in TeX.
   const tokens = /(?:\b[aA]\[[A-Za-z0-9_+-]+\]|\b(?:partition|medianOf3|exch|sort)\(\)|\b[ij]\s*=\s*[-+]?\d+|[-+]?\d+(?:[.,]\d+)?%?)/g;
 
   function rich(target, content) {
