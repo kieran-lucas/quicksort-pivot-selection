@@ -27,35 +27,35 @@ public final class QuickPivotSelection {
         sort(a, strategy);
     }
 
-    private static void sort(int[] a, int lo, int hi, Strategy strategy) {
-        if (hi <= lo) return;
-        if (strategy == Strategy.MEDIAN_OF_THREE && hi - lo >= 2) {
-            int mid = lo + (hi - lo) / 2;
-            int median = medianOf3(a, lo, mid, hi);
-            exch(a, lo, median);
+    private static void sort(int[] a, int low, int high, Strategy strategy) {
+        if (high <= low) return;
+        if (strategy == Strategy.MEDIAN_OF_THREE && high - low >= 2) {
+            int mid = low + (high - low) / 2;
+            int median = medianOf3(a, low, mid, high);
+            exch(a, low, median);
         }
-        int j = partition(a, lo, hi);
-        sort(a, lo, j - 1, strategy);
-        sort(a, j + 1, hi, strategy);
+        int j = partition(a, low, high);
+        sort(a, low, j - 1, strategy);
+        sort(a, j + 1, high, strategy);
     }
 
     /**
      * Sedgewick's two-way partition: scan from both ends.
      * Unlike a Lomuto partition, both scans stop on equal keys.
      */
-    private static int partition(int[] a, int lo, int hi) {
-        int i = lo, j = hi + 1;
+    private static int partition(int[] a, int low, int high) {
+        int i = low, j = high + 1;
         while (true) {
-            while (a[++i] < a[lo]) {
-                if (i == hi) break;
+            while (a[++i] < a[low]) {
+                if (i == high) break;
             }
-            while (a[lo] < a[--j]) {
-                if (j == lo) break;
+            while (a[low] < a[--j]) {
+                if (j == low) break;
             }
             if (i >= j) break;
             exch(a, i, j);
         }
-        exch(a, lo, j);
+        exch(a, low, j);
         return j;
     }
 
