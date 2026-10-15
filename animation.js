@@ -1,0 +1,206 @@
+/* Minimal, dependency-free, side-by-side QuickSort animation.
+ * The underlying snapshots come exclusively from engine.js.
+ * Each original item has a stable identity, so equal-valued items can
+ * still visibly exchange their positions.
+ */
+(() => {
+  "use strict";
+  const $ = (id) => document.getElementById(id);
+  const modes = ["first", "median"];
+  const labels = {
+    initial: "Ban đầu", enter: "Chọn mảng con", select: "Chọn pivot",
+    move: "Đưa pivot về đầu", scan: "Quét", cross: "Hai con trỏ gặp nhau",
+    swap: "Hoán đổi", fixed: "Cố định pivot", done: "Hoàn tất"
+  };
+  const state = {
+    runs: null, frames: null, tick: 0, max: 0, playing: false,
+    timer: null, detailed: false, speed: 1,
+    bars: { first: new Map(), median: new Map() }
+  };
+
+  // An event is a snapshot, not a frame-per-millisecond interpolation.
+  // Both algorithms progress by one event per clock tick; if one reaches
+  // the end first, it stays sorted while the other finishes.
+  function snapshots(mode) {
+    if (!state.runs) return [];
+    const items = state.runs[mode].frames;
+    return state.detailed ? items : items.filter(frame => !frame.detail);
+  }
+
+  function currentFrame(mode) {
+    const frames = state.frames[mode];
+    return frames[Math.min(state.tick, frames.length - 1)];
+  }
+
+  function setTimerOff() {
+    if (state.timer !== null) {
+      clearTimeout(state.timer);
+      state.timer = null;
+    }
+  }
+
+  function pause() {
+    state.playing = false;
+    setTimerOff();
+    $("anim-play").textContent = "▶ Phát";
+    $("anim-play").setAttribute("aria-pressed", "false");
+  }
+
+  function prepareBars(mode, input) {
+    const wrapper = $("animation-bars-" + mode);
+    wrapper.replaceChildren();
+    const cells = state.bars[mode];
+    cells.clear();
+    const lo = Math.min(...input);
+    const hi = Math.max(...input);
+    const delta = hi - lo;
+
+    input.forEach((value, identity) => {
+      const bar = document.createElement("div");
+      bar.className = "animation-bar";
+      bar.dataset.identity = String(identity);
+      bar.setAttribute("role", "img");
+      bar.setAttribute("aria-label", "Phần tử ban đầu thứ " + (identity + 1) + ", giá trị " + value);
+      bar.title = String(value);
+      // Uniform order-preserving normalization for negative or zero values.
+      // The height encodes relative values, NOT elapsed time or operation cost.
+      const normalized = delta === 0 ? .5 : (value - lo) / delta;
+      bar.style.height = (20 + normalized * 71) + "%";
+      const valueLabel = document.createElement("span");
+      valueLabel.className = "animation-value";
+      valueLabel.textContent = String(value);
+      if (input.length > 14) bar.classList.add("dense");
+      bar.appendChild(valueLabel);
+      wrapper.appendChild(bar);
+      cells.set(identity, bar);
+    });
+    wrapper.style.setProperty("--item-width", (100 / input.length) + "%");
+  }
+
+  function renderPanel(mode, animate) {
+    const frame = currentFrame(mode);
+    const root = $("animation-bars-" + mode);
+    const activeSet = new Set(frame.identities.slice(Math.max(0, frame.lo), frame.hi + 1));
+    const fixedSet = new Set(frame.fixed);
+    const sampleSet = new Set(frame.samples);
+    frame.identities.forEach((identity, position) => {
+      const bar = state.bars[mode].get(identity);
+      bar.classList.toggle("animate", animate);
+      bar.style.left = (100 * position / frame.identities.length) + "%";
+      bar.classList.toggle("fixed", fixedSet.has(position));
+      bar.classList.toggle("inactive", !activeSet.has(identity) && frame.type !== "done");
+      bar.classList.toggle("pivot", frame.pivot === position && frame.type !== "done");
+      bar.classList.toggle("sample", sampleSet.has(position) && frame.type === "select");
+      bar.classList.toggle("scanner", state.detailed && (position === frame.i || position === frame.j));
+    });
+    const done = frame.type === "done";
+    const phase = labels[frame.type] || frame.type;
+    $("anim-phase-" + mode).textContent = phase;
+    $("anim-caption-" + mode).textContent = frame.message;
+    $("anim-metrics-" + mode).textContent =
+      frame.comparisons + " so sánh · " + frame.swaps + " hoán đổi";
+    $("anim-step-" + mode).textContent =
+      "Bước " + (Math.min(state.tick, state.frames[mode].length - 1) + 1) +
+      "/" + state.frames[mode].length + (done ? " · Xong" : "");
+  }
+
+  function render(animate = true) {
+    if (!state.runs) return;
+    const duration = Math.min(340, 270 / state.speed);
+    $("animation").style.setProperty("--animation-duration", duration + "ms");
+    modes.forEach(mode => renderPanel(mode, animate));
+    $("anim-progress").max = String(state.max);
+    $("anim-progress").value = String(state.tick);
+    $("anim-progress").setAttribute("aria-valuetext", "Bước đồng bộ " + (state.tick + 1) + "/" + (state.max + 1));
+    $("anim-counter").textContent = (state.tick + 1) + " / " + (state.max + 1);
+    $("anim-prev").disabled = state.tick === 0;
+    $("anim-next").disabled = state.tick === state.max;
+    const done = state.tick === state.max;
+    $("anim-status").textContent = done ? "Đã hoàn tất cả hai" :
+      state.playing ? "Đang chạy" : "Tạm dừng";
+  }
+
+  function seek(tick, animate = false) {
+    state.tick = Math.min(state.max, Math.max(0, tick));
+    render(animate);
+  }
+
+  function schedule() {
+    setTimerOff();
+    if (!state.playing) return;
+    state.timer = setTimeout(() => {
+      state.timer = null;
+      if (!state.playing) return;
+      if (state.tick < state.max) {
+        state.tick++;
+        render(true);
+      }
+      if (state.tick === state.max) {
+        pause();
+        render(false);
+      } else {
+        schedule();
+      }
+    }, Math.round(680 / state.speed));
+  }
+
+  function play() {
+    if (!state.runs) return;
+    if (state.playing) { pause(); render(false); return; }
+    if (state.tick === state.max) seek(0, false);
+    state.playing = true;
+    $("anim-play").textContent = "Ⅱ Tạm dừng";
+    $("anim-play").setAttribute("aria-pressed", "true");
+    render(false);
+    schedule();
+  }
+
+  function update(runs) {
+    pause();
+    state.runs = runs;
+    state.frames = { first: snapshots("first"), median: snapshots("median") };
+    state.max = Math.max(state.frames.first.length, state.frames.median.length) - 1;
+    state.tick = 0;
+    modes.forEach(mode => prepareBars(mode, runs[mode].input));
+    render(false);
+  }
+
+  function setup() {
+    $("anim-play").addEventListener("click", play);
+    $("anim-reset").addEventListener("click", () => {
+      pause(); seek(0, false);
+    });
+    $("anim-prev").addEventListener("click", () => {
+      pause(); seek(state.tick - 1, true);
+    });
+    $("anim-next").addEventListener("click", () => {
+      pause(); seek(state.tick + 1, true);
+    });
+    $("anim-speed").addEventListener("change", (event) => {
+      const speed = Number(event.target.value);
+      if (![.5, 1, 2].includes(speed)) return;
+      state.speed = speed;
+      render(false);
+      if (state.playing) schedule();
+    });
+    $("anim-details").addEventListener("change", (event) => {
+      pause();
+      state.detailed = event.target.checked;
+      if (state.runs) update(state.runs);
+    });
+    $("anim-progress").addEventListener("input", (event) => {
+      pause(); seek(Number(event.target.value), false);
+    });
+    // Avoid a dangling timer when the user leaves the page.
+    window.addEventListener("pagehide", pause);
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden && state.playing) { pause(); render(false); }
+    });
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      $("animation").classList.add("reduced-motion");
+    }
+  }
+
+  setup();
+  window.QuickSortAnimation = Object.freeze({ update, pause });
+})();
