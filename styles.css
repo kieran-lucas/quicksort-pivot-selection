@@ -36,7 +36,6 @@ h3 code{font-family:var(--mono);font-weight:500;letter-spacing:0}
 .candidate-array{display:flex;align-items:stretch;gap:7px;flex-wrap:wrap}
 .candidate-array>span{position:relative;display:flex;align-items:center;justify-content:center;width:55px;height:50px;border:1px solid #ddd;font-size:17px;line-height:1;color:#444}
 .candidate-array mjx-container[jax="CHTML"]{font-size:120%!important;margin:0!important}
-.candidate-array mjx-container[jax="CHTML"] mjx-math{font-family:inherit}
 .candidate-array .candidate{border:1.5px solid #888}
 .candidate-array .chosen{border:2px solid #222}
 .candidate-array small{position:absolute;bottom:-18px;font:400 10px var(--sans);color:#777}
