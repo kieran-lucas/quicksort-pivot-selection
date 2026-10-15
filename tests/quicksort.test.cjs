@@ -135,3 +135,19 @@ test("illustrative values are LaTeX, but code identifiers stay monospace", () =>
   assert.match(animation, /math\.latex\(value\)/);
   assert.match(math, /createElement\(isCode \? "code" : "span"\)/);
 });
+
+
+test("candidate figures use MathJax fonts; function headings use code font", () => {
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const html = fs.readFileSync(path.join(__dirname, "../index.html"), "utf8");
+  const css = fs.readFileSync(path.join(__dirname, "../styles.css"), "utf8");
+  const figure = html.match(/<div class="candidate-array"[\s\S]*?<\/div>/)?.[0];
+  assert.ok(figure, "missing median-of-three figure");
+  const values = [...figure.matchAll(/\\\(\\displaystyle\s+(-?\d+)\\\)/g)].map(m => +m[1]);
+  assert.deepEqual(values, [8, 1, 6, 4, 9, 2, 7]);
+  assert.match(css, /\.candidate-array mjx-container\[jax="CHTML"\]/);
+  assert.doesNotMatch(css, /\.candidate-array>span\{[^}]*font:[^}]*var\(--mono\)/);
+  assert.match(html, /<code class="heading-code">partition\(\)<\/code>/);
+  assert.match(css, /h2 code\.heading-code\{[^}]*font-family:var\(--mono\)/);
+});
