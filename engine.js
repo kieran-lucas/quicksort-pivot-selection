@@ -61,13 +61,23 @@
 
     // Index of the median value among positions i, j, k.
     // In a length >= 3 subarray these are distinct positions.
-    function medianOf3(i, j, k) {
-      if (less(a[i], a[j])) {
-        if (less(a[j], a[k])) return j;
-        return less(a[i], a[k]) ? k : i;
+    function medianOf3(i, j, k, lo, hi) {
+      // Record EVERY median-sampling comparison, not only partition scans.
+      function compare(x, y) {
+        const left = a[x], right = a[y];
+        const isLess = less(left, right);
+        save("compare", "Chọn trung vị: a[" + x + "] = " + left +
+          " < a[" + y + "] = " + right + " → " +
+          (isLess ? "đúng" : "sai") + ".", lo, hi,
+          { i: x, j: y, samples: [i, j, k], detail: true });
+        return isLess;
       }
-      if (less(a[i], a[k])) return i;
-      return less(a[j], a[k]) ? k : j;
+      if (compare(i, j)) {
+        if (compare(j, k)) return j;
+        return compare(i, k) ? k : i;
+      }
+      if (compare(i, k)) return i;
+      return compare(j, k) ? k : j;
     }
 
     // Hoare/Sedgewick-style two-way partition.
@@ -126,7 +136,7 @@
       if (strategy === "median" && hi - lo >= 2) {
         const mid = lo + Math.floor((hi - lo) / 2);
         const sampled = [a[lo], a[mid], a[hi]];
-        const chosen = medianOf3(lo, mid, hi);
+        const chosen = medianOf3(lo, mid, hi, lo, hi);
         const value = a[chosen];
         save("select", "Ba giá trị " + sampled.join(", ") +
              " → trung vị " + value + ".", lo, hi,
@@ -162,12 +172,14 @@
     };
   }
 
-  // Presentation steps count the actual key-comparison scans, pivot choices,
-  // exchanges and completed partitions. Enter/cross are control-flow messages,
-  // not additional data operations. The full trace can be requested explicitly.
-  function presentationFrames(frames, showControlFlow = false) {
-    return showControlFlow ? frames.slice() : frames.filter(frame =>
-      frame.type !== "enter" && frame.type !== "cross");
+  // Default: every key comparison (both pivot sampling and partition scanning).
+  // Compact: only the initial array, pivot selection, exchanges, partitions,
+  // and final result. Enter/cross are non-operation control-flow annotations.
+  function presentationFrames(frames, compact = false) {
+    const excluded = compact
+      ? new Set(["enter", "cross", "scan", "compare"])
+      : new Set(["enter", "cross"]);
+    return frames.filter(frame => !excluded.has(frame.type));
   }
 
   return Object.freeze({ run, presentationFrames });
