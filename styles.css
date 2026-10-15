@@ -11,8 +11,6 @@
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;background:#ffffff;color:var(--text);font:400 16px/1.76 var(--sans);-webkit-font-smoothing:antialiased}
-a{color:var(--blue);text-underline-offset:3px}
-a:hover{color:#444444}
 button,input,select{font:inherit}
 button{cursor:pointer}
 :focus-visible{outline:2px solid #5c5c5c;outline-offset:3px}
@@ -90,10 +88,13 @@ h3 code{font:500 .88em/1.3 var(--mono)}
 .code .java-operator{color:#586779}
 
 .detail,.trace-disclosure,.partition-disclosure{margin-top:22px}
-.detail>summary,.trace-disclosure>summary,.partition-disclosure>summary{cursor:pointer;font:500 13.5px/1.6 var(--sans);color:#5a5a5a;list-style-position:outside;padding:12px 0;border-top:1px solid var(--line)}
+.detail>summary,.trace-disclosure>summary,.partition-disclosure>summary{position:relative;display:block;cursor:pointer;font:500 13.5px/1.6 var(--sans);color:#5a5a5a;list-style:none;padding:12px 0 12px 22px;border-top:1px solid var(--line)}
+.detail>summary::-webkit-details-marker,.trace-disclosure>summary::-webkit-details-marker,.partition-disclosure>summary::-webkit-details-marker{display:none}
+.detail>summary::marker,.trace-disclosure>summary::marker,.partition-disclosure>summary::marker{content:""}
+.detail>summary::before,.trace-disclosure>summary::before,.partition-disclosure>summary::before{content:"";position:absolute;left:2px;top:50%;width:0;height:0;border-top:4px solid transparent;border-bottom:4px solid transparent;border-left:6px solid currentColor;transform:translateY(-50%)}
+.detail[open]>summary::before,.trace-disclosure[open]>summary::before,.partition-disclosure[open]>summary::before{transform:translateY(-50%) rotate(90deg)}
 .detail[open]>summary,.trace-disclosure[open]>summary,.partition-disclosure[open]>summary{margin-bottom:16px}
 .detail .code{margin-top:10px}
-#code>.small{margin-top:22px}
 .lab{margin:26px 0 0}
 .control-row{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:15px}
 .control-row label,.input-label{font:600 13px/1.5 var(--sans);color:#4d4d4d}
