@@ -158,7 +158,7 @@ test("eight unsorted keys: article figures and metrics match the same engine", (
   const html = fs.readFileSync(path.join(__dirname, "../index.html"), "utf8");
   const app = fs.readFileSync(path.join(__dirname, "../app.js"), "utf8");
   const example = [8, 7, 3, 4, 6, 5, 2, 1];
-  assert.match(html, /<option value="mixed" selected>Hỗn hợp \(8 phần tử\)<\/option>/);
+  assert.match(html, /<option value="mixed" selected>Hỗn hợp<\/option>/);
   assert.ok(html.includes('value="' + example.join(", ") + '"'));
   assert.ok(app.includes("mixed: [" + example.join(", ") + "]"));
   const first = run(example, "first");
@@ -214,4 +214,29 @@ test("default visualization shows EVERY comparison; compact hides only compariso
   assert.match(html, /Bước \\\(1\\\) · Tổng \\\(1\\\) bước/);
   assert.doesNotMatch(animation + app, /\\dfrac\{/);
   assert.doesNotMatch(html, /15 phần tử/);
+});
+
+test("clean academic layout retains all interactive controls and no sidebar", () => {
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const html = fs.readFileSync(path.join(__dirname, "../index.html"), "utf8");
+  const css = fs.readFileSync(path.join(__dirname, "../styles.css"), "utf8");
+  const animation = fs.readFileSync(path.join(__dirname, "../animation.js"), "utf8");
+  const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(m => m[1]);
+  assert.equal(new Set(ids).size, ids.length, "DOM IDs must be unique");
+  for (const id of [
+    "animation-bars-first", "animation-bars-median",
+    "anim-play", "anim-speed", "anim-details", "anim-progress",
+    "anim-prev", "anim-next", "anim-reset",
+    "first-comparisons", "median-comparisons", "step-count", "trace-array"
+  ]) assert.ok(ids.includes(id), "missing required control: " + id);
+  assert.doesNotMatch(html, /id="anim-counter"/);
+  assert.doesNotMatch(animation, /anim-counter/);
+  assert.doesNotMatch(html, /\bsidebar\b|class="(?:side-nav|mobile-menu)"/);
+  assert.match(html, /class="partition-disclosure"/);
+  assert.match(css, /font:13\.5px\/1\.78 var\(--mono\)/);
+  assert.match(css, /@media\(max-width:700px\)/);
+  assert.match(html, /href="styles\.css\?v=/);
+  assert.match(html, /src="app\.js\?v=/);
+  assert.match(html, /<label for="anim-progress">Tiến trình chung<\/label>/);
 });
