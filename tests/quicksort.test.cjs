@@ -175,3 +175,36 @@ test("unsorted fifteen-element default and illustrated partition statistics agre
   assert.equal(first.swaps, 11);
   assert.equal(median.swaps, 17);
 });
+
+
+test("animation counts observable operations separately for each pivot strategy", () => {
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const source = require("../engine.js");
+  const input = [15, 2, 4, 9, 14, 7, 3, 8, 11, 12, 13, 10, 6, 5, 1];
+  const first = source.run(input, "first");
+  const median = source.run(input, "median");
+  const f = source.presentationFrames(first.frames);
+  const m = source.presentationFrames(median.frames);
+  assert.equal(f.length, 131);
+  assert.equal(m.length, 83);
+  assert.equal(source.presentationFrames(first.frames, true).length, 153);
+  assert.equal(source.presentationFrames(median.frames, true).length, 101);
+  assert.deepEqual(f.at(0).array, input);
+  assert.deepEqual(m.at(0).array, input);
+  assert.deepEqual(f.at(-1).array, first.result);
+  assert.deepEqual(m.at(-1).array, median.result);
+  assert.equal(f.at(-1).comparisons, 103);
+  assert.equal(m.at(-1).comparisons, 67);
+  assert.ok(f.some(frame => frame.type === "scan"));
+  assert.ok(m.some(frame => frame.type === "scan"));
+  assert.ok(!f.some(frame => frame.type === "enter" || frame.type === "cross"));
+  const anim = fs.readFileSync(path.join(__dirname, "../animation.js"), "utf8");
+  const app = fs.readFileSync(path.join(__dirname, "../app.js"), "utf8");
+  const html = fs.readFileSync(path.join(__dirname, "../index.html"), "utf8");
+  assert.match(anim, /QuickSortEngine\.presentationFrames/);
+  assert.match(app, /engine\.presentationFrames/);
+  assert.match(anim, /"Bước ".*?state\.tick/);
+  assert.doesNotMatch(anim + app, /\\dfrac\{/);
+  assert.match(html, /Bước \\\(1\\\) trên \\\(1\\\)/);
+});
