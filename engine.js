@@ -23,9 +23,9 @@
     const frames = [];
     const metrics = { comparisons: 0, swaps: 0, partitions: 0, depth: 0 };
 
-    function save(type, message, lo, hi, options = {}) {
+    function save(type, message, low, high, options = {}) {
       frames.push({
-        type, message, lo, hi,
+        type, message, low, high,
         pivot: options.pivot ?? -1,
         i: options.i ?? -1, j: options.j ?? -1,
         samples: options.samples || [],
@@ -57,14 +57,14 @@
 
     // Index of the median value among positions i, j, k.
     // In a length >= 3 subarray these are distinct positions.
-    function medianOf3(i, j, k, lo, hi) {
+    function medianOf3(i, j, k, low, high) {
       // Count the median-sampling comparisons as well.
       function compare(x, y) {
         const left = a[x], right = a[y];
         const isLess = less(left, right);
         save("compare", "Chọn trung vị: a[" + x + "] = " + left +
           " < a[" + y + "] = " + right + " → " +
-          (isLess ? "đúng" : "sai") + ".", lo, hi,
+          (isLess ? "đúng" : "sai") + ".", low, high,
           { i: x, j: y, samples: [i, j, k], detail: true });
         return isLess;
       }
@@ -78,81 +78,81 @@
 
     // Hoare/Sedgewick-style two-way partition.
     // Both scans stop on values equal to pivot.
-    function partition(lo, hi) {
-      let i = lo, j = hi + 1;
-      const pivotValue = a[lo];
+    function partition(low, high) {
+      let i = low, j = high + 1;
+      const pivotValue = a[low];
       while (true) {
         while (true) {
           ++i;
-          const continueScanning = less(a[i], a[lo]);
+          const continueScanning = less(a[i], a[low]);
           save("scan", "i = " + i + ": so sánh " + a[i] +
                " < " + pivotValue + " → " + (continueScanning ? "đúng" : "sai"),
-               lo, hi, { pivot: lo, i, j: j <= hi ? j : -1, detail: true });
-          if (!continueScanning || i === hi) break;
+               low, high, { pivot: low, i, j: j <= high ? j : -1, detail: true });
+          if (!continueScanning || i === high) break;
         }
 
         while (true) {
           --j;
-          const continueScanning = less(a[lo], a[j]);
+          const continueScanning = less(a[low], a[j]);
           save("scan", "j = " + j + ": so sánh " + pivotValue +
                " < " + a[j] + " → " + (continueScanning ? "đúng" : "sai"),
-               lo, hi, { pivot: lo, i, j, detail: true });
-          if (!continueScanning || j === lo) break;
+               low, high, { pivot: low, i, j, detail: true });
+          if (!continueScanning || j === low) break;
         }
 
         if (i >= j) {
           save("cross", "Hai con trỏ đã gặp hoặc vượt nhau; dừng quét.",
-               lo, hi, { pivot: lo, i, j, detail: true });
+               low, high, { pivot: low, i, j, detail: true });
           break;
         }
 
         exchange(i, j);
         save("swap", "Đổi chỗ a[" + i + "] và a[" + j + "] vì ở sai phía pivot.",
-             lo, hi, { pivot: lo, i, j });
+             low, high, { pivot: low, i, j });
       }
-      exchange(lo, j);
+      exchange(low, j);
       fixed.add(j);
       metrics.partitions++;
       save("fixed", "Pivot " + pivotValue + " ở đúng vị trí " + j +
-           ". Hai mảng con: " + (j - lo) + " và " + (hi - j) + " phần tử.",
-           lo, hi, { pivot: j, j });
+           ". Hai mảng con: " + (j - low) + " và " + (high - j) + " phần tử.",
+           low, high, { pivot: j, j });
       return j;
     }
 
-    function quicksort(lo, hi, level) {
-      if (lo > hi) return;
-      if (lo === hi) {
-        fixed.add(lo);
+    function quicksort(low, high, level) {
+      if (low > high) return;
+      if (low === high) {
+        fixed.add(low);
         return;
       }
       metrics.depth = Math.max(metrics.depth, level);
-      save("enter", "Phân hoạch đoạn [" + lo + ", " + hi + "].",
-           lo, hi);
+      save("enter", "Phân hoạch đoạn [" + low + ", " + high + "].",
+           low, high);
 
-      if (strategy === "median" && hi - lo >= 2) {
-        const mid = lo + Math.floor((hi - lo) / 2);
-        const sampled = [a[lo], a[mid], a[hi]];
-        const chosen = medianOf3(lo, mid, hi, lo, hi);
+      if (strategy === "median" && high - low >= 2) {
+        const mid = low + Math.floor((high - low) / 2);
+        const sampled = [a[low], a[mid], a[high]];
+        const chosen = medianOf3(low, mid, high, low, high);
         const value = a[chosen];
         save("select", "Ba giá trị " + sampled.join(", ") +
-             " → trung vị " + value + ".", lo, hi,
-             { pivot: chosen, samples: [lo, mid, hi] });
-        if (exchange(lo, chosen)) {
-          save("move", "Đổi trung vị về a[" + lo + "] để dùng partition() gốc.",
-               lo, hi, { pivot: lo });
+             " → trung vị " + value + ".", low, high,
+             { pivot: chosen, samples: [low, mid, high] });
+        if (exchange(low, chosen)) {
+          save("move", "Đổi trung vị về a[" + low + "] để dùng partition() gốc.",
+               low, high, { pivot: low });
         }
       } else {
-        save("select", "Chọn a[" + lo + "] = " + a[lo] +
+        save("select", "Chọn a[" + low + "] = " + a[low] +
              " làm pivot" + (strategy === "median" ? " (đoạn chỉ có 2 phần tử)." : "."),
-             lo, hi, { pivot: lo });
+             low, high, { pivot: low });
       }
 
-      const p = partition(lo, hi);
-      quicksort(lo, p - 1, level + 1);
-      quicksort(p + 1, hi, level + 1);
+      const p = partition(low, high);
+      quicksort(low, p - 1, level + 1);
+      quicksort(p + 1, high, level + 1);
     }
 
-    save("initial", "Dữ liệu đầu vào, chưa thực hiện phân hoạch.",
+    save("initial", "Dữ liệu đầu vào, chưa thực highện phân hoạch.",
          0, a.length - 1);
     quicksort(0, a.length - 1, 1);
     save("done", "Đã hoàn tất sắp xếp.", 0, a.length - 1);
