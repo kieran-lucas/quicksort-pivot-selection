@@ -1,7 +1,4 @@
-/* Lightweight Java syntax highlighting for this static academic report.
- * No external highlighting dependency. Uses textContent/text nodes exclusively,
- * so rendered markup is safe and Copy always reproduces the original source.
- */
+/* Java syntax highlighting. Preserve textContent for source copying. */
 (function (root, factory) {
   const api = factory();
   if (typeof module !== "undefined" && module.exports) module.exports = api;
