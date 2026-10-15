@@ -39,7 +39,7 @@
   <section id="problem" aria-labelledby="problem-heading">
     <div class="section-label">01 — Đặt vấn đề</div>
     <h2 id="problem-heading">Pivot ở hai đầu mảng</h2>
-    <p>Trong QuickSort, vị trí của pivot quyết định độ dài hai nhánh đệ quy. Chọn cố định <code>a[low]</code> hoặc <code>a[high]</code> có chi phí thấp, nhưng dễ tạo phân hoạch lệch khi phần tử ở hai đầu là cực trị.</p>
+    <p>Trong QuickSort, giá trị pivot ảnh hưởng trực tiếp đến kích thước hai mảng con. Chọn <code>a[low]</code> hoặc <code>a[high]</code> làm pivot rất đơn giản, nhưng dễ tạo phân hoạch lệch nếu phần tử được chọn là giá trị nhỏ nhất hoặc lớn nhất.</p>
     <h3 class="pattern-heading">Một số dạng dữ liệu bất lợi</h3>
     <ul class="pattern-list" aria-label="Bốn ví dụ về phân hoạch lệch">
       <li>
@@ -60,10 +60,10 @@
       <li>
         <strong>Hỗn hợp, cực trị ở hai đầu</strong>
         <span class="pattern-values">\([8,7,3,4,6,5,2,1]\)</span>
-        <span class="pattern-note">Không tăng, giảm đơn điệu.</span>
+        <span class="pattern-note">Dãy chưa có thứ tự, nhưng hai đầu là cực trị.</span>
       </li>
     </ul>
-    <p>Với dãy tăng dần, pivot đầu \(1\) tạo phân hoạch \(0:7\), còn pivot cuối \(8\) tạo \(7:0\). Tình huống tương tự xuất hiện ở mảng hỗn hợp dưới đây:</p>
+    <p>Với dãy tăng dần, pivot đầu \(1\) tạo phân hoạch \(0:7\), còn pivot cuối \(8\) tạo \(7:0\). Ngay cả mảng chưa được sắp xếp cũng có thể gặp tình trạng này:</p>
     <div class="math-display">\(\displaystyle A=\left[8,\,7,\,3,\,4,\,6,\,5,\,2,\,1\right].\)</div>
     <figure class="simple-figure">
       <div class="diagram-title">Phân hoạch đầu tiên</div>
@@ -84,20 +84,20 @@
           <strong>\(3:4\)</strong>
         </div>
       </div>
-      <figcaption>Số phần tử bên trái : bên phải pivot. Dòng pivot cuối là trường hợp minh họa riêng; mô phỏng sử dụng pivot đầu và Median-of-Three.</figcaption>
+      <figcaption>Số phần tử hai phía pivot (trái : phải). Trường hợp pivot cuối chỉ dùng để minh họa; mô phỏng bên dưới so sánh pivot đầu và Median-of-Three.</figcaption>
     </figure>
     <p>Nếu sự mất cân bằng lặp lại ở mọi cấp, chi phí của QuickSort thỏa mãn:</p>
     <div class="math-display">\(\displaystyle T(n)=T(n-1)+\Theta(n)=\Theta(n^2).\)</div>
-    <p>Phân hoạch gần cân bằng, ngược lại, cho độ phức tạp \(\Theta(n\log n)\). Cần một cách chọn pivot ít phụ thuộc vào vị trí đầu hoặc cuối nhưng vẫn đủ rẻ.</p>
+    <p>Khi các phân hoạch được duy trì gần cân bằng, QuickSort có độ phức tạp \(\Theta(n\log n)\). Vì vậy, cần cải thiện cách chọn pivot mà không tăng đáng kể chi phí.</p>
     <p class="aside-note">Các ví dụ trên không đại diện cho mọi đầu vào. Với hoán vị ngẫu nhiên, pivot đầu không mặc nhiên xấu. Phiên bản Princeton có bước <code>StdRandom.shuffle(a)</code>; mô phỏng ở đây giữ nguyên thứ tự đầu vào.</p>
   </section>
 
   <section id="median" aria-labelledby="median-heading">
     <div class="section-label">02 — Phương pháp</div>
     <h2 id="median-heading">Median-of-Three</h2>
-    <p>Lấy ba giá trị tại <code>low</code>, <code>mid</code> và <code>high</code>, rồi chọn trung vị của chúng làm pivot:</p>
+    <p>Lấy các giá trị tại ba vị trí <code>low</code>, <code>mid</code> và <code>high</code>, rồi chọn trung vị của chúng làm pivot:</p>
     <div class="math-display">\(\displaystyle \mathrm{mid}=\mathrm{low}+\left\lfloor\dfrac{\mathrm{high}-\mathrm{low}}{2}\right\rfloor.\)</div>
-    <p>Đưa phần tử được chọn về <code>low</code>; hàm <code>partition()</code> không thay đổi.</p>
+    <p>Đưa pivot được chọn về vị trí <code>a[low]</code> bằng phép hoán đổi; hàm <code>partition()</code> không thay đổi.</p>
     <figure class="simple-figure">
       <div class="diagram-title">Ba vị trí được lấy mẫu</div>
       <div class="candidate-array" aria-label="Mảng 8, 7, 3, 4, 6, 5, 2, 1">
@@ -115,7 +115,7 @@
     <p>Tìm trung vị ba mẫu cần \(2\)–\(3\) phép so sánh. Đây không phải trung vị của toàn mảng; Median-of-Three vẫn có thể tạo phân hoạch lệch.</p>
   </section>
 
-    <section id="code" aria-labelledby="code-heading">
+  <section id="code" aria-labelledby="code-heading">
     <div class="section-label">03 — Cài đặt Java</div>
     <h2 id="code-heading">Giữ nguyên <code class="heading-code">partition()</code></h2>
     <p>Cả hai phiên bản dùng phân hoạch hai con trỏ của Sedgewick–Wayne (chuyển sang <code>int[]</code>). Khác biệt nằm ở bước chọn pivot trước khi gọi <code>partition()</code>.</p>
@@ -254,16 +254,16 @@
 
       <details class="partition-disclosure">
         <summary>Kích thước hai mảng con</summary>
-      <figure class="partition-compare">
-        <div id="split-first" class="split-meter"></div>
-        <div id="split-median" class="split-meter"></div>
-      </figure>
+        <figure class="partition-compare">
+          <div id="split-first" class="split-meter"></div>
+          <div id="split-median" class="split-meter"></div>
+        </figure>
       </details>
 
       <details class="trace-disclosure">
         <summary>Truy vết từng bước</summary>
-      <div class="trace">
-        <div class="trace-header">
+        <div class="trace">
+          <div class="trace-header">
           <h3>Trạng thái mảng</h3>
           <div class="trace-tabs" role="group" aria-label="Chiến lược đang xem">
             <button type="button" id="trace-first" class="trace-tab active" aria-pressed="true">Pivot đầu</button>
@@ -283,7 +283,7 @@
       </div>
       </details>
     </div>
-    <p class="small lab-note">Số liệu là phép toán được đếm trong mô phỏng, không phải thời gian chạy.</p>
+    <p class="small lab-note">Các chỉ tiêu được tính từ số phép toán, không phải thời gian thực thi.</p>
   </section>
 
   <section id="analysis" aria-labelledby="analysis-heading">
@@ -291,13 +291,13 @@
     <h2 id="analysis-heading">Chi phí và hiệu quả kỳ vọng</h2>
     <p>Giả sử các giá trị trong mảng không trùng nhau và mọi hoán vị đầu vào có xác suất như nhau. Với \(n\) lớn, vị trí chuẩn hóa \(X\) của pivot đầu có mật độ \(f_1(x)=1\); trung vị ba mẫu có mật độ \(f_3(x)=6x(1-x)\), tập trung hơn quanh \(x=\dfrac{1}{2}\).</p>
     <div class="math-display">\(\displaystyle f_1(x)=1,\qquad f_3(x)=6x(1-x),\qquad 0\lt x\lt 1. \)</div>
-    <p>Ba vị trí đầu, giữa và cuối tương ứng với ba mẫu ngẫu nhiên trong mô hình hoán vị đều, nhưng không phải với mọi đầu vào.</p>
+    <p>Trong mô hình hoán vị ngẫu nhiên, ba vị trí đầu, giữa và cuối cũng cho ba giá trị lấy mẫu ngẫu nhiên; điều này không đúng với mọi mảng đầu vào.</p>
     <div class="math-derivation">
-      <p>Đặt:</p>
+      <p>Để biểu diễn mức độ cân bằng của hai nhánh, đặt:</p>
       <div class="math-display">\(\displaystyle h(x)=-x\ln x-(1-x)\ln(1-x). \)</div>
-      <p>Với chi phí phân hoạch xấp xỉ \(n\), ta có \(\mathbb E[C_n]\sim cn\ln n\), trong đó:</p>
+      <p>Khi chi phí mỗi lần phân hoạch xấp xỉ số phần tử đang xét, \(\mathbb E[C_n]\sim cn\ln n\), trong đó:</p>
       <div class="math-display">\(\displaystyle c=\dfrac{1}{\mathbb E[h(X)]}. \)</div>
-      <p>Từ hai phân bố pivot:</p>
+      <p>Lấy kỳ vọng theo hai phân bố trên:</p>
       <div class="math-display">\(\displaystyle \begin{aligned}
         \text{Một mẫu:}\quad& \mathbb E[h(X)]=\dfrac{1}{2}
           &&\Longrightarrow c=2,\\[3pt]
