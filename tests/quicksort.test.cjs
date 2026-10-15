@@ -257,3 +257,34 @@ test("font pairing matches the reference sorting-algorithms-uet without extra UI
   assert.doesNotMatch(html, /\bclass="sidebar"|\bclass="side-nav"/);
   assert.match(html, /Rút gọn \(ẩn các lần so sánh\)/);
 });
+
+
+test("Java source blocks are colorized with safe, lossless syntax tokens", () => {
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const { tokenize } = require("../java-highlight.js");
+  const html = fs.readFileSync(path.join(__dirname, "../index.html"), "utf8");
+  const css = fs.readFileSync(path.join(__dirname, "../styles.css"), "utf8");
+  const blocks = [...html.matchAll(/<pre class="code"[^>]*><code class="language-java">([\s\S]*?)<\/code><\/pre>/g)];
+  assert.equal(blocks.length, 3, "partition, sort and medianOf3 each require Java highlighting");
+  assert.match(html, /src="java-highlight\.js\?v=/);
+  const used = new Set();
+  for (const [, htmlSource] of blocks) {
+    const source = htmlSource.replaceAll("&lt;", "<").replaceAll("&gt;", ">").replaceAll("&amp;", "&");
+    const pieces = tokenize(source);
+    assert.equal(pieces.map(p => p.text).join(""), source, "highlighting must preserve original text for Copy");
+    for (const part of pieces) if (part.kind) used.add(part.kind);
+  }
+  for (const name of ["keyword", "primitive", "function", "number", "type", "constant", "operator", "literal"]) {
+    assert.ok(used.has(name), "missing token group in Java code: " + name);
+    assert.match(css, new RegExp("\\.code \\.java-" + name + "\\{[^}]*color:"));
+  }
+  const adversarial = 'String s = "<script>alert(1)</script>"; // literal\n/* multiline\ncomment */';
+  const tokens = tokenize(adversarial);
+  assert.equal(tokens.map(p => p.text).join(""), adversarial);
+  assert.deepEqual(tokens.filter(p => p.kind === "string").map(p => p.text),
+    ['"<script>alert(1)</script>"']);
+  assert.equal(tokens.filter(p => p.kind === "comment").length, 2);
+  assert.match(css, /\.code \.java-string\{[^}]*color:/);
+  assert.match(css, /\.code \.java-comment\{[^}]*color:/);
+});
