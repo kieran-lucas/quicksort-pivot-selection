@@ -165,6 +165,7 @@
       renderSplit("median");
       view.frameIndex = 0;
       renderFrame();
+      window.QuickSortAnimation.update(view.runs);
     } catch (err) {
       $("error").textContent = err.message;
       $("error").hidden = false;
