@@ -38,34 +38,61 @@
   <section id="problem" aria-labelledby="problem-heading">
     <div class="section-label">\(01\) — Đặt vấn đề</div>
     <h2 id="problem-heading">Chọn pivot cố định có gì bất lợi?</h2>
-    <p>QuickSort chọn một phần tử làm <strong>pivot</strong>, phân hoạch mảng thành hai phía rồi tiếp tục đệ quy. Cách cài đặt đơn giản thường chọn phần tử đầu hoặc cuối. Cách này hầu như không mất chi phí lựa chọn, nhưng giá trị được chọn có thể là cực trị của mảng con.</p>
-    <p>Xét mảng \(\left[1,\,2,\,3,\,4,\,5,\,6,\,7\right]\). Nếu luôn chọn phần tử đầu và không xáo trộn đầu vào, ta nhận được:</p>
+    <p>QuickSort chọn một phần tử làm <strong>pivot</strong>, phân hoạch mảng rồi đệ quy trên hai mảng con. Cách cài đặt đơn giản thường dùng phần tử đầu hoặc cuối; chi phí chọn rất thấp, nhưng pivot có thể nằm gần một đầu của thứ tự giá trị.</p>
+    <p>Xét một mảng <strong>chưa sắp xếp</strong> với \(15\) phần tử phân biệt:</p>
+    <div class="math-display">\( \displaystyle A=\left[15,\,2,\,4,\,9,\,14,\,7,\,3,\,8,\,11,\,12,\,13,\,10,\,6,\,5,\,1\right]. \)</div>
+    <p>Nếu lấy phần tử đầu, <code>a[lo]</code>, làm pivot thì giá trị được chọn là \(15\) — lớn nhất của mảng. Phân hoạch đầu tiên đưa nó về cuối, tạo hai mảng con có kích thước \(14\) và \(0\).</p>
     <figure class="simple-figure">
-      <div class="split-example" aria-label="Phân hoạch lệch với pivot 1"><span class="empty">\(\varnothing\)</span><span class="pivot-block">\(1\)</span><span class="members">\(2\quad3\quad4\quad5\quad6\quad7\)</span></div>
-      <figcaption>Chọn \(\mathrm{pivot}=1\) → hai mảng con có kích thước <strong>\(0\) và \(6\)</strong>.</figcaption>
+      <div class="diagram-title">Cùng một mảng, hai cách chọn pivot</div>
+      <div class="pivot-compare">
+        <div class="pivot-compare-row">
+          <span>Pivot đầu mảng</span>
+          <div class="pivot-compare-bar"><i class="first-side" style="flex:14"></i><b>\(15\)</b><i style="flex:0"></i></div>
+          <strong>\(14:0\)</strong>
+        </div>
+        <div class="pivot-compare-row">
+          <span>Median-of-Three</span>
+          <div class="pivot-compare-bar"><i class="first-side" style="flex:7"></i><b>\(8\)</b><i style="flex:7"></i></div>
+          <strong>\(7:7\)</strong>
+        </div>
+      </div>
+      <figcaption>Độ dài hai mảng con <em>sau lần phân hoạch đầu tiên</em>, tính bằng cùng thủ tục <code>partition()</code>.</figcaption>
     </figure>
-    <p>Ở mỗi cấp đệ quy, một phía gần như không giảm. Khi đó:</p>
-    <div class="math-display">\(\displaystyle T(n)=T(n-1)+\Theta(n)=\Theta(n^2). \)</div>
-    <p>Trong khi đó, phân hoạch cân bằng dẫn tới \(\Theta(n\log n)\). Như vậy, mục tiêu là <strong>giảm khả năng chọn pivot gây phân hoạch lệch</strong>.</p>
-    <p class="aside-note">Trong bản QuickSort gốc của Princeton, <code>StdRandom.shuffle(a)</code> được dùng trước khi sắp xếp để tạo tính ngẫu nhiên. Phân tích ở đây tách riêng ảnh hưởng của <em>cách chọn pivot</em>, nên ví dụ và mô phỏng không tự shuffle.</p>
+    <p>Một lần phân hoạch lệch chưa đủ kết luận toàn bộ thuật toán có độ phức tạp bậc hai. Tuy nhiên, nếu sự lệch này lặp lại ở mỗi cấp (chẳng hạn chọn pivot đầu trên mảng tăng dần), ta có:</p>
+    <div class="math-display">\( \displaystyle T(n)=T(n-1)+\Theta(n)=\Theta(n^2). \)</div>
+    <p>Trong khi đó, nếu phân hoạch gần cân bằng ở các cấp, chi phí là \(\Theta(n\log n)\). Vấn đề đặt ra là: <strong>có cách chọn pivot tốt hơn mà vẫn đủ rẻ hay không?</strong></p>
+    <p class="aside-note">Đây là ví dụ được chọn để làm rõ sự khác biệt giữa hai chiến lược, không phải mẫu đại diện cho mọi mảng ngẫu nhiên. QuickSort gốc của Princeton thường gọi <code>StdRandom.shuffle(a)</code> trước khi sắp xếp; để so sánh tác động của pivot trên một đầu vào cụ thể, mô phỏng bên dưới không tự shuffle.</p>
   </section>
 
   <section id="median" aria-labelledby="median-heading">
     <div class="section-label">\(02\) — Phương pháp</div>
     <h2 id="median-heading">Median-of-Three hoạt động thế nào?</h2>
     <p>Thay vì chọn ngay <code>a[lo]</code>, lấy ba ứng viên tại vị trí <code>lo</code>, <code>mid</code> và <code>hi</code>, trong đó:</p>
-    <div class="math-display">\(\displaystyle \mathrm{mid}=\mathrm{lo}+\left\lfloor\dfrac{\mathrm{hi}-\mathrm{lo}}{2}\right\rfloor. \)</div>
-    <p>Chọn <strong>trung vị theo giá trị</strong> trong ba ứng viên, rồi chuyển nó về <code>lo</code> để dùng thủ tục phân hoạch ban đầu.</p>
+    <div class="math-display">\( \displaystyle \mathrm{mid}=\mathrm{lo}+\left\lfloor\dfrac{\mathrm{hi}-\mathrm{lo}}{2}\right\rfloor. \)</div>
+    <p>Chọn <strong>trung vị theo giá trị</strong> trong ba ứng viên, rồi chuyển nó về <code>lo</code> để sử dụng thủ tục phân hoạch ban đầu.</p>
     <figure class="simple-figure">
-      <div class="candidate-array" aria-label="Mảng 8 1 6 4 9 2 7, ứng viên là 8, 4, 7">
-        <span class="candidate"><b>\(\displaystyle 8\)</b><small>đầu</small></span><span>\(\displaystyle 1\)</span><span>\(\displaystyle 6\)</span>
-        <span class="candidate"><b>\(\displaystyle 4\)</b><small>giữa</small></span><span>\(\displaystyle 9\)</span><span>\(\displaystyle 2\)</span>
-        <span class="candidate chosen"><b>\(\displaystyle 7\)</b><small>cuối</small></span>
+      <div class="diagram-title">Ba ứng viên nằm trong mảng hỗn hợp \(15\) phần tử</div>
+      <div class="candidate-array" aria-label="Mảng 15, 2, 4, 9, 14, 7, 3, 8, 11, 12, 13, 10, 6, 5, 1">
+        <span class="candidate">\(\displaystyle 15\)<small>đầu</small></span>
+        <span>\(\displaystyle 2\)</span>
+        <span>\(\displaystyle 4\)</span>
+        <span>\(\displaystyle 9\)</span>
+        <span>\(\displaystyle 14\)</span>
+        <span>\(\displaystyle 7\)</span>
+        <span>\(\displaystyle 3\)</span>
+        <span class="candidate chosen">\(\displaystyle 8\)<small>giữa</small></span>
+        <span>\(\displaystyle 11\)</span>
+        <span>\(\displaystyle 12\)</span>
+        <span>\(\displaystyle 13\)</span>
+        <span>\(\displaystyle 10\)</span>
+        <span>\(\displaystyle 6\)</span>
+        <span>\(\displaystyle 5\)</span>
+        <span class="candidate">\(\displaystyle 1\)<small>cuối</small></span>
       </div>
-      <figcaption>Ba ứng viên: \(8,\,4,\,7\). Vì \(4<7<8\), ta chọn \(\mathrm{pivot}=7\).</figcaption>
+      <figcaption>Ba ứng viên là \(15,\,8,\,1\). Vì \(1\lt8\lt15\), chọn \(\mathrm{pivot}=8\). Sau lần phân hoạch đầu tiên, hai phía có \(7\) phần tử mỗi bên.</figcaption>
     </figure>
-    <p>Đối với mảng tăng dần ở trên, ba ứng viên là \(1,\,4,\,7\); chọn \(4\) sẽ tạo hai phần \(\left[1,\,2,\,3\right]\) và \(\left[5,\,6,\,7\right]\). Việc tìm trung vị của ba mẫu chỉ cần <strong>\(2\)–\(3\) phép so sánh</strong> nếu dùng cây quyết định thích hợp.</p>
-    <p>Median-of-Three là <em>median</em> (trung vị), không phải <em>mean</em> (trung bình cộng). Nó cũng <strong>không phải trung vị của toàn bộ mảng</strong>.</p>
+    <p>Trên <em>chính mảng này</em>, mô phỏng đếm \(103\) phép so sánh khóa khi chọn pivot đầu, so với \(67\) phép khi dùng Median-of-Three (đã cộng chi phí chọn pivot). Tuy nhiên, số hoán đổi tương ứng là \(11\) và \(17\), nên không thể suy ra mức tăng tốc CPU trực tiếp từ số phép so sánh.</p>
+    <p>Median-of-Three là <em>median</em> (trung vị), không phải <em>mean</em> (trung bình cộng). Kỹ thuật chỉ ước lượng pivot từ ba giá trị, <strong>không bảo đảm</strong> tìm được trung vị thật của cả mảng.</p>
   </section>
 
   <section id="code" aria-labelledby="code-heading">
@@ -128,9 +155,9 @@
       <div class="control-row">
         <label for="preset">Dữ liệu mẫu</label>
         <select id="preset">
+          <option value="mixed" selected>Hỗn hợp (15 phần tử)</option>
           <option value="ascending">Tăng dần</option>
           <option value="descending">Giảm dần</option>
-          <option value="mixed">Hỗn hợp</option>
           <option value="nearly">Gần có thứ tự</option>
           <option value="duplicates">Nhiều khóa trùng</option>
           <option value="custom">Tự nhập</option>
@@ -138,7 +165,7 @@
       </div>
       <label class="input-label" for="numbers">Mảng đầu vào (\(2\)–\(30\) số nguyên)</label>
       <div class="input-row">
-        <input id="numbers" type="text" value="1, 2, 3, 4, 5, 6, 7" spellcheck="false" autocomplete="off">
+        <input id="numbers" type="text" value="15, 2, 4, 9, 14, 7, 3, 8, 11, 12, 13, 10, 6, 5, 1" spellcheck="false" autocomplete="off">
         <button id="run" class="run" type="button">Chạy</button>
       </div>
       <p id="error" class="error" role="alert" hidden></p>
